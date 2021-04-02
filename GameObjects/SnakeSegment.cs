@@ -11,7 +11,7 @@ namespace MonoSnake.GameObjects
     {
 
         public int DrawOrder => 0;
-        public Sprite Sprite { get; }
+        public Sprite Sprite { get; set; }
         public Vector2 Position { get; set; }
         public Vector2 PreviousSnakeSegmentPosition { get; set; }
 

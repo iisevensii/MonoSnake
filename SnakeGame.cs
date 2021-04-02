@@ -65,12 +65,16 @@ namespace MonoSnake
             {
                 Origin = new Vector2(21, 21)
             };
+            Sprite snakeStraightBodySprite = new Sprite(_snakeSegmentsSpriteSheet, 84, 42, 42, 42)
+            {
+                Origin = new Vector2(21, 21)
+            };
 
             // Create GameObjects
             _snakeHeadGameObject = new SnakeHead(snakeHeadSprite, new Vector2(21, 21));
 
             // Initialize Snake
-            _snake = new Snake(_snakeHeadGameObject, snakeTailSprite);
+            _snake = new Snake(_snakeHeadGameObject, snakeTailSprite, snakeStraightBodySprite);
 
             // Initialize InputController
             _inputController = new InputController(_snakeHeadGameObject);

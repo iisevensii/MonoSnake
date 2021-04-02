@@ -13,13 +13,15 @@ namespace MonoSnake.Infrastructure
         private readonly SnakeHead _snakeHead;
         private readonly List<SnakeSegment> _snakeSegments = new List<SnakeSegment>();
         private int _segmentCount = 1;
-        private Sprite _snakeTailSprite;
+        private readonly Sprite _snakeTailSprite;
+        private readonly Sprite _straightBodySprite;
         Vector2 _lastSegmentPosition = Vector2.Zero;
 
-        public Snake(SnakeHead snakeHead, Sprite snakeTailSprite)
+        public Snake(SnakeHead snakeHead, Sprite snakeTailSprite, Sprite straightBodySprite)
         {
             _snakeHead = snakeHead;
             _snakeTailSprite = snakeTailSprite;
+            _straightBodySprite = straightBodySprite;
         }
 
         private void Eat()
@@ -56,9 +58,20 @@ namespace MonoSnake.Infrastructure
             foreach (SnakeSegment snakeSegment in _snakeSegments)
             {
                 int currentIndex = _snakeSegments.IndexOf(snakeSegment);
+                bool isFirstSegment = currentIndex == 0;
+                bool isLastSegment = currentIndex + 1 == _snakeSegments.Count;
+
+                if (isLastSegment)
+                {
+                    snakeSegment.Sprite = _snakeTailSprite;
+                }
+                else
+                {
+                    snakeSegment.Sprite = _straightBodySprite;
+                }
 
                 // Neck (First Segment - Follows SnakeHead directly)
-                if (currentIndex == 0)
+                if (isFirstSegment)
                 {
                     snakeSegment.PreviousSnakeSegmentPosition = previousSnakeHeadPosition;
                     previousSegmentPosition = snakeSegment.PreviousSnakeSegmentPosition;
@@ -66,6 +79,7 @@ namespace MonoSnake.Infrastructure
                 // All other segments follow the previous segment
                 else
                 {
+
                     // Position to be applied to the current segment
                     Vector2 newPosition = previousSegmentPosition;
                     // Position to be applied to the next segment (if it exists)
