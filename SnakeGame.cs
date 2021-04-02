@@ -95,7 +95,7 @@ namespace MonoSnake
             _inputController.ProcessInput(gameTime);
 
             // Update GameObjects
-            _snakeHeadGameObject.Update(gameTime);
+            _snake.Update(gameTime);
 
             base.Update(gameTime);
         }
@@ -108,7 +108,7 @@ namespace MonoSnake
             _spriteBatch.Begin();
             // Draw Apple
             //_appleSprite.Draw(_spriteBatch, _applePosition);
-            _snakeHeadGameObject.Draw(_spriteBatch, gameTime);
+            _snake.Draw(_spriteBatch, gameTime);
             //_spriteBatch.Draw(_appleTexture, new Vector2(0, 0), null, Color.White, (float)Math.Atan2(sprite.Angle.Y, sprite.Angle.X), new Vector2(sprite.Area.Width / 2, sprite.Area.Height / 2), Scale, SpriteEffects.None, 0f);
             _spriteBatch.End();
 
