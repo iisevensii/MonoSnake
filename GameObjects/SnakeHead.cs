@@ -9,7 +9,7 @@ namespace MonoSnake.GameObjects
 {
     public class SnakeHead : IGameObject
     {
-        private const float MovementIncrement = 800f;
+        private const float MovementIncrement = 1000f;
         public int DrawOrder => 0;
         public Sprite Sprite { get; }
         public Vector2 Position { get; set; }
@@ -17,7 +17,7 @@ namespace MonoSnake.GameObjects
         public SnakeDirection Direction { get; set; } = SnakeDirection.Right;
         public bool MovementPending { get; set; } = false;
 
-        private int _framesSinceLastMovement = 0;
+        private int _framesSinceLastMovement;
 
         public SnakeHead(Sprite sprite, Vector2 position)
         {
@@ -25,12 +25,24 @@ namespace MonoSnake.GameObjects
             Position = position;
         }
 
+        public bool CanUpdate()
+        {
+            // Update Frame Counter
+            _framesSinceLastMovement++;
+
+            // Require at least 20 frames to have passed before moving.
+            // Direction from InputController is already set so it is not being lost
+            if (_framesSinceLastMovement < 20)
+                return false;
+
+            return true;
+        }
+
         public void Update(GameTime gameTime)
         {
-            // ToDo:
-            _framesSinceLastMovement++;
-            if (_framesSinceLastMovement < 20)
+            if (!CanUpdate())
                 return;
+
             float gameTimeSecondsElapsed = (float)gameTime.ElapsedGameTime.TotalSeconds;
             float movementAmount = MovementIncrement * gameTimeSecondsElapsed;
             switch (Direction)

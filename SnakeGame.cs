@@ -18,10 +18,12 @@ namespace MonoSnake
         private float _appleSpeed;
         private int _screenWidth;
         private int _screenHeight;
-        private Sprite _appleSprite;
         private SnakeHead _snakeHeadGameObject;
 
         private InputController _inputController;
+        private Snake _snake;
+        private Texture2D _snakeHeadSpriteSheet;
+        private Texture2D _snakeSegmentsSpriteSheet;
 
         public SnakeGame()
         {
@@ -47,20 +49,28 @@ namespace MonoSnake
 
             // Load Textures
             _appleTexture = Content.Load<Texture2D>("appletrans");
-            Texture2D snakeHeadTexture = Content.Load<Texture2D>("snakehead");
+            _snakeHeadSpriteSheet = Content.Load<Texture2D>("snakehead");
+            _snakeSegmentsSpriteSheet = Content.Load<Texture2D>("snakesegments");
 
             // Create Sprite Objects
-            _appleSprite = new Sprite(_appleTexture, 0, 0, _appleTexture.Width, _appleTexture.Height)
+            Sprite appleSprite = new Sprite(_appleTexture, 0, 0, _appleTexture.Width, _appleTexture.Height)
             {
                 Origin = new Vector2(_appleTexture.Width / 2f, _appleTexture.Height / 2f)
             };
-            Sprite snakeHeadSprite = new Sprite(snakeHeadTexture, 0, 0, snakeHeadTexture.Width, 42)
+            Sprite snakeHeadSprite = new Sprite(_snakeHeadSpriteSheet, 0, 0, _snakeHeadSpriteSheet.Width, 42)
+            {
+                Origin = new Vector2(21, 21)
+            };
+            Sprite snakeTailSprite = new Sprite(_snakeSegmentsSpriteSheet, 84, 0, 42, 42)
             {
                 Origin = new Vector2(21, 21)
             };
 
             // Create GameObjects
             _snakeHeadGameObject = new SnakeHead(snakeHeadSprite, new Vector2(21, 21));
+
+            // Initialize Snake
+            _snake = new Snake(_snakeHeadGameObject, snakeTailSprite);
 
             // Initialize InputController
             _inputController = new InputController(_snakeHeadGameObject);
@@ -90,6 +100,21 @@ namespace MonoSnake
             base.Update(gameTime);
         }
 
+        protected override void Draw(GameTime gameTime)
+        {
+            GraphicsDevice.Clear(Color.Black);
+
+            // TODO: Add your drawing code here
+            _spriteBatch.Begin();
+            // Draw Apple
+            //_appleSprite.Draw(_spriteBatch, _applePosition);
+            _snakeHeadGameObject.Draw(_spriteBatch, gameTime);
+            //_spriteBatch.Draw(_appleTexture, new Vector2(0, 0), null, Color.White, (float)Math.Atan2(sprite.Angle.Y, sprite.Angle.X), new Vector2(sprite.Area.Width / 2, sprite.Area.Height / 2), Scale, SpriteEffects.None, 0f);
+            _spriteBatch.End();
+
+            base.Draw(gameTime);
+        }
+
         private void MoveApple(GameTime gameTime, KeyboardState keyboardState, GamePadState player1GamePadState)
         {
             if (keyboardState.IsKeyDown(Keys.Up) || player1GamePadState.IsButtonDown(Buttons.DPadUp))
@@ -116,21 +141,6 @@ namespace MonoSnake
                 position.Y = _screenHeight - texture2D.Height / 2f;
             else if (position.Y < texture2D.Height / 2f)
                 position.Y = texture2D.Height / 2f;
-        }
-
-        protected override void Draw(GameTime gameTime)
-        {
-            GraphicsDevice.Clear(Color.Black);
-
-            // TODO: Add your drawing code here
-            _spriteBatch.Begin();
-            // Draw Apple
-            //_appleSprite.Draw(_spriteBatch, _applePosition);
-            _snakeHeadGameObject.Draw(_spriteBatch, gameTime);
-            //_spriteBatch.Draw(_appleTexture, new Vector2(0, 0), null, Color.White, (float)Math.Atan2(sprite.Angle.Y, sprite.Angle.X), new Vector2(sprite.Area.Width / 2, sprite.Area.Height / 2), Scale, SpriteEffects.None, 0f);
-            _spriteBatch.End();
-
-            base.Draw(gameTime);
         }
     }
 }
