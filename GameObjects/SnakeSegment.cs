@@ -23,7 +23,7 @@ namespace MonoSnake.GameObjects
 
         public void Update(GameTime gameTime)
         {
-            throw new NotImplementedException();
+            Position = PreviousSnakeSegmentPosition;
         }
 
         public void Draw(SpriteBatch spriteBatch, GameTime gameTime)

@@ -12,7 +12,7 @@ namespace MonoSnake.Infrastructure
     {
         private readonly SnakeHead _snakeHead;
         private readonly List<SnakeSegment> _snakeSegments = new List<SnakeSegment>();
-        private int _segmentCount;
+        private int _segmentCount = 1;
         private Sprite _snakeTailSprite;
 
         public Snake(SnakeHead snakeHead, Sprite snakeTailSprite)
@@ -28,7 +28,7 @@ namespace MonoSnake.Infrastructure
 
         private void AddSegment()
         {
-            _snakeSegments.Add(new SnakeSegment(_snakeTailSprite, Vector2.Zero));
+            _snakeSegments.Add(new SnakeSegment(_snakeTailSprite, new Vector2(21, 21)));
         }
 
         public void Update(GameTime gameTime)
@@ -42,21 +42,40 @@ namespace MonoSnake.Infrastructure
             if(!_snakeHead.CanUpdate())
                 return;
 
+            Vector2 previousSnakeHeadPosition = _snakeHead.Position;
             // Move Snake Head
             _snakeHead.Update(gameTime);
-
+            Vector2 previousSegmentPosition = Vector2.Zero;
             // Move Segments
             foreach (SnakeSegment snakeSegment in _snakeSegments)
             {
-                snakeSegment.PreviousSnakeSegmentPosition = _snakeHead.Position;
+                int currentIndex = _snakeSegments.IndexOf(snakeSegment);
+
+                if (currentIndex == 0)
+                {
+                    snakeSegment.PreviousSnakeSegmentPosition = previousSnakeHeadPosition;
+                    previousSegmentPosition = snakeSegment.PreviousSnakeSegmentPosition;
+                }
+                else
+                {
+                    var newPosition = previousSegmentPosition;
+                    previousSegmentPosition = snakeSegment.Position;
+                    snakeSegment.PreviousSnakeSegmentPosition = newPosition;
+                }
+
+                snakeSegment.Sprite.Rotation = (float)(90 * Math.PI / 180);
                 snakeSegment.Update(gameTime);
             }
+
+            if(_segmentCount < 9)
+                _segmentCount++;
         }
 
         public void Draw(SpriteBatch spriteBatch, GameTime gameTime)
         {
             _snakeHead.Draw(spriteBatch, gameTime);
-            _snakeSegments.ForEach(s => s.Draw(spriteBatch, gameTime));
+            foreach (var s in _snakeSegments)
+                s.Draw(spriteBatch, gameTime);
         }
     }
 }

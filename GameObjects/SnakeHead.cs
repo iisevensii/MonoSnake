@@ -44,7 +44,7 @@ namespace MonoSnake.GameObjects
                 return;
 
             float gameTimeSecondsElapsed = (float)gameTime.ElapsedGameTime.TotalSeconds;
-            float movementAmount = MovementIncrement * gameTimeSecondsElapsed;
+            float movementAmount = MovementIncrement * gameTimeSecondsElapsed + 23;
             switch (Direction)
             {
                 case SnakeDirection.Up:

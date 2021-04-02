@@ -67,7 +67,7 @@ namespace MonoSnake
             };
 
             // Create GameObjects
-            _snakeHeadGameObject = new SnakeHead(snakeHeadSprite, new Vector2(21, 21));
+            _snakeHeadGameObject = new SnakeHead(snakeHeadSprite, new Vector2(100, 100));
 
             // Initialize Snake
             _snake = new Snake(_snakeHeadGameObject, snakeTailSprite);
