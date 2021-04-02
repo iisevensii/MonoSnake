@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using MonoSnake.GameObjects;
 using MonoSnake.Infrastructure;
 using SharpDX.Direct2D1.Effects;
 
@@ -18,6 +19,9 @@ namespace MonoSnake
         private int _screenWidth;
         private int _screenHeight;
         private Sprite _appleSprite;
+        private SnakeHead _snakeHeadGameObject;
+
+        private InputController _inputController;
 
         public SnakeGame()
         {
@@ -41,12 +45,25 @@ namespace MonoSnake
         {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
 
-            // TODO: use this.Content to load your game content here
+            // Load Textures
             _appleTexture = Content.Load<Texture2D>("appletrans");
+            Texture2D snakeHeadTexture = Content.Load<Texture2D>("snakehead");
+
+            // Create Sprite Objects
             _appleSprite = new Sprite(_appleTexture, 0, 0, _appleTexture.Width, _appleTexture.Height)
             {
                 Origin = new Vector2(_appleTexture.Width / 2f, _appleTexture.Height / 2f)
             };
+            Sprite snakeHeadSprite = new Sprite(snakeHeadTexture, 0, 0, snakeHeadTexture.Width, 42)
+            {
+                Origin = new Vector2(21, 21)
+            };
+
+            // Create GameObjects
+            _snakeHeadGameObject = new SnakeHead(snakeHeadSprite, new Vector2(21, 21));
+
+            // Initialize InputController
+            _inputController = new InputController(_snakeHeadGameObject);
         }
 
         protected override void Update(GameTime gameTime)
@@ -59,10 +76,16 @@ namespace MonoSnake
 
             // TODO: Add your update logic here
             // Move Apple
-            MoveApple(gameTime, keyboardState, player1GamePadState);
+            //MoveApple(gameTime, keyboardState, player1GamePadState);
 
             // Prevent Apple from leaving the screen
             KeepTextureOnScreen(_appleTexture, ref _applePosition);
+
+            // Process Input
+            _inputController.ProcessInput(gameTime);
+
+            // Update GameObjects
+            _snakeHeadGameObject.Update(gameTime);
 
             base.Update(gameTime);
         }
@@ -102,7 +125,8 @@ namespace MonoSnake
             // TODO: Add your drawing code here
             _spriteBatch.Begin();
             // Draw Apple
-            _appleSprite.Draw(_spriteBatch, _applePosition);
+            //_appleSprite.Draw(_spriteBatch, _applePosition);
+            _snakeHeadGameObject.Draw(_spriteBatch, gameTime);
             //_spriteBatch.Draw(_appleTexture, new Vector2(0, 0), null, Color.White, (float)Math.Atan2(sprite.Angle.Y, sprite.Angle.X), new Vector2(sprite.Area.Width / 2, sprite.Area.Height / 2), Scale, SpriteEffects.None, 0f);
             _spriteBatch.End();
 
