@@ -43,11 +43,11 @@ namespace MonoSnake.Infrastructure
             if(!_snakeHead.CanUpdate())
                 return;
 
+            // Previous position of the SnakeHead before Update
+            Vector2 previousSnakeHeadPosition = _snakeHead.Position;
+
             // Move Snake Head
             _snakeHead.Update(gameTime);
-
-            // Previous position of the SnakeHead
-            Vector2 previousSnakeHeadPosition = _snakeHead.Position;
 
             // For tracking the previous segment's position and applying to the current segment
             Vector2 previousSegmentPosition = Vector2.Zero;
