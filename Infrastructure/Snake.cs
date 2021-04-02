@@ -28,7 +28,7 @@ namespace MonoSnake.Infrastructure
 
         private void AddSegment()
         {
-            _snakeSegments.Add(new SnakeSegment(_snakeTailSprite, new Vector2(21, 21)));
+            _snakeSegments.Add(new SnakeSegment(_snakeTailSprite, _lastSegmentPosition));
         }
 
         public void Update(GameTime gameTime)
@@ -67,10 +67,12 @@ namespace MonoSnake.Infrastructure
                 snakeSegment.Update(gameTime);
             }
 
+            _lastSegmentPosition = _snakeSegments.Last().Position;
+            
             if(_segmentCount < 9)
                 _segmentCount++;
         }
-
+        Vector2 _lastSegmentPosition = Vector2.Zero;
         public void Draw(SpriteBatch spriteBatch, GameTime gameTime)
         {
             _snakeHead.Draw(spriteBatch, gameTime);
