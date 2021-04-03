@@ -24,6 +24,7 @@ namespace MonoSnake.GameObjects
         {
             Sprite = sprite;
             Position = position;
+            Rotation = Direction.SnakeDirectionToRadius();
         }
 
         public bool CanUpdate()

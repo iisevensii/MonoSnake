@@ -14,8 +14,6 @@ namespace MonoSnake.GameObjects
         public Sprite Sprite { get; set; }
         public Vector2 Position { get; set; }
         public float Rotation { get; set; }
-        public Vector2 PreviousSegmentPosition { get; set; }
-        public float PreviousSegmentRotation { get; set; }
         public SnakeDirection Direction { get; set; }
 
         public SnakeSegment(Sprite sprite, Vector2 position, float rotation)
@@ -27,8 +25,6 @@ namespace MonoSnake.GameObjects
 
         public void Update(GameTime gameTime)
         {
-            Position = PreviousSegmentPosition;
-            Rotation = PreviousSegmentRotation;
         }
 
         public void Draw(SpriteBatch spriteBatch, GameTime gameTime)
