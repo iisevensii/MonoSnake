@@ -25,6 +25,9 @@ namespace MonoSnake
         private Snake _snake;
         private Texture2D _snakeHeadSpriteSheet;
         private Texture2D _snakeSegmentsSpriteSheet;
+        private const string APPLE_SPRITE_SHEET_NAME = "Apple";
+        private const string SNAKE_HEAD_SPRITE_SHEET_NAME = "SnakeHead";
+        private const string SNAKE_SEGMENTS_SPRITE_SHEET_NAME = "SnakeSegments";
 
         public SnakeGame()
         {
@@ -49,9 +52,9 @@ namespace MonoSnake
             _spriteBatch = new SpriteBatch(GraphicsDevice);
 
             // Load Textures
-            _appleTexture = Content.Load<Texture2D>("apple");
-            _snakeHeadSpriteSheet = Content.Load<Texture2D>("snakehead");
-            _snakeSegmentsSpriteSheet = Content.Load<Texture2D>("snakesegments");
+            _appleTexture = Content.Load<Texture2D>(APPLE_SPRITE_SHEET_NAME);
+            _snakeHeadSpriteSheet = Content.Load<Texture2D>(SNAKE_HEAD_SPRITE_SHEET_NAME);
+            _snakeSegmentsSpriteSheet = Content.Load<Texture2D>(SNAKE_SEGMENTS_SPRITE_SHEET_NAME);
 
             // Create Sprite Objects
             Sprite appleSprite = new Sprite(_appleTexture, 0, 0, _appleTexture.Width, _appleTexture.Height)
