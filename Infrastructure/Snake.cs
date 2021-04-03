@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MonoSnake.GameObjects;
@@ -17,7 +15,7 @@ namespace MonoSnake.Infrastructure
         private readonly Sprite _snakeTailSprite;
         private readonly Sprite _straightBodySprite;
         Vector2 _lastSegmentPosition = Vector2.Zero;
-        private float _lastSegmentRotation = 0f;
+        private float _lastSegmentRotation;
 
         public Snake(SnakeHead snakeHead, Sprite snakeTailSprite, Sprite straightBodySprite)
         {
@@ -64,14 +62,6 @@ namespace MonoSnake.Infrastructure
 
             // Move Snake Head
             _snakeHead.Update(gameTime);
-
-            // For tracking the previous segment's position and applying to the current segment
-            Vector2 previousSegmentPosition = Vector2.Zero;
-            // For tracking the previous segment's position and applying to the current segment
-            float previousSegmentRotation = 0f;
-
-            SnakeDirection previousSnakeDirection = SnakeDirection.Right;
-
 
             Vector2 previousPosition = Vector2.Zero;
             float previousRotation = 0f;

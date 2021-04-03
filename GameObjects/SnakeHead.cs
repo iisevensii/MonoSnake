@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MonoSnake.Infrastructure;
 
@@ -9,14 +6,13 @@ namespace MonoSnake.GameObjects
 {
     public class SnakeHead : IGameObject
     {
-        private const float MovementIncrement = 1000f;
+        private const float MOVEMENT_INCREMENT = 1000f;
         public int DrawOrder => 0;
         public Sprite Sprite { get; }
         public Vector2 Position { get; set; }
         public float Rotation { get; set; }
 
         public SnakeDirection Direction { get; set; } = SnakeDirection.Right;
-        public bool MovementPending { get; set; } = false;
 
         private int _framesSinceLastMovement;
 
@@ -46,7 +42,7 @@ namespace MonoSnake.GameObjects
                 return;
 
             float gameTimeSecondsElapsed = (float)gameTime.ElapsedGameTime.TotalSeconds;
-            float movementAmount = MovementIncrement * gameTimeSecondsElapsed + 23;
+            float movementAmount = MOVEMENT_INCREMENT * gameTimeSecondsElapsed + 23;
 
             switch (Direction)
             {

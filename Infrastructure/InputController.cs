@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
-using Microsoft.Xna.Framework.Media;
 using MonoSnake.GameObjects;
 
 namespace MonoSnake.Infrastructure
@@ -17,7 +13,7 @@ namespace MonoSnake.Infrastructure
             _snakeHead = snakeHead;
         }
 
-        public void ProcessInput(GameTime gameTime)
+        public void ProcessInput()
         {
             KeyboardState keyboardState = Keyboard.GetState();
             var player1GamePadState = GamePad.GetState(PlayerIndex.One);
@@ -36,7 +32,6 @@ namespace MonoSnake.Infrastructure
         private void MoveSnakeHead(SnakeDirection direction)
         {
             _snakeHead.Direction = direction;
-            _snakeHead.MovementPending = true;
         }
     }
 }

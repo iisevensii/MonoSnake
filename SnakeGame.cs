@@ -1,10 +1,8 @@
-﻿using System;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using MonoSnake.GameObjects;
 using MonoSnake.Infrastructure;
-using SharpDX.Direct2D1.Effects;
 
 namespace MonoSnake
 {
@@ -19,7 +17,7 @@ namespace MonoSnake
         private int _screenWidth;
         private int _screenHeight;
         private SnakeHead _snakeHeadGameObject;
-        private Apple _appleGameOject;
+        private Apple _appleGameObject;
 
         private InputController _inputController;
         private Snake _snake;
@@ -76,7 +74,7 @@ namespace MonoSnake
 
             // Create GameObjects
             _snakeHeadGameObject = new SnakeHead(snakeHeadSprite, new Vector2(21, 21));
-            _appleGameOject = new Apple(appleSprite, new Vector2(_graphics.PreferredBackBufferWidth / 2f + 21, _graphics.PreferredBackBufferHeight / 2f + 21));
+            _appleGameObject = new Apple(appleSprite, new Vector2(_graphics.PreferredBackBufferWidth / 2f + 21, _graphics.PreferredBackBufferHeight / 2f + 21));
 
             // Initialize Snake
             _snake = new Snake(_snakeHeadGameObject, snakeTailSprite, snakeStraightBodySprite);
@@ -94,7 +92,7 @@ namespace MonoSnake
                 Exit();
 
             // Process Input
-            _inputController.ProcessInput(gameTime);
+            _inputController.ProcessInput();
 
             // Update GameObjects
             _snake.Update(gameTime);
@@ -108,7 +106,7 @@ namespace MonoSnake
 
             _spriteBatch.Begin();
             _snake.Draw(_spriteBatch, gameTime);
-            _appleGameOject.Draw(_spriteBatch, gameTime);
+            _appleGameObject.Draw(_spriteBatch, gameTime);
             _spriteBatch.End();
 
             base.Draw(gameTime);
