@@ -20,7 +20,7 @@ namespace MonoSnake.GameObjects
         {
             Sprite = sprite;
             Position = position;
-            Rotation = Direction.SnakeDirectionToRadius();
+            Rotation = Direction.ToRadius();
         }
 
         public bool CanUpdate()
@@ -60,7 +60,7 @@ namespace MonoSnake.GameObjects
                     break;
             }
 
-            Rotation = Direction.SnakeDirectionToRadius();
+            Rotation = Direction.ToRadius();
 
             // Reset frame count since last movement
             _framesSinceLastMovement = 0;

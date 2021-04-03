@@ -49,7 +49,7 @@ namespace MonoSnake.Infrastructure
                 if (_snakeSegments.Count == 0)
                 {
                     _lastSegmentPosition = _snakeHead.Position;
-                    _lastSegmentRotation = _snakeHead.Direction.SnakeDirectionToRadius();
+                    _lastSegmentRotation = _snakeHead.Direction.ToRadius();
                 }
 
                 AddSegment();

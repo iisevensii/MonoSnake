@@ -4,7 +4,7 @@ namespace MonoSnake.Infrastructure
 {
     public static class ExtensionMethods
     {
-        public static float SnakeDirectionToRadius(this SnakeDirection snakeDirection)
+        public static float ToRadius(this SnakeDirection snakeDirection)
         {
             float rotation = 0f;
             switch (snakeDirection)
