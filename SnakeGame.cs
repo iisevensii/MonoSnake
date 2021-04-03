@@ -27,7 +27,7 @@ namespace MonoSnake
         private const string SNAKE_HEAD_SPRITE_SHEET_NAME = "SnakeHead";
         private const string SNAKE_SEGMENTS_SPRITE_SHEET_NAME = "SnakeSegments";
 
-        public SnakeGame()
+        public SnakeGame()  
         {
             _graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";

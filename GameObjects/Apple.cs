@@ -1,13 +1,12 @@
-﻿using System;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using MonoSnake.GameObjects;
+using MonoSnake.Infrastructure;
 
-namespace MonoSnake.Infrastructure
+namespace MonoSnake.GameObjects
 {
     public class Apple : IGameObject
     {
-        public int DrawOrder { get; }
+        public int DrawOrder => 0;
         public Sprite Sprite { get; }
         public Vector2 Position { get; set; }
         public float Rotation { get; set; }
@@ -20,7 +19,7 @@ namespace MonoSnake.Infrastructure
 
         public void Update(GameTime gameTime)
         {
-            throw new NotImplementedException();
+            // ToDo:
         }
 
         public void Draw(SpriteBatch spriteBatch, GameTime gameTime)
