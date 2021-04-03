@@ -10,7 +10,7 @@ namespace MonoSnake
 {
     public class SnakeGame : Game
     {
-        private GraphicsDeviceManager _graphics;
+        private readonly GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
 
         private Texture2D _appleTexture;
@@ -88,13 +88,6 @@ namespace MonoSnake
             if (player1GamePadState.Buttons.Back == ButtonState.Pressed || keyboardState.IsKeyDown(Keys.Escape))
                 Exit();
 
-            // TODO: Add your update logic here
-            // Move Apple
-            //MoveApple(gameTime, keyboardState, player1GamePadState);
-
-            // Prevent Apple from leaving the screen
-            KeepTextureOnScreen(_appleTexture, ref _applePosition);
-
             // Process Input
             _inputController.ProcessInput(gameTime);
 
@@ -108,12 +101,8 @@ namespace MonoSnake
         {
             GraphicsDevice.Clear(Color.Black);
 
-            // TODO: Add your drawing code here
             _spriteBatch.Begin();
-            // Draw Apple
-            //_appleSprite.Draw(_spriteBatch, _applePosition);
             _snake.Draw(_spriteBatch, gameTime);
-            //_spriteBatch.Draw(_appleTexture, new Vector2(0, 0), null, Color.White, (float)Math.Atan2(sprite.Angle.Y, sprite.Angle.X), new Vector2(sprite.Area.Width / 2, sprite.Area.Height / 2), Scale, SpriteEffects.None, 0f);
             _spriteBatch.End();
 
             base.Draw(gameTime);
