@@ -64,6 +64,8 @@ namespace MonoSnake.GameObjects
             }
 
             Rotation = Direction.SnakeDirectionToRadius();
+
+            // Reset frame count since last movement
             _framesSinceLastMovement = 0;
         }
 

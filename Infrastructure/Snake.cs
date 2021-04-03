@@ -34,7 +34,7 @@ namespace MonoSnake.Infrastructure
         private void AddSegment()
         {
             _snakeSegments.Add(new SnakeSegment(_snakeTailSprite, _lastSegmentPosition, _lastSegmentRotation));
-            _snakeSegments.Select(s => $"X: {s.Position.X}, Y: {s.Position.Y}")
+            _snakeSegments.Select(s => $"X: {s.Position.X}, Y: {s.Position.Y}, R: {s.Rotation}")
                 .ToList()
                 .ForEach(s => Trace.WriteLine(s));
 
@@ -42,7 +42,6 @@ namespace MonoSnake.Infrastructure
 
         public void Update(GameTime gameTime)
         {
-
             // See if SnakeHead is ready to be moved again
             if(!_snakeHead.CanUpdate())
                 return;
@@ -52,7 +51,7 @@ namespace MonoSnake.Infrastructure
                 if (_snakeSegments.Count == 0)
                 {
                     _lastSegmentPosition = _snakeHead.Position;
-                    _lastSegmentRotation = _snakeHead.Rotation;
+                    _lastSegmentRotation = _snakeHead.Direction.SnakeDirectionToRadius();
                 }
 
                 AddSegment();
@@ -70,55 +69,58 @@ namespace MonoSnake.Infrastructure
             // For tracking the previous segment's position and applying to the current segment
             float previousSegmentRotation = 0f;
 
-            // Move Segments
-            foreach (SnakeSegment snakeSegment in _snakeSegments)
+            if(_snakeSegments.Count > 1)
             {
-                int currentIndex = _snakeSegments.IndexOf(snakeSegment);
-                bool isFirstSegment = currentIndex == 0;
-                bool isLastSegment = currentIndex + 1 == _snakeSegments.Count;
-
-                if (isLastSegment)
+                // Move Segments
+                foreach (SnakeSegment snakeSegment in _snakeSegments)
                 {
-                    snakeSegment.Sprite = _snakeTailSprite;
+                    int currentIndex = _snakeSegments.IndexOf(snakeSegment);
+                    bool isFirstSegment = currentIndex == 0;
+                    bool isLastSegment = currentIndex + 1 == _snakeSegments.Count;
+
+                    if (isLastSegment)
+                    {
+                        snakeSegment.Sprite = _snakeTailSprite;
+                    }
+                    else
+                    {
+                        snakeSegment.Sprite = _straightBodySprite;
+                    }
+
+                    // Neck (First Segment - Follows SnakeHead directly)
+                    if (isFirstSegment)
+                    {
+                        snakeSegment.PreviousSegmentPosition = previousSnakeHeadPosition;
+                        previousSegmentPosition = snakeSegment.PreviousSegmentPosition;
+
+                        snakeSegment.PreviousSegmentRotation = previousSnakeHeadRotation;
+                        previousSegmentRotation = snakeSegment.PreviousSegmentRotation;
+                    }
+                    // All other segments follow the previous segment
+                    else
+                    {
+
+                        // Position to be applied to the current segment
+                        Vector2 newPosition = previousSegmentPosition;
+                        // Position to be applied to the next segment (if it exists)
+                        previousSegmentPosition = snakeSegment.Position;
+                        // Set current segment position to that of the last segment
+                        snakeSegment.PreviousSegmentPosition = newPosition;
+                        // Set current segment direction to that of the last segment
+                        snakeSegment.Direction = _snakeSegments[currentIndex - 1].Direction;
+
+                        // Rotation to be applied to the current segment
+                        float newRotation = previousSegmentRotation;
+                        // Position to be applied to the next segment (if it exists)
+                        previousSegmentRotation = snakeSegment.Rotation;
+                        // Set current segment position to that of the last segment
+                        snakeSegment.PreviousSegmentRotation = newRotation;
+                        // Set current segment direction to that of the last segment
+                        snakeSegment.Rotation = _snakeSegments[currentIndex - 1].Rotation;
+                    }
+
+                    snakeSegment.Update(gameTime);
                 }
-                else
-                {
-                    snakeSegment.Sprite = _straightBodySprite;
-                }
-
-                // Neck (First Segment - Follows SnakeHead directly)
-                if (isFirstSegment)
-                {
-                    snakeSegment.PreviousSegmentPosition = previousSnakeHeadPosition;
-                    previousSegmentPosition = snakeSegment.PreviousSegmentPosition;
-
-                    snakeSegment.PreviousSegmentRotation = previousSnakeHeadRotation;
-                    previousSegmentRotation = snakeSegment.PreviousSegmentRotation;
-                }
-                // All other segments follow the previous segment
-                else
-                {
-
-                    // Position to be applied to the current segment
-                    Vector2 newPosition = previousSegmentPosition;
-                    // Position to be applied to the next segment (if it exists)
-                    previousSegmentPosition = snakeSegment.Position;
-                    // Set current segment position to that of the last segment
-                    snakeSegment.PreviousSegmentPosition = newPosition;
-                    // Set current segment direction to that of the last segment
-                    snakeSegment.Direction = _snakeSegments[currentIndex - 1].Direction;
-
-                    // Rotation to be applied to the current segment
-                    float newRotation = previousSegmentRotation;
-                    // Position to be applied to the next segment (if it exists)
-                    previousSegmentRotation = snakeSegment.Rotation;
-                    // Set current segment position to that of the last segment
-                    snakeSegment.PreviousSegmentRotation = newRotation;
-                    // Set current segment direction to that of the last segment
-                    snakeSegment.Rotation = _snakeSegments[currentIndex - 1].Rotation;
-                }
-
-                snakeSegment.Update(gameTime);
             }
 
             // Save last segment position so that new segments can use it as their starting position
