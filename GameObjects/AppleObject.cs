@@ -12,6 +12,7 @@ namespace MonoSnake.GameObjects
         public int DrawOrder => 0;
         public Sprite Sprite { get; }
         public Vector2 Position { get; set; }
+        public float Rotation { get; set; }
 
         public AppleObject(Sprite sprite, Vector2 position)
         {
@@ -26,7 +27,7 @@ namespace MonoSnake.GameObjects
 
         public void Draw(SpriteBatch spriteBatch, GameTime gameTime)
         {
-            Sprite.Draw(spriteBatch, Position);
+            Sprite.Draw(spriteBatch, Position, Rotation);
         }
     }
 }

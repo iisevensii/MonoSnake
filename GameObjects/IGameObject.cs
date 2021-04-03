@@ -13,6 +13,7 @@ namespace MonoSnake.GameObjects
         Sprite Sprite { get; }
 
         Vector2 Position { get; set; }
+        float Rotation { get; set; }
 
         void Update(GameTime gameTime);
         void Draw(SpriteBatch spriteBatch, GameTime gameTime);

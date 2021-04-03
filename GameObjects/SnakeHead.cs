@@ -13,6 +13,7 @@ namespace MonoSnake.GameObjects
         public int DrawOrder => 0;
         public Sprite Sprite { get; }
         public Vector2 Position { get; set; }
+        public float Rotation { get; set; }
 
         public SnakeDirection Direction { get; set; } = SnakeDirection.Right;
         public bool MovementPending { get; set; } = false;
@@ -45,32 +46,30 @@ namespace MonoSnake.GameObjects
 
             float gameTimeSecondsElapsed = (float)gameTime.ElapsedGameTime.TotalSeconds;
             float movementAmount = MovementIncrement * gameTimeSecondsElapsed + 23;
+
             switch (Direction)
             {
                 case SnakeDirection.Up:
                     Position = new Vector2(Position.X, Position.Y - movementAmount);
-                    Sprite.Rotation = (float)(180 * Math.PI / 180);
                     break;
                 case SnakeDirection.Right:
                     Position = new Vector2(Position.X + movementAmount, Position.Y);
-                    Sprite.Rotation = (float)(270 * Math.PI / 180);
                     break;
                 case SnakeDirection.Down:
                     Position = new Vector2(Position.X, Position.Y + movementAmount);
-                    Sprite.Rotation = 0f;
                     break;
                 case SnakeDirection.Left:
                     Position = new Vector2(Position.X - movementAmount, Position.Y);
-                    Sprite.Rotation = (float)(90 * Math.PI / 180);
                     break;
             }
 
+            Rotation = Direction.SnakeDirectionToRadius();
             _framesSinceLastMovement = 0;
         }
 
         public void Draw(SpriteBatch spriteBatch, GameTime gameTime)
         {
-            Sprite.Draw(spriteBatch, Position);
+            Sprite.Draw(spriteBatch, Position, Rotation);
         }
     }
 }

@@ -16,7 +16,6 @@ namespace MonoSnake.Infrastructure
         public Color TintColor { get; set; } = Color.White;
         public Vector2 Origin { get; set; } = Vector2.Zero;
         public Vector2 Scale { get; set; } = Vector2.One;
-        public float Rotation { get; set; }
 
         public Sprite(Texture2D spriteSheet, int top, int left, int width, int height)
         {
@@ -27,7 +26,7 @@ namespace MonoSnake.Infrastructure
             Height = height;
         }
 
-        public void Draw(SpriteBatch spriteBatch, Vector2 position)
+        public void Draw(SpriteBatch spriteBatch, Vector2 position, float rotation)
         {
             spriteBatch.Draw
                 (
@@ -35,7 +34,7 @@ namespace MonoSnake.Infrastructure
                     position,
                     new Rectangle(Left, Top, Width, Height),
                     TintColor,
-                    Rotation,
+                    rotation,
                     Origin,
                     Scale,
                     SpriteEffects.None,
