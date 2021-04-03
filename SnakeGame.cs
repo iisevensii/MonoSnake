@@ -71,13 +71,38 @@ namespace MonoSnake
             {
                 Origin = new Vector2(21, 21)
             };
+            Sprite snakeCW_UpToRight_CCW_LeftToDownSprite = new Sprite(_snakeSegmentsSpriteSheet, 0, 0, 42, 42)
+            {
+                Origin = new Vector2(21, 21)
+            };
+            Sprite snakeCW_RightToDown_CCW_UpToLeftSprite = new Sprite(_snakeSegmentsSpriteSheet, 0, 42, 42, 42)
+            {
+                Origin = new Vector2(21, 21)
+            };
+            Sprite snakeCW_DownToLeft_CCW_RightToUpSprite = new Sprite(_snakeSegmentsSpriteSheet, 42, 42, 42, 42)
+            {
+                Origin = new Vector2(21, 21)
+            };
+            Sprite snakeCW_LeftToUp_CCW_DownToRightSprite = new Sprite(_snakeSegmentsSpriteSheet, 42, 0, 42, 42)
+            {
+                Origin = new Vector2(21, 21)
+            };
 
             // Create GameObjects
             _snakeHeadGameObject = new SnakeHead(snakeHeadSprite, new Vector2(21, 21));
             _appleGameObject = new Apple(appleSprite, new Vector2(_graphics.PreferredBackBufferWidth / 2f + 21, _graphics.PreferredBackBufferHeight / 2f + 21));
 
             // Initialize Snake
-            _snake = new Snake(_snakeHeadGameObject, snakeTailSprite, snakeStraightBodySprite);
+            _snake = new Snake
+            (
+                _snakeHeadGameObject,
+                snakeTailSprite,
+                snakeStraightBodySprite,
+                snakeCW_UpToRight_CCW_LeftToDownSprite,
+                snakeCW_RightToDown_CCW_UpToLeftSprite,
+                snakeCW_DownToLeft_CCW_RightToUpSprite,
+                snakeCW_LeftToUp_CCW_DownToRightSprite
+            );
 
             // Initialize InputController
             _inputController = new InputController(_snakeHeadGameObject);

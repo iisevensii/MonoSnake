@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using Microsoft.Xna.Framework;
@@ -14,14 +15,23 @@ namespace MonoSnake.Infrastructure
         private int _segmentCount = 1;
         private readonly Sprite _snakeTailSprite;
         private readonly Sprite _straightBodySprite;
+        private readonly Sprite _turn0Sprite;
+        private readonly Sprite _turn1Sprite;
+        private readonly Sprite _turn2Sprite;
+        private readonly Sprite _turn3Sprite;
         Vector2 _lastSegmentPosition = Vector2.Zero;
         private float _lastSegmentRotation;
 
-        public Snake(SnakeHead snakeHead, Sprite snakeTailSprite, Sprite straightBodySprite)
+        public Snake(SnakeHead snakeHead, Sprite snakeTailSprite, Sprite straightBodySprite,
+            Sprite turn0Sprite, Sprite turn1Sprite, Sprite turn2Sprite, Sprite turn3Sprite)
         {
             _snakeHead = snakeHead;
             _snakeTailSprite = snakeTailSprite;
             _straightBodySprite = straightBodySprite;
+            _turn0Sprite = turn0Sprite;
+            _turn1Sprite = turn1Sprite;
+            _turn2Sprite = turn2Sprite;
+            _turn3Sprite = turn3Sprite;
         }
 
         private void Eat()
@@ -69,22 +79,62 @@ namespace MonoSnake.Infrastructure
 
             for (int i = 0; i < _snakeSegments.Count; i++)
             {
-                if (i == _snakeSegments.Count - 1)
+                _snakeSegments[i].NoRotation = false;
+                bool isTail = i == _snakeSegments.Count - 1;
+                SnakeSegment previousSegment = null;
+                SnakeSegment nextSegment = null;
+
+                SnakeSegment currentSegment = _snakeSegments[i];
+                var currentSegmentPosition = currentSegment.Position;
+                if (isTail)
                 {
-                    _snakeSegments[i].Sprite = _snakeTailSprite;
+                    currentSegment.Sprite = _snakeTailSprite;
                 }
                 else
-                    _snakeSegments[i].Sprite = _straightBodySprite;
+                {
+                    if (_snakeSegments.Count > 1 && i > 0)
+                        previousSegment = _snakeSegments[i - 1];
+                    currentSegment.Sprite = _straightBodySprite;
+                    nextSegment = _snakeSegments[i + 1];
+
+
+                    if (previousSegment != null && nextSegment != null)
+                    {
+                        var previousSegmentPosition = previousSegment.Position;
+                        var nextSegmentPosition = nextSegment.Position;
+                        if
+                        (
+                            (
+                                currentSegmentPosition.X < previousSegmentPosition.X
+                                &&
+                                currentSegmentPosition.Y < nextSegmentPosition.Y
+                                &&
+                                Math.Abs(currentSegmentPosition.Y - previousSegmentPosition.Y) < 0.5f
+                                &&
+                                Math.Abs(currentSegmentPosition.X - nextSegmentPosition.X) < 0.5f
+                            )
+                        )
+                        {
+                            _snakeSegments[i].NoRotation = true;
+                            _snakeSegments[i].Sprite = _turn0Sprite;
+                            Trace.WriteLine($"We Have A Winner!!!!! I: {i}");
+                        }
+                        else
+                        {
+                            _snakeSegments[i].NoRotation = false;
+                        }
+                    }
+                }
 
                 if (i == 0)
                 {
-                    previousPosition = _snakeSegments[i].Position;
-                    previousRotation = _snakeSegments[i].Rotation;
-                    previousDirection = _snakeSegments[i].Direction;
+                    previousPosition = currentSegmentPosition;
+                    previousRotation = currentSegment.Rotation;
+                    previousDirection = currentSegment.Direction;
 
-                    _snakeSegments[i].Position = previousSnakeHeadPosition;
-                    _snakeSegments[i].Rotation = previousSnakeHeadRotation;
-                    _snakeSegments[i].Direction = previousSnakeHeadDirection;
+                    currentSegment.Position = previousSnakeHeadPosition;
+                    currentSegment.Rotation = previousSnakeHeadRotation;
+                    currentSegment.Direction = previousSnakeHeadDirection;
                 }
                 else
                 {
@@ -92,13 +142,13 @@ namespace MonoSnake.Infrastructure
                     float rotationToConsume = previousRotation;
                     SnakeDirection directionToConsume = previousDirection;
 
-                    previousPosition = _snakeSegments[i].Position;
-                    previousRotation = _snakeSegments[i].Rotation;
-                    previousDirection = _snakeSegments[i].Direction;
+                    previousPosition = currentSegmentPosition;
+                    previousRotation = currentSegment.Rotation;
+                    previousDirection = currentSegment.Direction;
 
-                    _snakeSegments[i].Position = positionToConsume;
-                    _snakeSegments[i].Rotation = rotationToConsume;
-                    _snakeSegments[i].Direction = directionToConsume;
+                    currentSegment.Position = positionToConsume;
+                    currentSegment.Rotation = rotationToConsume;
+                    currentSegment.Direction = directionToConsume;
                 }
             }
 

@@ -12,6 +12,7 @@ namespace MonoSnake.GameObjects
         public Vector2 Position { get; set; }
         public float Rotation { get; set; }
         public SnakeDirection Direction { get; set; }
+        public bool NoRotation { get; set; }
 
         public SnakeSegment(Sprite sprite, Vector2 position, float rotation)
         {
@@ -26,7 +27,7 @@ namespace MonoSnake.GameObjects
 
         public void Draw(SpriteBatch spriteBatch, GameTime gameTime)
         {
-            Sprite.Draw(spriteBatch, Position, Rotation);
+            Sprite.Draw(spriteBatch, Position, NoRotation ? 0f : Rotation);
         }
     }
 }
