@@ -49,7 +49,7 @@ namespace MonoSnake
             _spriteBatch = new SpriteBatch(GraphicsDevice);
 
             // Load Textures
-            _appleTexture = Content.Load<Texture2D>("appletranssmall");
+            _appleTexture = Content.Load<Texture2D>("apple");
             _snakeHeadSpriteSheet = Content.Load<Texture2D>("snakehead");
             _snakeSegmentsSpriteSheet = Content.Load<Texture2D>("snakesegments");
 
