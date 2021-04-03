@@ -19,6 +19,7 @@ namespace MonoSnake
         private int _screenWidth;
         private int _screenHeight;
         private SnakeHead _snakeHeadGameObject;
+        private Apple _appleGameOject;
 
         private InputController _inputController;
         private Snake _snake;
@@ -48,7 +49,7 @@ namespace MonoSnake
             _spriteBatch = new SpriteBatch(GraphicsDevice);
 
             // Load Textures
-            _appleTexture = Content.Load<Texture2D>("appletrans");
+            _appleTexture = Content.Load<Texture2D>("appletranssmall");
             _snakeHeadSpriteSheet = Content.Load<Texture2D>("snakehead");
             _snakeSegmentsSpriteSheet = Content.Load<Texture2D>("snakesegments");
 
@@ -72,6 +73,7 @@ namespace MonoSnake
 
             // Create GameObjects
             _snakeHeadGameObject = new SnakeHead(snakeHeadSprite, new Vector2(21, 21));
+            _appleGameOject = new Apple(appleSprite, new Vector2(_graphics.PreferredBackBufferWidth / 2f, _graphics.PreferredBackBufferHeight /2f));
 
             // Initialize Snake
             _snake = new Snake(_snakeHeadGameObject, snakeTailSprite, snakeStraightBodySprite);
@@ -103,6 +105,7 @@ namespace MonoSnake
 
             _spriteBatch.Begin();
             _snake.Draw(_spriteBatch, gameTime);
+            _appleGameOject.Draw(_spriteBatch, gameTime);
             _spriteBatch.End();
 
             base.Draw(gameTime);
