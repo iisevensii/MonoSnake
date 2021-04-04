@@ -6,10 +6,10 @@ namespace MonoSnake.Infrastructure
     public class Sprite
     {
         private Texture2D SpriteSheet { get; }
-        private int Top { get; }
-        private int Left { get; }
-        private int Width { get; }
-        private int Height { get; }
+        public int Top { get; }
+        public int Left { get; }
+        public int Width { get; }
+        public int Height { get; }
         public Color TintColor { get; set; } = Color.White;
         public Vector2 Origin { get; set; } = Vector2.Zero;
         public Vector2 Scale { get; set; } = Vector2.One;

@@ -24,7 +24,6 @@ namespace MonoSnake.GameObjects
 
         public void Draw(SpriteBatch spriteBatch, GameTime gameTime)
         {
-            Sprite.Scale =  new Vector2(0.5f, 0.5f);
             Sprite.Draw(spriteBatch, Position, Rotation);
         }
     }
