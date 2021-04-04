@@ -100,7 +100,7 @@ namespace MonoSnake
             // Create GameObjects
             _snakeHeadGameObject = new SnakeHead(snakeHeadSprite, new Vector2(DEFAULT_SPRITE_HALF_SIZE, DEFAULT_SPRITE_HALF_SIZE));
             _appleGameObject = new Apple(appleSprite, new Vector2(_graphics.PreferredBackBufferWidth / 2f + DEFAULT_SPRITE_HALF_SIZE, _graphics.PreferredBackBufferHeight / 2f + DEFAULT_SPRITE_HALF_SIZE));
-            _appleGameObject.Sprite.Scale = new Vector2(0.5f, 0.5f);
+            _appleGameObject.Sprite.Scale = new Vector2(0.65f, 0.65f);
 
             // Initialize Snake
             _snake = new Snake
