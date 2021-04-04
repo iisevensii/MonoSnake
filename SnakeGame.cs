@@ -1,4 +1,6 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System;
+using System.Diagnostics;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using MonoSnake.GameObjects;
@@ -23,6 +25,10 @@ namespace MonoSnake
         private Snake _snake;
         private Texture2D _snakeHeadSpriteSheet;
         private Texture2D _snakeSegmentsSpriteSheet;
+        private Texture2D _snakeHeadRectangleTexture;
+        private Rectangle _snakeHeadRectangle;
+        private Rectangle _appleRectangle;
+        private bool _appleEaten;
         private const string APPLE_SPRITE_SHEET_NAME = "Apple";
         private const string SNAKE_HEAD_SPRITE_SHEET_NAME = "SnakeHead";
         private const string SNAKE_SEGMENTS_SPRITE_SHEET_NAME = "SnakeSegments";
@@ -104,6 +110,12 @@ namespace MonoSnake
                 snakeCW_LeftToUp_CCW_DownToRightSprite
             );
 
+            _snakeHeadRectangleTexture = new Texture2D(GraphicsDevice, 1, 1);
+            _snakeHeadRectangleTexture.SetData(new[] { Color.White });
+            _snakeHeadRectangle = new Rectangle((int)Math.Round(_snake.SnakeHead.Position.X), (int)Math.Round(_snake.SnakeHead.Position.Y), 42, 42);
+            _appleRectangle = new Rectangle((int) Math.Round(_appleGameObject.Position.X),
+                (int) Math.Round(_appleGameObject.Position.Y), 42, 42);
+
             // Initialize InputController
             _inputController = new InputController(_snake);
         }
@@ -122,6 +134,17 @@ namespace MonoSnake
             // Update GameObjects
             _snake.Update(gameTime);
 
+            _snakeHeadRectangle.X = (int)Math.Round(_snake.SnakeHead.Position.X) - 21;
+            _snakeHeadRectangle.Y = (int)Math.Round(_snake.SnakeHead.Position.Y) - 21;
+            _appleRectangle.X = (int)Math.Round(_appleGameObject.Position.X) - 21;
+            _appleRectangle.Y = (int)Math.Round(_appleGameObject.Position.Y) - 21;
+
+            if (_snakeHeadRectangle.Intersects(_appleRectangle))
+            {
+                Trace.WriteLine("GULP!");
+                _appleEaten = true;
+            }
+
             base.Update(gameTime);
         }
 
@@ -131,7 +154,21 @@ namespace MonoSnake
 
             _spriteBatch.Begin();
             _snake.Draw(_spriteBatch, gameTime);
-            _appleGameObject.Draw(_spriteBatch, gameTime);
+            if (!_appleEaten)
+            {
+                _appleGameObject.Draw(_spriteBatch, gameTime);
+
+                foreach (Vector2 outlinePixel in _appleRectangle.OutlinePixels())
+                {
+                    _spriteBatch.Draw(_snakeHeadRectangleTexture, outlinePixel, Color.Red);
+                }
+            }
+
+            //_spriteBatch.Draw(_snakeHeadRectangleTexture, _snakeHeadRectangle, Color.Red);
+            foreach (Vector2 outlinePixel in _snakeHeadRectangle.OutlinePixels())
+            {
+                _spriteBatch.Draw(_snakeHeadRectangleTexture, outlinePixel, Color.Red);
+            }
             _spriteBatch.End();
 
             base.Draw(gameTime);
