@@ -186,33 +186,5 @@ namespace MonoSnake
 
             base.Draw(gameTime);
         }
-
-        private void MoveApple(GameTime gameTime, KeyboardState keyboardState, GamePadState player1GamePadState)
-        {
-            if (keyboardState.IsKeyDown(Keys.Up) || player1GamePadState.IsButtonDown(Buttons.DPadUp))
-                _applePosition.Y -= _appleSpeed * (float)gameTime.ElapsedGameTime.TotalSeconds;
-
-            if (keyboardState.IsKeyDown(Keys.Down) || player1GamePadState.IsButtonDown(Buttons.DPadDown))
-                _applePosition.Y += _appleSpeed * (float)gameTime.ElapsedGameTime.TotalSeconds;
-
-            if (keyboardState.IsKeyDown(Keys.Left) || player1GamePadState.IsButtonDown(Buttons.DPadLeft))
-                _applePosition.X -= _appleSpeed * (float)gameTime.ElapsedGameTime.TotalSeconds;
-
-            if (keyboardState.IsKeyDown(Keys.Right) || player1GamePadState.IsButtonDown(Buttons.DPadRight))
-                _applePosition.X += _appleSpeed * (float)gameTime.ElapsedGameTime.TotalSeconds;
-        }
-
-        private void KeepTextureOnScreen(Texture2D texture2D, ref Vector2 position)
-        {
-            if (position.X > _screenWidth - texture2D.Width / 2f)
-                position.X = _screenWidth - texture2D.Width / 2f;
-            else if (position.X < texture2D.Width / 2f)
-                position.X = texture2D.Width / 2f;
-
-            if (position.Y > _screenHeight - texture2D.Height / 2f)
-                position.Y = _screenHeight - texture2D.Height / 2f;
-            else if (position.Y < texture2D.Height / 2f)
-                position.Y = texture2D.Height / 2f;
-        }
     }
 }
