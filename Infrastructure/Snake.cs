@@ -195,12 +195,93 @@ namespace MonoSnake.Infrastructure
                 {
                     nextSegmentDirection = SnakeSegments[i + 1].Direction;
 
-                    if (previousSegmentDirection == SnakeDirection.Right
+                    if 
+                    (
+                        previousSegmentDirection == SnakeDirection.Right
                         && currentSegmentDirection == SnakeDirection.Right
-                        && nextSegmentDirection == SnakeDirection.Up)
+                        && nextSegmentDirection == SnakeDirection.Up
+                        ||
+                        previousSegmentDirection == SnakeDirection.Down
+                        && currentSegmentDirection == SnakeDirection.Down
+                        && nextSegmentDirection == SnakeDirection.Left
+                        ||
+                        previousSegmentDirection == SnakeDirection.Right
+                        && currentSegmentDirection == SnakeDirection.Down
+                        && nextSegmentDirection == SnakeDirection.Left
+                        ||
+                        previousSegmentDirection == SnakeDirection.Left
+                        && currentSegmentDirection == SnakeDirection.Down
+                        && nextSegmentDirection == SnakeDirection.Left
+                    )
                     {
                         currentSegment.Rotation = 0f;
                         currentSegment.Sprite = _turn0Sprite;
+                    }
+                    else if 
+                    (
+                        previousSegmentDirection == SnakeDirection.Down
+                        && currentSegmentDirection == SnakeDirection.Down
+                        && nextSegmentDirection == SnakeDirection.Right
+                        ||
+                        previousSegmentDirection == SnakeDirection.Left
+                        && currentSegmentDirection == SnakeDirection.Left
+                        && nextSegmentDirection == SnakeDirection.Up
+                        ||
+                        previousSegmentDirection == SnakeDirection.Left
+                        && currentSegmentDirection == SnakeDirection.Down
+                        && nextSegmentDirection == SnakeDirection.Right
+                        ||
+                        previousSegmentDirection == SnakeDirection.Right
+                        && currentSegmentDirection == SnakeDirection.Down
+                        && nextSegmentDirection == SnakeDirection.Right
+                    )
+                    {
+                        currentSegment.Rotation = 0f;
+                        currentSegment.Sprite = _turn1Sprite;
+                    }
+                    else if
+                    (
+                        previousSegmentDirection == SnakeDirection.Left
+                        && currentSegmentDirection == SnakeDirection.Left
+                        && nextSegmentDirection == SnakeDirection.Down
+                        ||
+                        previousSegmentDirection == SnakeDirection.Up
+                        && currentSegmentDirection == SnakeDirection.Up
+                        && nextSegmentDirection == SnakeDirection.Right
+                        ||
+                        previousSegmentDirection == SnakeDirection.Left
+                        && currentSegmentDirection == SnakeDirection.Up
+                        && nextSegmentDirection == SnakeDirection.Right
+                        ||
+                        previousSegmentDirection == SnakeDirection.Right
+                        && currentSegmentDirection == SnakeDirection.Up
+                        && nextSegmentDirection == SnakeDirection.Right
+                    )
+                    {
+                        currentSegment.Rotation = 0f;
+                        currentSegment.Sprite = _turn2Sprite;
+                    }
+                    else if
+                    (
+                        previousSegmentDirection == SnakeDirection.Up
+                        && currentSegmentDirection == SnakeDirection.Up
+                        && nextSegmentDirection == SnakeDirection.Left
+                        ||
+                        previousSegmentDirection == SnakeDirection.Right
+                        && currentSegmentDirection == SnakeDirection.Right
+                        && nextSegmentDirection == SnakeDirection.Down
+                        ||
+                        previousSegmentDirection == SnakeDirection.Right
+                        && currentSegmentDirection == SnakeDirection.Up
+                        && nextSegmentDirection == SnakeDirection.Left
+                        ||
+                        previousSegmentDirection == SnakeDirection.Left
+                        && currentSegmentDirection == SnakeDirection.Up
+                        && nextSegmentDirection == SnakeDirection.Left
+                    )
+                    {
+                        currentSegment.Rotation = 0f;
+                        currentSegment.Sprite = _turn3Sprite;
                     }
                     else
                     {
