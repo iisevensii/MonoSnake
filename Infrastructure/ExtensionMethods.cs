@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using Microsoft.Xna.Framework;
 
 namespace MonoSnake.Infrastructure
 {
@@ -24,6 +26,24 @@ namespace MonoSnake.Infrastructure
             }
 
             return rotation;
+        }
+
+        public static List<Vector2> OutlinePixels(this Rectangle rectangle)
+        {
+            List<Vector2> pixels = new List<Vector2>();
+
+            for (int x = rectangle.X; x < rectangle.X + rectangle.Width; x++)
+            {
+                for (int y = rectangle.Y; y < rectangle.Y + rectangle.Height; y++)
+                {
+                    if (y == rectangle.Y || y == rectangle.Y + rectangle.Height - 1)
+                        pixels.Add(new Vector2(x, y));
+                    if (x == rectangle.X || x == rectangle.X + rectangle.Width - 1)
+                        pixels.Add(new Vector2(x, y));
+                }
+            }
+
+            return pixels;
         }
     }
 }
