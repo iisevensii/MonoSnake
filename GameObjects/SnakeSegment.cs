@@ -14,11 +14,12 @@ namespace MonoSnake.GameObjects
         public SnakeDirection Direction { get; set; }
         public bool NoRotation { get; set; }
 
-        public SnakeSegment(Sprite sprite, Vector2 position, float rotation)
+        public SnakeSegment(Sprite sprite, Vector2 position, float rotation, SnakeDirection direction)
         {
             Sprite = sprite;
             Position = position;
             Rotation = rotation;
+            Direction = direction;
         }
 
         public void Update(GameTime gameTime)

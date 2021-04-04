@@ -105,7 +105,7 @@ namespace MonoSnake
             );
 
             // Initialize InputController
-            _inputController = new InputController(_snakeHeadGameObject);
+            _inputController = new InputController(_snake);
         }
 
         protected override void Update(GameTime gameTime)

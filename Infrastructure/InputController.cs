@@ -1,16 +1,18 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System.Diagnostics;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using MonoSnake.GameObjects;
+using System.Linq;
 
 namespace MonoSnake.Infrastructure
 {
     public class InputController
     {
-        private readonly SnakeHead _snakeHead;
+        private readonly Snake _snake;
 
-        public InputController(SnakeHead snakeHead)
+        public InputController(Snake snake)
         {
-            _snakeHead = snakeHead;
+            _snake = snake;
         }
 
         public void ProcessInput()
@@ -18,6 +20,8 @@ namespace MonoSnake.Infrastructure
             KeyboardState keyboardState = Keyboard.GetState();
             var player1GamePadState = GamePad.GetState(PlayerIndex.One);
 
+            if(keyboardState.IsKeyDown(Keys.Space))
+                Trace.WriteLine("Pause Breakpoint");
 
             if (keyboardState.IsKeyDown(Keys.Up) || player1GamePadState.IsButtonDown(Buttons.DPadUp))
                 MoveSnakeHead(SnakeDirection.Up);
@@ -31,7 +35,7 @@ namespace MonoSnake.Infrastructure
 
         private void MoveSnakeHead(SnakeDirection direction)
         {
-            _snakeHead.Direction = direction;
+            _snake.SnakeHead.Direction = direction;
         }
     }
 }
