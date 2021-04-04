@@ -29,6 +29,7 @@ namespace MonoSnake
         private Rectangle _snakeHeadRectangle;
         private Rectangle _appleRectangle;
         private bool _appleEaten;
+        private const int DEFAULT_SPRITE_WIDTH_AND_HEIGHT = 42;
         private const string APPLE_SPRITE_SHEET_NAME = "Apple";
         private const string SNAKE_HEAD_SPRITE_SHEET_NAME = "SnakeHead";
         private const string SNAKE_SEGMENTS_SPRITE_SHEET_NAME = "SnakeSegments";
@@ -65,31 +66,31 @@ namespace MonoSnake
             {
                 Origin = new Vector2(_appleTexture.Width / 2f, _appleTexture.Height / 2f)
             };
-            Sprite snakeHeadSprite = new Sprite(_snakeHeadSpriteSheet, 0, 0, _snakeHeadSpriteSheet.Width, 42)
+            Sprite snakeHeadSprite = new Sprite(_snakeHeadSpriteSheet, 0, 0, _snakeHeadSpriteSheet.Width, DEFAULT_SPRITE_WIDTH_AND_HEIGHT)
             {
                 Origin = new Vector2(21, 21)
             };
-            Sprite snakeTailSprite = new Sprite(_snakeSegmentsSpriteSheet, 84, 0, 42, 42)
+            Sprite snakeTailSprite = new Sprite(_snakeSegmentsSpriteSheet, 84, 0, DEFAULT_SPRITE_WIDTH_AND_HEIGHT, DEFAULT_SPRITE_WIDTH_AND_HEIGHT)
             {
                 Origin = new Vector2(21, 21)
             };
-            Sprite snakeStraightBodySprite = new Sprite(_snakeSegmentsSpriteSheet, 84, 42, 42, 42)
+            Sprite snakeStraightBodySprite = new Sprite(_snakeSegmentsSpriteSheet, 84, DEFAULT_SPRITE_WIDTH_AND_HEIGHT, DEFAULT_SPRITE_WIDTH_AND_HEIGHT, DEFAULT_SPRITE_WIDTH_AND_HEIGHT)
             {
                 Origin = new Vector2(21, 21)
             };
-            Sprite snakeCW_UpToRight_CCW_LeftToDownSprite = new Sprite(_snakeSegmentsSpriteSheet, 0, 0, 42, 42)
+            Sprite snakeCW_UpToRight_CCW_LeftToDownSprite = new Sprite(_snakeSegmentsSpriteSheet, 0, 0, DEFAULT_SPRITE_WIDTH_AND_HEIGHT, DEFAULT_SPRITE_WIDTH_AND_HEIGHT)
             {
                 Origin = new Vector2(21, 21)
             };
-            Sprite snakeCW_RightToDown_CCW_UpToLeftSprite = new Sprite(_snakeSegmentsSpriteSheet, 0, 42, 42, 42)
+            Sprite snakeCW_RightToDown_CCW_UpToLeftSprite = new Sprite(_snakeSegmentsSpriteSheet, 0, DEFAULT_SPRITE_WIDTH_AND_HEIGHT, DEFAULT_SPRITE_WIDTH_AND_HEIGHT, DEFAULT_SPRITE_WIDTH_AND_HEIGHT)
             {
                 Origin = new Vector2(21, 21)
             };
-            Sprite snakeCW_DownToLeft_CCW_RightToUpSprite = new Sprite(_snakeSegmentsSpriteSheet, 42, 42, 42, 42)
+            Sprite snakeCW_DownToLeft_CCW_RightToUpSprite = new Sprite(_snakeSegmentsSpriteSheet, DEFAULT_SPRITE_WIDTH_AND_HEIGHT, DEFAULT_SPRITE_WIDTH_AND_HEIGHT, DEFAULT_SPRITE_WIDTH_AND_HEIGHT, DEFAULT_SPRITE_WIDTH_AND_HEIGHT)
             {
                 Origin = new Vector2(21, 21)
             };
-            Sprite snakeCW_LeftToUp_CCW_DownToRightSprite = new Sprite(_snakeSegmentsSpriteSheet, 42, 0, 42, 42)
+            Sprite snakeCW_LeftToUp_CCW_DownToRightSprite = new Sprite(_snakeSegmentsSpriteSheet, DEFAULT_SPRITE_WIDTH_AND_HEIGHT, 0, DEFAULT_SPRITE_WIDTH_AND_HEIGHT, DEFAULT_SPRITE_WIDTH_AND_HEIGHT)
             {
                 Origin = new Vector2(21, 21)
             };
@@ -112,7 +113,7 @@ namespace MonoSnake
 
             _snakeHeadRectangleTexture = new Texture2D(GraphicsDevice, 1, 1);
             _snakeHeadRectangleTexture.SetData(new[] { Color.White });
-            _snakeHeadRectangle = new Rectangle((int)Math.Round(_snake.SnakeHead.Position.X), (int)Math.Round(_snake.SnakeHead.Position.Y), 42, 42);
+            _snakeHeadRectangle = new Rectangle((int)Math.Round(_snake.SnakeHead.Position.X), (int)Math.Round(_snake.SnakeHead.Position.Y), DEFAULT_SPRITE_WIDTH_AND_HEIGHT, DEFAULT_SPRITE_WIDTH_AND_HEIGHT);
             _appleRectangle = new Rectangle((int) Math.Round(_appleGameObject.Position.X),
                 (int) Math.Round(_appleGameObject.Position.Y), 21, 21);
 
