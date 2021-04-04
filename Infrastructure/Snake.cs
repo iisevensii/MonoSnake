@@ -103,7 +103,7 @@ namespace MonoSnake.Infrastructure
 
                     currentSegment.Sprite = _straightBodySprite;
                     nextSegment = SnakeSegments[i + 1];
-                    //Trace.WriteLine($"i: {SnakeSegments.IndexOf(currentSegment)}, direction: {currentSegment.Direction}");
+                    Trace.WriteLine($"i: {SnakeSegments.IndexOf(currentSegment)}, direction: {currentSegment.Direction}");
                     //if (previousSegment != null && nextSegment != null)
                     //{
                     //    var previousSegmentPosition = previousSegment.Position;
@@ -212,6 +212,14 @@ namespace MonoSnake.Infrastructure
                         previousSegmentDirection == SnakeDirection.Left
                         && currentSegmentDirection == SnakeDirection.Down
                         && nextSegmentDirection == SnakeDirection.Left
+                        ||
+                        previousSegmentDirection == SnakeDirection.Down
+                        && currentSegmentDirection == SnakeDirection.Right
+                        && nextSegmentDirection == SnakeDirection.Up
+                        ||
+                        previousSegmentDirection == SnakeDirection.Up
+                        && currentSegmentDirection == SnakeDirection.Right
+                        && nextSegmentDirection == SnakeDirection.Up
                     )
                     {
                         currentSegment.Rotation = 0f;
@@ -234,6 +242,14 @@ namespace MonoSnake.Infrastructure
                         previousSegmentDirection == SnakeDirection.Right
                         && currentSegmentDirection == SnakeDirection.Down
                         && nextSegmentDirection == SnakeDirection.Right
+                        ||
+                        previousSegmentDirection == SnakeDirection.Down
+                        && currentSegmentDirection == SnakeDirection.Left
+                        && nextSegmentDirection == SnakeDirection.Up
+                        ||
+                        previousSegmentDirection == SnakeDirection.Up
+                        && currentSegmentDirection == SnakeDirection.Left
+                        && nextSegmentDirection == SnakeDirection.Up
                     )
                     {
                         currentSegment.Rotation = 0f;
@@ -256,6 +272,14 @@ namespace MonoSnake.Infrastructure
                         previousSegmentDirection == SnakeDirection.Right
                         && currentSegmentDirection == SnakeDirection.Up
                         && nextSegmentDirection == SnakeDirection.Right
+                        ||
+                        previousSegmentDirection == SnakeDirection.Up
+                        && currentSegmentDirection == SnakeDirection.Left
+                        && nextSegmentDirection == SnakeDirection.Down
+                        ||
+                        previousSegmentDirection == SnakeDirection.Down
+                        && currentSegmentDirection == SnakeDirection.Left
+                        && nextSegmentDirection == SnakeDirection.Down
                     )
                     {
                         currentSegment.Rotation = 0f;
@@ -278,6 +302,14 @@ namespace MonoSnake.Infrastructure
                         previousSegmentDirection == SnakeDirection.Left
                         && currentSegmentDirection == SnakeDirection.Up
                         && nextSegmentDirection == SnakeDirection.Left
+                        ||
+                        previousSegmentDirection == SnakeDirection.Up
+                        && currentSegmentDirection == SnakeDirection.Right
+                        && nextSegmentDirection == SnakeDirection.Down
+                        ||
+                        previousSegmentDirection == SnakeDirection.Down
+                        && currentSegmentDirection == SnakeDirection.Right
+                        && nextSegmentDirection == SnakeDirection.Down
                     )
                     {
                         currentSegment.Rotation = 0f;
