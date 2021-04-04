@@ -103,7 +103,7 @@ namespace MonoSnake.Infrastructure
 
                     currentSegment.Sprite = _straightBodySprite;
                     nextSegment = SnakeSegments[i + 1];
-                    Trace.WriteLine($"i: {SnakeSegments.IndexOf(currentSegment)}, direction: {currentSegment.Direction}");
+                    //Trace.WriteLine($"i: {SnakeSegments.IndexOf(currentSegment)}, direction: {currentSegment.Direction}");
                     //if (previousSegment != null && nextSegment != null)
                     //{
                     //    var previousSegmentPosition = previousSegment.Position;

@@ -114,7 +114,7 @@ namespace MonoSnake
             _snakeHeadRectangleTexture.SetData(new[] { Color.White });
             _snakeHeadRectangle = new Rectangle((int)Math.Round(_snake.SnakeHead.Position.X), (int)Math.Round(_snake.SnakeHead.Position.Y), 42, 42);
             _appleRectangle = new Rectangle((int) Math.Round(_appleGameObject.Position.X),
-                (int) Math.Round(_appleGameObject.Position.Y), 42, 42);
+                (int) Math.Round(_appleGameObject.Position.Y), 21, 21);
 
             // Initialize InputController
             _inputController = new InputController(_snake);
@@ -136,8 +136,8 @@ namespace MonoSnake
 
             _snakeHeadRectangle.X = (int)Math.Round(_snake.SnakeHead.Position.X) - 21;
             _snakeHeadRectangle.Y = (int)Math.Round(_snake.SnakeHead.Position.Y) - 21;
-            _appleRectangle.X = (int)Math.Round(_appleGameObject.Position.X) - 21;
-            _appleRectangle.Y = (int)Math.Round(_appleGameObject.Position.Y) - 21;
+            _appleRectangle.X = (int)Math.Round(_appleGameObject.Position.X) - 11;
+            _appleRectangle.Y = (int)Math.Round(_appleGameObject.Position.Y) - 11;
 
             if (_snakeHeadRectangle.Intersects(_appleRectangle))
             {

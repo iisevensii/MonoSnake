@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MonoSnake.Infrastructure;
 
@@ -47,16 +48,16 @@ namespace MonoSnake.GameObjects
             switch (Direction)
             {
                 case SnakeDirection.Up:
-                    Position = new Vector2(Position.X, Position.Y - movementAmount);
+                    Position = new Vector2(Position.X, (float) Math.Round(Position.Y - movementAmount));
                     break;
                 case SnakeDirection.Right:
-                    Position = new Vector2(Position.X + movementAmount, Position.Y);
+                    Position = new Vector2((float) Math.Round(Position.X + movementAmount), Position.Y);
                     break;
                 case SnakeDirection.Down:
-                    Position = new Vector2(Position.X, Position.Y + movementAmount);
+                    Position = new Vector2(Position.X, (float) Math.Round(Position.Y + movementAmount));
                     break;
                 case SnakeDirection.Left:
-                    Position = new Vector2(Position.X - movementAmount, Position.Y);
+                    Position = new Vector2((float) Math.Round(Position.X - movementAmount), Position.Y);
                     break;
             }
 
