@@ -2,9 +2,11 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Numerics;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MonoSnake.GameObjects;
+using Vector2 = Microsoft.Xna.Framework.Vector2;
 
 namespace MonoSnake.Infrastructure
 {
@@ -13,6 +15,7 @@ namespace MonoSnake.Infrastructure
         private List<SnakeSegment> SnakeSegments { get; } = new List<SnakeSegment>();
         private int _segmentCount = 1;
 
+        private readonly SpriteFont _scoreBoardFont;
         private readonly Sprite _snakeTailSprite;
         private readonly Sprite _straightBodySprite;
         private readonly Sprite _turn0Sprite;
@@ -23,14 +26,20 @@ namespace MonoSnake.Infrastructure
         private Vector2 _lastSegmentPosition = Vector2.Zero;
         private float _lastSegmentRotation;
         private SnakeDirection _lastSegmentDirection;
+        private readonly int _screenWidth;
+        private readonly int _screenHeight;
+        private int _score;
 
-        public SnakeHead SnakeHead { get; set; }
+        public SnakeHead SnakeHead { get; }
 
 
-        public Snake(SnakeHead snakeHead, Sprite snakeTailSprite, Sprite straightBodySprite,
+        public Snake(SnakeHead snakeHead, int screenWidth, int screenHeight, SpriteFont scoreBoardFont, Sprite snakeTailSprite, Sprite straightBodySprite,
             Sprite turn0Sprite, Sprite turn1Sprite, Sprite turn2Sprite, Sprite turn3Sprite)
         {
             SnakeHead = snakeHead;
+            _screenWidth = screenWidth;
+            _screenHeight = screenHeight;
+            _scoreBoardFont = scoreBoardFont;
             _snakeTailSprite = snakeTailSprite;
             _straightBodySprite = straightBodySprite;
             _turn0Sprite = turn0Sprite;
@@ -50,7 +59,7 @@ namespace MonoSnake.Infrastructure
             SnakeSegments.Select(s => $"X: {s.Position.X}, Y: {s.Position.Y}, R: {s.Rotation}")
                 .ToList()
                 .ForEach(s => Trace.WriteLine(s));
-
+            Trace.WriteLine($"Segment added at - X: {SnakeSegments.Last().Position.X}, Y: {SnakeSegments.Last().Position.Y}");
         }
 
         public void Update(GameTime gameTime)
@@ -310,6 +319,24 @@ namespace MonoSnake.Infrastructure
             SnakeHead.Draw(spriteBatch, gameTime);
             foreach (var s in SnakeSegments)
                 s.Draw(spriteBatch, gameTime);
+
+            string score = _score.ToString();
+            float scoreScale = 2f;
+
+            Vector2 scoreStringWidth = _scoreBoardFont.MeasureString(score);
+            Vector2 scorePos = new Vector2(_screenWidth - scoreStringWidth.X *2 - 20, scoreStringWidth.Y /2);
+            spriteBatch.DrawString
+            (
+                _scoreBoardFont,
+                score,
+                scorePos,
+                Color.White,
+                0f,
+                Vector2.Zero,
+                scoreScale,
+                SpriteEffects.None,
+                0f
+            );
         }
     }
 }

@@ -23,6 +23,7 @@ namespace MonoSnake
 
         private InputController _inputController;
         private Snake _snake;
+        private SpriteFont _scoreBoardFont;
         private Texture2D _snakeHeadSpriteSheet;
         private Texture2D _snakeSegmentsSpriteSheet;
         private Texture2D _snakeHeadRectangleTexture;
@@ -58,6 +59,8 @@ namespace MonoSnake
         {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
 
+            // Load Font
+            _scoreBoardFont = Content.Load<SpriteFont>("score");
             // Load Textures
             _appleTexture = Content.Load<Texture2D>(APPLE_SPRITE_SHEET_NAME);
             _snakeHeadSpriteSheet = Content.Load<Texture2D>(SNAKE_HEAD_SPRITE_SHEET_NAME);
@@ -106,6 +109,9 @@ namespace MonoSnake
             _snake = new Snake
             (
                 _snakeHeadGameObject,
+                _graphics.PreferredBackBufferWidth,
+                _graphics.PreferredBackBufferHeight,
+                _scoreBoardFont,
                 snakeTailSprite,
                 snakeStraightBodySprite,
                 snakeCW_UpToRight_CCW_LeftToDownSprite,
