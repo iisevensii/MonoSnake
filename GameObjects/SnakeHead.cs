@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MonoSnake.Infrastructure;
@@ -7,15 +8,19 @@ namespace MonoSnake.GameObjects
 {
     public class SnakeHead : IGameObject
     {
+        private const float MOVEMENT_PER_FRAME = 40f;
         private const float MOVEMENT_INCREMENT = 1000f;
+
+        private int _framesSinceLastMovement = 20;
+        public int MovementSpeed { get; set; } = 15;
         public int DrawOrder => 0;
         public Sprite Sprite { get; }
         public Vector2 Position { get; set; }
+        public Vector2 NextPosition { get; set; }
         public float Rotation { get; set; }
 
         public SnakeDirection Direction { get; set; } = SnakeDirection.Right;
 
-        private int _framesSinceLastMovement = 20;
 
         public SnakeHead(Sprite sprite, Vector2 position)
         {
@@ -31,7 +36,7 @@ namespace MonoSnake.GameObjects
 
             // Require at least 20 frames to have passed before moving.
             // Direction from InputController is already set so it is not being lost
-            if (_framesSinceLastMovement < 20)
+            if (_framesSinceLastMovement < MovementSpeed)
                 return false;
 
             return true;
@@ -42,26 +47,27 @@ namespace MonoSnake.GameObjects
             if (!CanUpdate())
                 return;
 
-            float gameTimeSecondsElapsed = (float)gameTime.ElapsedGameTime.TotalSeconds;
-
-            float movementAmount = MOVEMENT_INCREMENT * gameTimeSecondsElapsed + 23;
-
-            if (movementAmount <= 23f)
-                movementAmount = 40f;
-
             switch (Direction)
             {
                 case SnakeDirection.Up:
-                    Position = new Vector2(Position.X, (float) Math.Round(Position.Y - movementAmount));
+                    Position = new Vector2(Position.X, (float) Math.Round(Position.Y - MOVEMENT_PER_FRAME));
+                    NextPosition = new Vector2(Position.X, Position.Y + MOVEMENT_PER_FRAME);
+                    Trace.WriteLine($"Y: {Position.Y} => NY: {NextPosition.Y}");
                     break;
                 case SnakeDirection.Right:
-                    Position = new Vector2((float) Math.Round(Position.X + movementAmount), Position.Y);
+                    Position = new Vector2((float) Math.Round(Position.X + MOVEMENT_PER_FRAME), Position.Y);
+                    NextPosition = new Vector2(Position.X + MOVEMENT_PER_FRAME, Position.Y);
+                    Trace.WriteLine($"X: {Position.X} => NX: {NextPosition.X}");
                     break;
                 case SnakeDirection.Down:
-                    Position = new Vector2(Position.X, (float) Math.Round(Position.Y + movementAmount));
+                    Position = new Vector2(Position.X, (float) Math.Round(Position.Y + MOVEMENT_PER_FRAME));
+                    NextPosition = new Vector2(Position.X, Position.Y + MOVEMENT_PER_FRAME);
+                    Trace.WriteLine($"Y: {Position.Y} => NY: {NextPosition.Y}");
                     break;
                 case SnakeDirection.Left:
-                    Position = new Vector2((float) Math.Round(Position.X - movementAmount), Position.Y);
+                    Position = new Vector2((float) Math.Round(Position.X - MOVEMENT_PER_FRAME), Position.Y);
+                    NextPosition = new Vector2(Position.X + MOVEMENT_PER_FRAME, Position.Y);
+                    Trace.WriteLine($"X: {Position.X} => NX: {NextPosition.X}");
                     break;
             }
 

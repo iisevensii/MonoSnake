@@ -200,6 +200,13 @@ namespace MonoSnake
             _snakeHeadRectangle.X = (int)Math.Round(_snake.SnakeHead.Position.X - _snake.SnakeHead.Sprite.Width / 2f * _snake.SnakeHead.Sprite.Scale.X);
             _snakeHeadRectangle.Y = (int)Math.Round(_snake.SnakeHead.Position.Y - _snake.SnakeHead.Sprite.Height / 2f * _snake.SnakeHead.Sprite.Scale.Y);
 
+            // Hit edge of play area
+            if (!_gameAreaRectangle.Contains(_snake.SnakeHead.Position))
+            {
+                // GAME OVER!
+                Exit();
+            }
+
             if (_snakeHeadRectangle.Intersects(_appleRectangle))
             {
                 _appleEaten = true;
