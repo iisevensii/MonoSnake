@@ -96,20 +96,13 @@ namespace MonoSnake.Infrastructure
 
             for (int i = 0; i < SnakeSegments.Count; i++)
             {
+                bool isFirstSegment = i == 0;
                 bool isTail = i == SnakeSegments.Count - 1;
                 SnakeSegment currentSegment = SnakeSegments[i];
 
-                if (isTail)
-                {
-                    currentSegment.Sprite = _snakeTailSprite;
-                }
-                else
-                {
+                currentSegment.Sprite = isTail ? _snakeTailSprite : _straightBodySprite;
 
-                    currentSegment.Sprite = _straightBodySprite;
-                }
-
-                if (i == 0)
+                if (isFirstSegment)
                 {
                     previousPosition = currentSegment.Position;
                     previousRotation = currentSegment.Rotation;
@@ -142,12 +135,9 @@ namespace MonoSnake.Infrastructure
                 SnakeDirection nextSegmentDirection;
 
                 SnakeSegment currentSegment = SnakeSegments[i];
-                currentSegmentDirection = currentSegment.Direction;
 
-                if (i == 0)
-                    previousSegmentDirection = SnakeHead.Direction;
-                else
-                    previousSegmentDirection = SnakeSegments[i - 1].Direction;
+                currentSegmentDirection = currentSegment.Direction;
+                previousSegmentDirection = i == 0 ? SnakeHead.Direction : SnakeSegments[i - 1].Direction;
 
                 if (i < SnakeSegments.Count -1)
                 {
