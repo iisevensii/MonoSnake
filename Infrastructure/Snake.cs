@@ -12,7 +12,7 @@ namespace MonoSnake.Infrastructure
 {
     public class Snake
     {
-        private List<SnakeSegment> SnakeSegments { get; } = new List<SnakeSegment>();
+        public List<SnakeSegment> SnakeSegments { get; } = new List<SnakeSegment>();
         private int _segmentCount = 1;
 
         private readonly SpriteFont _scoreBoardFont;

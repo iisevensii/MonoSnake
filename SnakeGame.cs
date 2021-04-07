@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -220,8 +221,8 @@ namespace MonoSnake
             {
                 for (int j = 0; j < 18; j++)
                 {
-                    Rectangle nextRectangle = new Rectangle(i * 40 + 32, j * 40 + 62, 42, 42);
-                    cells.Add(nextRectangle);
+                    Rectangle rectangle = new Rectangle(i * 40 + 32, j * 40 + 62, 42, 42);
+                    cells.Add(rectangle);
                 }
             }
 
@@ -232,6 +233,23 @@ namespace MonoSnake
                     _spriteBatch.Draw(_snakeHeadRectangleTexture, outlinePixel, Color.Blue);
                 }
             }
+
+            //Occupied Cells
+            List<Rectangle> occupiedCells = new List<Rectangle>();
+            foreach (Rectangle cell in cells)
+            {
+                if (Math.Round(_snake.SnakeHead.Position.X) == cell.X +21 && Math.Round(_snake.SnakeHead.Position.Y) == cell.Y + 21)
+                {
+                    occupiedCells.Add(cell);
+                }
+
+                if (_snake.SnakeSegments.Any(s =>
+                    Math.Round(s.Position.X) == cell.X + 21 && Math.Round(s.Position.Y) == cell.Y + 21))
+                {
+                    occupiedCells.Add(cell);
+                }
+            }
+
             _spriteBatch.End();
 
             base.Draw(gameTime);
