@@ -34,6 +34,8 @@ namespace MonoSnake
         private Rectangle _snakeHeadRectangle;
         private Rectangle _appleRectangle;
         private bool _appleEaten;
+        private List<Rectangle> _cells;
+        private bool _applePlaced;
         private const int HIT_BOX_PADDING = 5;
         private const int DEFAULT_SPRITE_SIZE = 42;
         private const int DEFAULT_SPRITE_HALF_SIZE = 21;
@@ -145,13 +147,8 @@ namespace MonoSnake
                 (int)(_snake.SnakeHead.Sprite.Width * _snake.SnakeHead.Sprite.Scale.X),
                 (int)(_snake.SnakeHead.Sprite.Height * _snake.SnakeHead.Sprite.Scale.Y)
             );
-            _appleRectangle = new Rectangle
-                (
-                (int)Math.Round(_appleGameObject.Position.X - _appleGameObject.Sprite.Width / 2f * _appleGameObject.Sprite.Scale.X) - HIT_BOX_PADDING,
-                (int)Math.Round(_appleGameObject.Position.Y - _appleGameObject.Sprite.Height / 2f * _appleGameObject.Sprite.Scale.Y) - HIT_BOX_PADDING,
-                (int) (_appleGameObject.Sprite.Width * _appleGameObject.Sprite.Scale.X) + HIT_BOX_PADDING * 2,
-                (int) (_appleGameObject.Sprite.Height * _appleGameObject.Sprite.Scale.Y) + HIT_BOX_PADDING * 2
-                );
+
+            GenerateApple();
 
             // Initialize InputController
             _inputController = new InputController(_snake);
@@ -178,9 +175,83 @@ namespace MonoSnake
             {
                 Trace.WriteLine("GULP!");
                 _appleEaten = true;
+                _applePlaced = false;
+                _snake.AddSegment();
+            }
+
+
+            if (!_appleEaten)
+            {
+                _appleEaten = false;
+                
+            }
+            else
+            {
+                GenerateApple();
             }
 
             base.Update(gameTime);
+        }
+
+        private void GenerateApple()
+        {
+            // Draw Grid (Temp)
+            _cells = new List<Rectangle>();
+            //Occupied Cells
+            List<Rectangle> occupiedCells = new List<Rectangle>();
+            // Columns
+            // Rows
+            for (int i = 0; i < 18; i++)
+            {
+                for (int j = 0; j < 18; j++)
+                {
+                    Rectangle rectangle = new Rectangle(i * 40 + 32, j * 40 + 62, 42, 42);
+                    _cells.Add(rectangle);
+                }
+            }
+            foreach (Rectangle cell in _cells)
+            {
+                if (Math.Round(_snake.SnakeHead.Position.X) == cell.X + 21 &&
+                    Math.Round(_snake.SnakeHead.Position.Y) == cell.Y + 21)
+                {
+                    occupiedCells.Add(cell);
+                }
+
+                if (_snake.SnakeSegments.Any(s =>
+                    Math.Round(s.Position.X) == cell.X + 21 && Math.Round(s.Position.Y) == cell.Y + 21))
+                {
+                    occupiedCells.Add(cell);
+                }
+            }
+
+            List<Rectangle> unOccupiedCells = _cells.Except(occupiedCells).ToList();
+
+            Random randomApple = new Random();
+
+            int nextIndex = randomApple.Next(0, unOccupiedCells.Count);
+
+            if (!_applePlaced)
+            {
+                if (unOccupiedCells.Count > 0)
+                {
+                    Vector2 nextAppleLoc = new Vector2(unOccupiedCells[nextIndex].X + 21, unOccupiedCells[nextIndex].Y + 21);
+
+                    _appleGameObject.Position = nextAppleLoc;
+                }
+
+                _appleRectangle = new Rectangle
+                (
+                    (int) Math.Round(_appleGameObject.Position.X -
+                                     _appleGameObject.Sprite.Width / 2f * _appleGameObject.Sprite.Scale.X) - HIT_BOX_PADDING,
+                    (int) Math.Round(_appleGameObject.Position.Y -
+                                     _appleGameObject.Sprite.Height / 2f * _appleGameObject.Sprite.Scale.Y) - HIT_BOX_PADDING,
+                    (int) (_appleGameObject.Sprite.Width * _appleGameObject.Sprite.Scale.X) + HIT_BOX_PADDING * 2,
+                    (int) (_appleGameObject.Sprite.Height * _appleGameObject.Sprite.Scale.Y) + HIT_BOX_PADDING * 2
+                );
+
+                _applePlaced = true;
+                _appleEaten = false;
+            }
         }
 
         protected override void Draw(GameTime gameTime)
@@ -213,20 +284,7 @@ namespace MonoSnake
                 _spriteBatch.Draw(_snakeHeadRectangleTexture, outlinePixel, Color.Red);
             }
 
-            // Draw Grid (Temp)
-            List<Rectangle> cells = new List<Rectangle>();
-            // Columns
-            // Rows
-            for (int i = 0; i < 18; i++)
-            {
-                for (int j = 0; j < 18; j++)
-                {
-                    Rectangle rectangle = new Rectangle(i * 40 + 32, j * 40 + 62, 42, 42);
-                    cells.Add(rectangle);
-                }
-            }
-
-            foreach (Rectangle rectangle in cells)
+            foreach (Rectangle rectangle in _cells)
             {
                 foreach (Vector2 outlinePixel in rectangle.OutlinePixels())
                 {
@@ -236,7 +294,7 @@ namespace MonoSnake
 
             //Occupied Cells
             List<Rectangle> occupiedCells = new List<Rectangle>();
-            foreach (Rectangle cell in cells)
+            foreach (Rectangle cell in _cells)
             {
                 if (Math.Round(_snake.SnakeHead.Position.X) == cell.X +21 && Math.Round(_snake.SnakeHead.Position.Y) == cell.Y + 21)
                 {

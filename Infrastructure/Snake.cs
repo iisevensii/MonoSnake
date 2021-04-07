@@ -53,7 +53,7 @@ namespace MonoSnake.Infrastructure
             _segmentCount++;
         }
 
-        private void AddSegment()
+        public void AddSegment()
         {
             SnakeSegments.Add(new SnakeSegment(_snakeTailSprite, _lastSegmentPosition, _lastSegmentRotation, _lastSegmentDirection));
             //SnakeSegments.Select(s => $"X: {s.Position.X}, Y: {s.Position.Y}, R: {s.Rotation}")
