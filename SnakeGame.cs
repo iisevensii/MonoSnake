@@ -37,9 +37,11 @@ namespace MonoSnake
         private List<Rectangle> _occupiedCells = new List<Rectangle>();
         private List<Rectangle> _unOccupiedCells = new List<Rectangle>();
 
+        // Draw diagnostic grid?
+        private bool _drawDiagnosticGrid = false;
+
         private bool _appleEaten;
         private bool _applePlaced;
-        private bool _drawDiagnosticGrid;
         private bool _isGameOver;
         const string GAME_OVER_STRING = "Game Over";
 
@@ -187,14 +189,11 @@ namespace MonoSnake
 
         protected override void Update(GameTime gameTime)
         {
-            var keyboardState = Keyboard.GetState();
-            var player1GamePadState = GamePad.GetState(PlayerIndex.One);
-
-            if (player1GamePadState.Buttons.Back == ButtonState.Pressed || keyboardState.IsKeyDown(Keys.Escape))
-                Exit();
-
             // Process Input
             _inputController.ProcessInput();
+
+            if (_isGameOver)
+                return;
 
             // Update GameObjects
             _snake.Update(gameTime);
@@ -301,6 +300,14 @@ namespace MonoSnake
 
         protected override void Draw(GameTime gameTime)
         {
+            if (_isGameOver)
+            {
+                _spriteBatch.Begin();
+                DrawGameOverText();
+                _spriteBatch.End();
+                return;
+            }
+
             GraphicsDevice.Clear(Color.Black);
 
             _spriteBatch.Begin();
@@ -317,10 +324,7 @@ namespace MonoSnake
             _snake.Draw(_spriteBatch, gameTime);
 
             _appleGameObject.Draw(_spriteBatch, gameTime);
-
-            // Draw diagnostic grid
-            _drawDiagnosticGrid = true;
-
+            
             if (_drawDiagnosticGrid)
             {
                 foreach (Rectangle rectangle in _cells)

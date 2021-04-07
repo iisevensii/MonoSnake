@@ -34,13 +34,17 @@ namespace MonoSnake.Infrastructure
             if (keyboardState.IsKeyDown(Keys.Space))
                 Trace.WriteLine("Pause Breakpoint");
 
-            if (keyboardState.IsKeyDown(Keys.Up) || player1GamePadState.IsButtonDown(Buttons.DPadUp))
+            if ((keyboardState.IsKeyDown(Keys.Up) || player1GamePadState.IsButtonDown(Buttons.DPadUp))
+                && _snake.SnakeHead.Direction != SnakeDirection.Down)
                 MoveSnakeHead(SnakeDirection.Up);
-            else if (keyboardState.IsKeyDown(Keys.Down) || player1GamePadState.IsButtonDown(Buttons.DPadDown))
+            else if ((keyboardState.IsKeyDown(Keys.Down) || player1GamePadState.IsButtonDown(Buttons.DPadDown))
+                && _snake.SnakeHead.Direction != SnakeDirection.Up)
                 MoveSnakeHead(SnakeDirection.Down);
-            else if (keyboardState.IsKeyDown(Keys.Left) || player1GamePadState.IsButtonDown(Buttons.DPadLeft))
+            else if ((keyboardState.IsKeyDown(Keys.Left) || player1GamePadState.IsButtonDown(Buttons.DPadLeft))
+                && _snake.SnakeHead.Direction != SnakeDirection.Right)
                 MoveSnakeHead(SnakeDirection.Left);
-            else if (keyboardState.IsKeyDown(Keys.Right) || player1GamePadState.IsButtonDown(Buttons.DPadRight))
+            else if ((keyboardState.IsKeyDown(Keys.Right) || player1GamePadState.IsButtonDown(Buttons.DPadRight))
+                && _snake.SnakeHead.Direction != SnakeDirection.Left)
                 MoveSnakeHead(SnakeDirection.Right);
         }
 
