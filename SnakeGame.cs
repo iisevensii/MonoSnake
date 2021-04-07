@@ -207,6 +207,12 @@ namespace MonoSnake
                 Exit();
             }
 
+            if (_snake.SnakeSegments.Any(s =>
+                s.Position.X == _snake.SnakeHead.Position.X && s.Position.Y == _snake.SnakeHead.Position.Y))
+            {
+                Trace.WriteLine("Game over!");
+            }
+
             if (_snakeHeadRectangle.Intersects(_appleRectangle))
             {
                 _appleEaten = true;
