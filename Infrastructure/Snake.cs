@@ -96,7 +96,6 @@ namespace MonoSnake.Infrastructure
 
             for (int i = 0; i < SnakeSegments.Count; i++)
             {
-                SnakeSegments[i].NoRotation = false;
                 bool isTail = i == SnakeSegments.Count - 1;
                 SnakeSegment currentSegment = SnakeSegments[i];
 
