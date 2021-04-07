@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using MonoSnake.GameObjects;
@@ -15,12 +16,22 @@ namespace MonoSnake.Infrastructure
             _snake = snake;
         }
 
+        public event EventHandler ExitEvent;
+
+        protected virtual void OnExit(EventArgs e)
+        {
+            EventHandler handler = this.ExitEvent;
+            handler?.Invoke(this, e);
+        }
         public void ProcessInput()
         {
             KeyboardState keyboardState = Keyboard.GetState();
             var player1GamePadState = GamePad.GetState(PlayerIndex.One);
 
-            if(keyboardState.IsKeyDown(Keys.Space))
+            if (player1GamePadState.Buttons.Back == ButtonState.Pressed || keyboardState.IsKeyDown(Keys.Escape))
+                OnExit(EventArgs.Empty);
+
+            if (keyboardState.IsKeyDown(Keys.Space))
                 Trace.WriteLine("Pause Breakpoint");
 
             if (keyboardState.IsKeyDown(Keys.Up) || player1GamePadState.IsButtonDown(Buttons.DPadUp))

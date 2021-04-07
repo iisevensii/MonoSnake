@@ -55,11 +55,10 @@ namespace MonoSnake.Infrastructure
 
         public void AddSegment()
         {
+            if (SnakeSegments.Count > 0)
+                _score += 100;
+
             SnakeSegments.Add(new SnakeSegment(_snakeTailSprite, _lastSegmentPosition, _lastSegmentRotation, _lastSegmentDirection));
-            //SnakeSegments.Select(s => $"X: {s.Position.X}, Y: {s.Position.Y}, R: {s.Rotation}")
-            //    .ToList()
-            //    .ForEach(s => Trace.WriteLine(s));
-            //Trace.WriteLine($"Segment added at - X: {SnakeSegments.Last().Position.X}, Y: {SnakeSegments.Last().Position.Y}");
         }
 
         public void Update(GameTime gameTime)
@@ -109,7 +108,6 @@ namespace MonoSnake.Infrastructure
                 {
 
                     currentSegment.Sprite = _straightBodySprite;
-                    //Trace.WriteLine($"i: {SnakeSegments.IndexOf(currentSegment)}, direction: {currentSegment.Direction}");
                 }
 
                 if (i == 0)
