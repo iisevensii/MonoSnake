@@ -305,6 +305,14 @@ namespace MonoSnake
 
             if (_drawDiagnosticGrid)
             {
+                foreach (Rectangle rectangle in _cells)
+                {
+                    foreach (Vector2 outlinePixel in rectangle.OutlinePixels())
+                    {
+                        _spriteBatch.Draw(_snakeHeadRectangleTexture, outlinePixel, Color.Blue);
+                    }
+                }
+
                 // Rectangle around Snake Head
                 foreach (Vector2 outlinePixel in _snakeHeadRectangle.OutlinePixels())
                 {
@@ -315,14 +323,6 @@ namespace MonoSnake
                 foreach (Vector2 outlinePixel in _appleRectangle.OutlinePixels())
                 {
                     _spriteBatch.Draw(_snakeHeadRectangleTexture, outlinePixel, Color.Red);
-                }
-
-                foreach (Rectangle rectangle in _cells)
-                {
-                    foreach (Vector2 outlinePixel in rectangle.OutlinePixels())
-                    {
-                        _spriteBatch.Draw(_snakeHeadRectangleTexture, outlinePixel, Color.Blue);
-                    }
                 }
             }
 
