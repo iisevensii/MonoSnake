@@ -15,14 +15,15 @@ namespace MonoSnake
         private readonly GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
 
-        private int _screenWidth;
-        private int _screenHeight;
+        const int SCREEN_WIDTH = 780;
+        const int SCREEN_HEIGHT = 820;
 
         private Snake _snake;
         private Apple _appleGameObject;
         private SnakeHead _snakeHeadGameObject;
 
         private InputController _inputController;
+        private SpriteFont _gameOverFont;
         private SpriteFont _scoreBoardFont;
         private Texture2D _appleTexture;
         private Texture2D _snakeHeadSpriteSheet;
@@ -39,7 +40,10 @@ namespace MonoSnake
         private bool _appleEaten;
         private bool _applePlaced;
         private bool _drawDiagnosticGrid;
+        private bool _isGameOver;
+        const string GAME_OVER_STRING = "Game Over";
 
+        const float GAME_OVER_FONT_SCALE = 5f;
         private const int HIT_BOX_PADDING = 5;
         private const int DEFAULT_SPRITE_SIZE = 42;
         private const int DEFAULT_SPRITE_HALF_SIZE = 21;
@@ -56,12 +60,9 @@ namespace MonoSnake
 
         protected override void Initialize()
         {
-            // TODO: Add your initialization logic here
-            _graphics.PreferredBackBufferWidth = 780;
-            _graphics.PreferredBackBufferHeight = 820;
+            _graphics.PreferredBackBufferWidth = SCREEN_WIDTH;
+            _graphics.PreferredBackBufferHeight = SCREEN_HEIGHT;
             _graphics.ApplyChanges();
-            _screenWidth = _graphics.PreferredBackBufferWidth;
-            _screenHeight = _graphics.PreferredBackBufferHeight;
 
             base.Initialize();
         }
@@ -92,6 +93,7 @@ namespace MonoSnake
         {
             // Load Font
             _scoreBoardFont = Content.Load<SpriteFont>("score");
+            _gameOverFont = Content.Load<SpriteFont>("GameOver");
             // Load Textures
             _appleTexture = Content.Load<Texture2D>(APPLE_SPRITE_SHEET_NAME);
             _snakeHeadSpriteSheet = Content.Load<Texture2D>(SNAKE_HEAD_SPRITE_SHEET_NAME);
@@ -204,13 +206,13 @@ namespace MonoSnake
             if (!_gameAreaRectangle.Contains(_snake.SnakeHead.Position))
             {
                 // GAME OVER!
-                Exit();
+                _isGameOver = true;
             }
 
             if (_snake.SnakeSegments.Any(s =>
                 s.Position.X == _snake.SnakeHead.Position.X && s.Position.Y == _snake.SnakeHead.Position.Y))
             {
-                Trace.WriteLine("Game over!");
+                _isGameOver = true;
             }
 
             if (_snakeHeadRectangle.Intersects(_appleRectangle))
@@ -303,6 +305,9 @@ namespace MonoSnake
 
             _spriteBatch.Begin();
 
+            if(_isGameOver)
+                DrawGameOverText();
+
             // Draw Game Area
             foreach (Vector2 outlinePixel in _gameAreaRectangle.OutlinePixels())
             {
@@ -342,6 +347,27 @@ namespace MonoSnake
             _spriteBatch.End();
 
             base.Draw(gameTime);
+        }
+
+        private void DrawGameOverText()
+        {
+            Vector2 gameOverStringWidth = _gameOverFont.MeasureString(GAME_OVER_STRING) * GAME_OVER_FONT_SCALE;
+            float gameOverX = SCREEN_WIDTH / 2 - gameOverStringWidth.X / 2;
+            float gameOverY = SCREEN_HEIGHT / 2 - gameOverStringWidth.Y / 2 +40;
+            Vector2 gameOverPosition = new Vector2(gameOverX, gameOverY);
+
+            _spriteBatch.DrawString
+            (
+                _gameOverFont,
+                GAME_OVER_STRING,
+                gameOverPosition,
+                Color.White,
+                0f,
+                Vector2.Zero,
+                GAME_OVER_FONT_SCALE,
+                SpriteEffects.None,
+                0f
+            );
         }
     }
 }
