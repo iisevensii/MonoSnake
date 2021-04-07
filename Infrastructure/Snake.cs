@@ -56,10 +56,10 @@ namespace MonoSnake.Infrastructure
         private void AddSegment()
         {
             SnakeSegments.Add(new SnakeSegment(_snakeTailSprite, _lastSegmentPosition, _lastSegmentRotation, _lastSegmentDirection));
-            SnakeSegments.Select(s => $"X: {s.Position.X}, Y: {s.Position.Y}, R: {s.Rotation}")
-                .ToList()
-                .ForEach(s => Trace.WriteLine(s));
-            Trace.WriteLine($"Segment added at - X: {SnakeSegments.Last().Position.X}, Y: {SnakeSegments.Last().Position.Y}");
+            //SnakeSegments.Select(s => $"X: {s.Position.X}, Y: {s.Position.Y}, R: {s.Rotation}")
+            //    .ToList()
+            //    .ForEach(s => Trace.WriteLine(s));
+            //Trace.WriteLine($"Segment added at - X: {SnakeSegments.Last().Position.X}, Y: {SnakeSegments.Last().Position.Y}");
         }
 
         public void Update(GameTime gameTime)
@@ -85,6 +85,9 @@ namespace MonoSnake.Infrastructure
             float previousSnakeHeadRotation = SnakeHead.Rotation;
             SnakeDirection previousSnakeHeadDirection = SnakeHead.Direction;
 
+            // Trace SnakeHead
+            Trace.WriteLine($"SnakeHead: {SnakeHead.Position.X} Y: {SnakeHead.Position.Y}");
+
             // Move Snake Head
             SnakeHead.Update(gameTime);
 
@@ -106,7 +109,7 @@ namespace MonoSnake.Infrastructure
                 {
 
                     currentSegment.Sprite = _straightBodySprite;
-                    Trace.WriteLine($"i: {SnakeSegments.IndexOf(currentSegment)}, direction: {currentSegment.Direction}");
+                    //Trace.WriteLine($"i: {SnakeSegments.IndexOf(currentSegment)}, direction: {currentSegment.Direction}");
                 }
 
                 if (i == 0)
@@ -179,10 +182,6 @@ namespace MonoSnake.Infrastructure
                 _lastSegmentRotation = SnakeSegments.Last().Rotation;
                 _lastSegmentDirection = SnakeSegments.Last().Direction;
             }
-
-            // Temporary Code for testing
-            if (_segmentCount < 9)
-                _segmentCount++;
         }
 
         private void ApplyAppropriateSpriteAndRotation(ref SnakeSegment currentSegment, SnakeDirection previousSegmentDirection, SnakeDirection currentSegmentDirection, SnakeDirection nextSegmentDirection)

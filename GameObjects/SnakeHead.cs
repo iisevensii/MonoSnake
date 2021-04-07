@@ -15,7 +15,7 @@ namespace MonoSnake.GameObjects
 
         public SnakeDirection Direction { get; set; } = SnakeDirection.Right;
 
-        private int _framesSinceLastMovement;
+        private int _framesSinceLastMovement = 20;
 
         public SnakeHead(Sprite sprite, Vector2 position)
         {
@@ -43,7 +43,11 @@ namespace MonoSnake.GameObjects
                 return;
 
             float gameTimeSecondsElapsed = (float)gameTime.ElapsedGameTime.TotalSeconds;
+
             float movementAmount = MOVEMENT_INCREMENT * gameTimeSecondsElapsed + 23;
+
+            if (movementAmount <= 23f)
+                movementAmount = 40f;
 
             switch (Direction)
             {

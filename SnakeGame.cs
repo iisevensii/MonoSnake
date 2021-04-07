@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -24,9 +25,11 @@ namespace MonoSnake
         private InputController _inputController;
         private Snake _snake;
         private SpriteFont _scoreBoardFont;
+        private Texture2D _gameAreaRectangleTexture;
         private Texture2D _snakeHeadSpriteSheet;
         private Texture2D _snakeSegmentsSpriteSheet;
         private Texture2D _snakeHeadRectangleTexture;
+        private Rectangle _gameAreaRectangle;
         private Rectangle _snakeHeadRectangle;
         private Rectangle _appleRectangle;
         private bool _appleEaten;
@@ -47,6 +50,9 @@ namespace MonoSnake
         protected override void Initialize()
         {
             // TODO: Add your initialization logic here
+            _graphics.PreferredBackBufferWidth = 780;
+            _graphics.PreferredBackBufferHeight = 820;
+            _graphics.ApplyChanges();
             _screenWidth = _graphics.PreferredBackBufferWidth;
             _screenHeight = _graphics.PreferredBackBufferHeight;
             _applePosition = new Vector2(_screenWidth / 2f, _screenHeight / 2f);
@@ -101,7 +107,7 @@ namespace MonoSnake
             };
 
             // Create GameObjects
-            _snakeHeadGameObject = new SnakeHead(snakeHeadSprite, new Vector2(DEFAULT_SPRITE_HALF_SIZE, DEFAULT_SPRITE_HALF_SIZE));
+            _snakeHeadGameObject = new SnakeHead(snakeHeadSprite, new Vector2(53, 83));
             _appleGameObject = new Apple(appleSprite, new Vector2(_graphics.PreferredBackBufferWidth / 2f + DEFAULT_SPRITE_HALF_SIZE, _graphics.PreferredBackBufferHeight / 2f + DEFAULT_SPRITE_HALF_SIZE));
             _appleGameObject.Sprite.Scale = new Vector2(0.65f, 0.65f);
 
@@ -120,8 +126,17 @@ namespace MonoSnake
                 snakeCW_LeftToUp_CCW_DownToRightSprite
             );
 
+            _gameAreaRectangleTexture = new Texture2D(GraphicsDevice, 2, 2);
             _snakeHeadRectangleTexture = new Texture2D(GraphicsDevice, 1, 1);
+            _gameAreaRectangleTexture.SetData(new [] { Color.White, Color.White, Color.White, Color.White, });
             _snakeHeadRectangleTexture.SetData(new[] { Color.White });
+            _gameAreaRectangle = new Rectangle
+            (
+                20,
+                50,
+                _graphics.PreferredBackBufferWidth -35,
+                _graphics.PreferredBackBufferHeight -70
+            );
             _snakeHeadRectangle = new Rectangle
             (
                 (int)Math.Round(_snake.SnakeHead.Position.X - _snake.SnakeHead.Sprite.Width / 2f * _snake.SnakeHead.Sprite.Scale.X) - HIT_BOX_PADDING,
@@ -172,7 +187,15 @@ namespace MonoSnake
             GraphicsDevice.Clear(Color.Black);
 
             _spriteBatch.Begin();
+
+            // Draw Game Area
+            foreach (Vector2 outlinePixel in _gameAreaRectangle.OutlinePixels())
+            {
+                _spriteBatch.Draw(_gameAreaRectangleTexture, outlinePixel, Color.Green);
+            }
+
             _snake.Draw(_spriteBatch, gameTime);
+
             if (!_appleEaten)
             {
                 _appleGameObject.Draw(_spriteBatch, gameTime);
@@ -187,6 +210,27 @@ namespace MonoSnake
             foreach (Vector2 outlinePixel in _snakeHeadRectangle.OutlinePixels())
             {
                 _spriteBatch.Draw(_snakeHeadRectangleTexture, outlinePixel, Color.Red);
+            }
+
+            // Draw Grid (Temp)
+            List<Rectangle> cells = new List<Rectangle>();
+            // Columns
+            // Rows
+            for (int i = 0; i < 18; i++)
+            {
+                for (int j = 0; j < 18; j++)
+                {
+                    Rectangle nextRectangle = new Rectangle(i * 40 + 32, j * 40 + 62, 42, 42);
+                    cells.Add(nextRectangle);
+                }
+            }
+
+            foreach (Rectangle rectangle in cells)
+            {
+                foreach (Vector2 outlinePixel in rectangle.OutlinePixels())
+                {
+                    _spriteBatch.Draw(_snakeHeadRectangleTexture, outlinePixel, Color.Blue);
+                }
             }
             _spriteBatch.End();
 
