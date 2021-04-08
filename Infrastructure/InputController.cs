@@ -11,13 +11,19 @@ namespace MonoSnake.Infrastructure
     {
         private readonly Snake _snake;
 
+        public event EventHandler ExitEvent;
+        public event EventHandler RestartEvent;
+
+        private KeyboardState _oldKeyboardState;
+        private KeyboardState _newKeyboardState;
+        private GamePadState _oldGamePadState;
+        private GamePadState _newGamePadState;
+
         public InputController(Snake snake)
         {
             _snake = snake;
         }
 
-        public event EventHandler ExitEvent;
-        public event EventHandler RestartEvent;
 
         protected virtual void OnExit(EventArgs e)
         {
@@ -31,11 +37,6 @@ namespace MonoSnake.Infrastructure
             handler?.Invoke(this, e);
         }
 
-        private KeyboardState oldKeyboardState;
-        private KeyboardState newKeyboardState;
-        private GamePadState oldGamePadState;
-        private GamePadState newGamePadState;
-
         /// <summary>
         /// Detects a single key press
         /// </summary>
@@ -43,7 +44,7 @@ namespace MonoSnake.Infrastructure
         /// <returns></returns>
         private bool WasKeyPressed(Keys key)
         {
-            return oldKeyboardState.IsKeyDown(key) && newKeyboardState.IsKeyUp(key);
+            return _oldKeyboardState.IsKeyDown(key) && _newKeyboardState.IsKeyUp(key);
         }
 
         /// <summary>
@@ -53,7 +54,7 @@ namespace MonoSnake.Infrastructure
         /// <returns></returns>
         private bool WasButtonPressed(Buttons button)
         {
-            return oldGamePadState.IsButtonDown(button) && newGamePadState.IsButtonUp(button);
+            return _oldGamePadState.IsButtonDown(button) && _newGamePadState.IsButtonUp(button);
         }
 
         /// <summary>
@@ -61,8 +62,8 @@ namespace MonoSnake.Infrastructure
         /// </summary>
         public void ProcessInput()
         {
-            newKeyboardState = Keyboard.GetState();
-            newGamePadState = GamePad.GetState(PlayerIndex.One);
+            _newKeyboardState = Keyboard.GetState();
+            _newGamePadState = GamePad.GetState(PlayerIndex.One);
             KeyboardState keyboardState = Keyboard.GetState();
             var player1GamePadState = GamePad.GetState(PlayerIndex.One);
 
@@ -88,8 +89,8 @@ namespace MonoSnake.Infrastructure
                 && _snake.SnakeHead.Direction != SnakeDirection.Left)
                 MoveSnakeHead(SnakeDirection.Right);
 
-            oldKeyboardState = newKeyboardState;
-            oldGamePadState = GamePad.GetState(PlayerIndex.One);
+            _oldKeyboardState = _newKeyboardState;
+            _oldGamePadState = GamePad.GetState(PlayerIndex.One);
         }
 
         private void MoveSnakeHead(SnakeDirection direction)
