@@ -52,22 +52,18 @@ namespace MonoSnake.GameObjects
                 case SnakeDirection.Up:
                     Position = new Vector2(Position.X, (float) Math.Round(Position.Y - MOVEMENT_PER_FRAME));
                     NextPosition = new Vector2(Position.X, Position.Y - MOVEMENT_PER_FRAME);
-                    Trace.WriteLine($"Y: {Position.Y} => NY: {NextPosition.Y}");
                     break;
                 case SnakeDirection.Right:
                     Position = new Vector2((float) Math.Round(Position.X + MOVEMENT_PER_FRAME), Position.Y);
                     NextPosition = new Vector2(Position.X + MOVEMENT_PER_FRAME, Position.Y);
-                    Trace.WriteLine($"X: {Position.X} => NX: {NextPosition.X}");
                     break;
                 case SnakeDirection.Down:
                     Position = new Vector2(Position.X, (float) Math.Round(Position.Y + MOVEMENT_PER_FRAME));
                     NextPosition = new Vector2(Position.X, Position.Y + MOVEMENT_PER_FRAME);
-                    Trace.WriteLine($"Y: {Position.Y} => NY: {NextPosition.Y}");
                     break;
                 case SnakeDirection.Left:
                     Position = new Vector2((float) Math.Round(Position.X - MOVEMENT_PER_FRAME), Position.Y);
                     NextPosition = new Vector2(Position.X - MOVEMENT_PER_FRAME, Position.Y);
-                    Trace.WriteLine($"X: {Position.X} => NX: {NextPosition.X}");
                     break;
             }
 

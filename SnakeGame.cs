@@ -73,6 +73,8 @@ namespace MonoSnake
         {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
 
+            LoadAssets();
+
             InitializeGameObjects();
 
             InitializeDiagnosticObjects();
@@ -83,7 +85,22 @@ namespace MonoSnake
 
             // Initialize InputController
             _inputController = new InputController(_snake);
-            _inputController.ExitEvent += _inputController_ExitEvent; ;
+            _inputController.ExitEvent += _inputController_ExitEvent;
+            _inputController.RestartEvent += _inputController_RestartEvent;
+        }
+
+        private void _inputController_RestartEvent(object sender, EventArgs e)
+        {
+            InitializeGameObjects();
+            // Initialize InputController
+            _inputController = new InputController(_snake);
+            _inputController.ExitEvent += _inputController_ExitEvent;
+            _inputController.RestartEvent += _inputController_RestartEvent;
+            GenerateGrid();
+            _appleEaten = false;
+            _applePlaced = false;
+            GenerateApple();
+            _isGameOver = false;
         }
 
         private void _inputController_ExitEvent(object sender, EventArgs e)
@@ -93,14 +110,6 @@ namespace MonoSnake
 
         private void InitializeGameObjects()
         {
-            // Load Font
-            _scoreBoardFont = Content.Load<SpriteFont>("score");
-            _gameOverFont = Content.Load<SpriteFont>("GameOver");
-            // Load Textures
-            _appleTexture = Content.Load<Texture2D>(APPLE_SPRITE_SHEET_NAME);
-            _snakeHeadSpriteSheet = Content.Load<Texture2D>(SNAKE_HEAD_SPRITE_SHEET_NAME);
-            _snakeSegmentsSpriteSheet = Content.Load<Texture2D>(SNAKE_SEGMENTS_SPRITE_SHEET_NAME);
-
             // Create Sprite Objects
             Sprite appleSprite = new Sprite(_appleTexture, 0, 0, _appleTexture.Width, _appleTexture.Height)
             {
@@ -161,6 +170,17 @@ namespace MonoSnake
                 snakeCW_DownToLeft_CCW_RightToUpSprite,
                 snakeCW_LeftToUp_CCW_DownToRightSprite
             );
+        }
+
+        private void LoadAssets()
+        {
+            // Load Font
+            _scoreBoardFont = Content.Load<SpriteFont>("score");
+            _gameOverFont = Content.Load<SpriteFont>("GameOver");
+            // Load Textures
+            _appleTexture = Content.Load<Texture2D>(APPLE_SPRITE_SHEET_NAME);
+            _snakeHeadSpriteSheet = Content.Load<Texture2D>(SNAKE_HEAD_SPRITE_SHEET_NAME);
+            _snakeSegmentsSpriteSheet = Content.Load<Texture2D>(SNAKE_SEGMENTS_SPRITE_SHEET_NAME);
         }
 
         private void InitializeDiagnosticObjects()
@@ -225,7 +245,6 @@ namespace MonoSnake
 
             if (_appleEaten)
             {
-
                 GenerateApple();
             }
 
@@ -269,7 +288,6 @@ namespace MonoSnake
 
         private void GenerateApple()
         {
-
             Random randomApple = new Random();
 
             int nextIndex = randomApple.Next(0, _unOccupiedCells.Count);

@@ -84,9 +84,6 @@ namespace MonoSnake.Infrastructure
             float previousSnakeHeadRotation = SnakeHead.Rotation;
             SnakeDirection previousSnakeHeadDirection = SnakeHead.Direction;
 
-            // Trace SnakeHead
-            Trace.WriteLine($"SnakeHead: {SnakeHead.Position.X} Y: {SnakeHead.Position.Y}");
-
             // Move Snake Head
             SnakeHead.Update(gameTime);
 
