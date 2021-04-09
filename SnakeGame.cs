@@ -14,6 +14,7 @@ namespace MonoSnake
     {
         private readonly GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
+        private FrameCounter _frameCounter = new FrameCounter();
 
         const int SCREEN_WIDTH = 780;
         const int SCREEN_HEIGHT = 820;
@@ -43,6 +44,7 @@ namespace MonoSnake
         private bool _appleEaten;
         private bool _applePlaced;
         private bool _isGameOver;
+        private bool _showFpsMonitor = false;
         const string GAME_OVER_STRING = "Game Over";
 
         const float GAME_OVER_FONT_SCALE = 1f;
@@ -318,6 +320,12 @@ namespace MonoSnake
 
         protected override void Draw(GameTime gameTime)
         {
+            var deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
+
+            _frameCounter.Update(deltaTime);
+
+            var fps = $"FPS: {_frameCounter.AverageFramesPerSecond}";
+
             if (_isGameOver)
             {
                 _spriteBatch.Begin();
@@ -330,7 +338,21 @@ namespace MonoSnake
 
             _spriteBatch.Begin();
 
-            if(_isGameOver)
+            if(_showFpsMonitor)
+                _spriteBatch.DrawString
+                    (
+                        _scoreBoardFont,
+                        fps,
+                        new Vector2(20, 10),
+                        Color.Blue,
+                        0f,
+                        Vector2.Zero,
+                        new Vector2(2, 2),
+                        SpriteEffects.None,
+                    0f
+                    );
+
+            if (_isGameOver)
                 DrawGameOverText();
 
             // Draw Game Area
