@@ -12,7 +12,7 @@ namespace MonoSnake.GameObjects
         private const float MOVEMENT_INCREMENT = 1000f;
 
         private int _framesSinceLastMovement = 20;
-        public int MovementSpeed { get; set; } = 15;
+        public int MovementSpeed { get; set; } = 18;
         public int DrawOrder => 0;
         public Sprite Sprite { get; }
         public Vector2 Position { get; set; }
