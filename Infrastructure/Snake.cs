@@ -25,6 +25,7 @@ namespace MonoSnake.Infrastructure
 
         private Vector2 _lastSegmentPosition = Vector2.Zero;
         private float _lastSegmentRotation;
+        public SnakeDirection LastInputDirection { get; set; } = SnakeDirection.Right;
         private SnakeDirection _lastSegmentDirection;
         private readonly int _screenWidth;
         private readonly int _screenHeight;
@@ -61,7 +62,6 @@ namespace MonoSnake.Infrastructure
             SnakeSegments.Add(new SnakeSegment(_snakeTailSprite, _lastSegmentPosition, _lastSegmentRotation, _lastSegmentDirection));
         }
 
-        public SnakeDirection LastInputDirection { get; set; } = SnakeDirection.Right;
         public void Update(GameTime gameTime)
         {
             // See if SnakeHead is ready to be moved again
