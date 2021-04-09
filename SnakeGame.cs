@@ -45,7 +45,7 @@ namespace MonoSnake
         private bool _isGameOver;
         const string GAME_OVER_STRING = "Game Over";
 
-        const float GAME_OVER_FONT_SCALE = 5f;
+        const float GAME_OVER_FONT_SCALE = 1f;
         private const int HIT_BOX_PADDING = 5;
         private const int DEFAULT_SPRITE_SIZE = 42;
         private const int DEFAULT_SPRITE_HALF_SIZE = 21;
@@ -375,7 +375,7 @@ namespace MonoSnake
         {
             Vector2 gameOverStringWidth = _gameOverFont.MeasureString(GAME_OVER_STRING) * GAME_OVER_FONT_SCALE;
             float gameOverX = SCREEN_WIDTH / 2 - gameOverStringWidth.X / 2;
-            float gameOverY = SCREEN_HEIGHT / 2 - gameOverStringWidth.Y / 2 +40;
+            float gameOverY = SCREEN_HEIGHT / 2 - gameOverStringWidth.Y / 2;
             Vector2 gameOverPosition = new Vector2(gameOverX, gameOverY);
 
             _spriteBatch.DrawString
