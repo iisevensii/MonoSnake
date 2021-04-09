@@ -61,11 +61,14 @@ namespace MonoSnake.Infrastructure
             SnakeSegments.Add(new SnakeSegment(_snakeTailSprite, _lastSegmentPosition, _lastSegmentRotation, _lastSegmentDirection));
         }
 
+        public SnakeDirection LastInputDirection { get; set; } = SnakeDirection.Right;
         public void Update(GameTime gameTime)
         {
             // See if SnakeHead is ready to be moved again
             if(!SnakeHead.CanUpdate())
                 return;
+
+            SnakeHead.Direction = LastInputDirection;
 
             if (SnakeSegments.Count < _segmentCount)
             {

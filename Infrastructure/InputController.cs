@@ -95,7 +95,7 @@ namespace MonoSnake.Infrastructure
 
         private void MoveSnakeHead(SnakeDirection direction)
         {
-            _snake.SnakeHead.Direction = direction;
+            _snake.LastInputDirection = direction;
         }
     }
 }
