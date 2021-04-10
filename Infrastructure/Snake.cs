@@ -32,6 +32,7 @@ namespace MonoSnake.Infrastructure
         private int _score;
 
         public SnakeHead SnakeHead { get; }
+        public int Score => _score;
 
 
         public Snake(SnakeHead snakeHead, int screenWidth, int screenHeight, SpriteFont scoreBoardFont, Sprite snakeTailSprite, Sprite straightBodySprite,

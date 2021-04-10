@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Reflection;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using MonoSnake.GameObjects;
@@ -31,12 +33,14 @@ namespace MonoSnake
         private Texture2D _snakeSegmentsSpriteSheet;
         private Texture2D _gameAreaRectangleTexture;
         private Texture2D _snakeHeadRectangleTexture;
+        private SoundEffect _eatSoundEffect;
         private Rectangle _gameAreaRectangle;
         private Rectangle _snakeHeadRectangle;
         private Rectangle _appleRectangle;
         private List<Rectangle> _cells;
         private List<Rectangle> _occupiedCells = new List<Rectangle>();
         private List<Rectangle> _unOccupiedCells = new List<Rectangle>();
+        private ScoreBoard _scoreBoard;
 
         // Draw diagnostic grid?
         private bool _drawDiagnosticGrid = false;
@@ -54,6 +58,7 @@ namespace MonoSnake
         private const string APPLE_SPRITE_SHEET_NAME = "Apple";
         private const string SNAKE_HEAD_SPRITE_SHEET_NAME = "SnakeHead";
         private const string SNAKE_SEGMENTS_SPRITE_SHEET_NAME = "SnakeSegments";
+        private const string EAT_SOUND_EFFECT_NAME = "eat";
 
         public SnakeGame()  
         {
@@ -64,6 +69,7 @@ namespace MonoSnake
 
         protected override void Initialize()
         {
+            _scoreBoard = new ScoreBoard(Assembly.GetEntryAssembly().Location);
             _graphics.PreferredBackBufferWidth = SCREEN_WIDTH;
             _graphics.PreferredBackBufferHeight = SCREEN_HEIGHT;
             _graphics.ApplyChanges();
@@ -183,6 +189,7 @@ namespace MonoSnake
             _appleTexture = Content.Load<Texture2D>(APPLE_SPRITE_SHEET_NAME);
             _snakeHeadSpriteSheet = Content.Load<Texture2D>(SNAKE_HEAD_SPRITE_SHEET_NAME);
             _snakeSegmentsSpriteSheet = Content.Load<Texture2D>(SNAKE_SEGMENTS_SPRITE_SHEET_NAME);
+            _eatSoundEffect = Content.Load<SoundEffect>(EAT_SOUND_EFFECT_NAME);
         }
 
         private void InitializeDiagnosticObjects()
@@ -227,19 +234,20 @@ namespace MonoSnake
             if (!_gameAreaRectangle.Contains(_snake.SnakeHead.Position))
             {
                 // GAME OVER!
-                _isGameOver = true;
+                EndGameAndRecordScore();
             }
 
             if (_snake.SnakeSegments.Any(s =>
                 s.Position.X == _snake.SnakeHead.Position.X && s.Position.Y == _snake.SnakeHead.Position.Y))
             {
-                _isGameOver = true;
+                EndGameAndRecordScore();
             }
 
             if (_snakeHeadRectangle.Intersects(_appleRectangle))
             {
                 _appleEaten = true;
                 _applePlaced = false;
+                _eatSoundEffect.Play(1f, 0f, 0f);
                 _snake.AddSegment();
             }
 
@@ -251,6 +259,15 @@ namespace MonoSnake
             }
 
             base.Update(gameTime);
+        }
+
+        private void EndGameAndRecordScore()
+        {
+            _scoreBoard.HighScores.AddHighScore(new ScoreEntry("SeVeN", _snake.Score));
+
+            _scoreBoard.SaveHighScores();
+
+            _isGameOver = true;
         }
 
         private void GenerateGrid()
@@ -324,7 +341,7 @@ namespace MonoSnake
 
             _frameCounter.Update(deltaTime);
 
-            var fps = $"FPS: {_frameCounter.AverageFramesPerSecond}";
+            var fps = $"FPS: {_frameCounter.CurrentFramesPerSecond}";
 
             if (_isGameOver)
             {

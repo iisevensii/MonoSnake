@@ -25,6 +25,12 @@
 /processorParam:TextureFormat=Color
 /build:apple.png
 
+#begin eat.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:eat.wav
+
 #begin GameOver.spritefont
 /importer:FontDescriptionImporter
 /processor:FontDescriptionProcessor
