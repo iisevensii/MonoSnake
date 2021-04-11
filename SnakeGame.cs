@@ -56,7 +56,7 @@ namespace MonoSnake
         private Sprite _snakeCwLeftToUpCcwDownToRightSprite;
         private Sprite _snakeStraightBodySprite;
         private UiFrame _startScreenUiFrame;
-        private bool _drawStartScreenFrame;
+        private bool _drawStartScreenFrame = false;
         const string GAME_OVER_STRING = "Game Over";
 
         const float GAME_OVER_FONT_SCALE = 1f;
@@ -193,6 +193,19 @@ namespace MonoSnake
                 _snakeCwDownToLeftCcwRightToUpSprite,
                 _snakeCwLeftToUpCcwDownToRightSprite
             );
+
+            _startScreenUiFrame = new UiFrame
+            (
+                Vector2.Zero, 
+                18,
+                18,
+                _snakeStraightBodySprite,
+                _snakeStraightBodySprite,
+                _snakeCwUpToRightCcwLeftToDownSprite,
+                _snakeCwRightToDownCcwUpToLeftSprite,
+                _snakeCwDownToLeftCcwRightToUpSprite,
+                _snakeCwLeftToUpCcwDownToRightSprite
+            );
         }
 
         private void LoadAssets()
@@ -273,6 +286,13 @@ namespace MonoSnake
                 GenerateApple();
             }
 
+            if (_drawStartScreenFrame)
+            {
+                _startScreenUiFrame.Position = new Vector2(SCREEN_WIDTH / 2 - _startScreenUiFrame.ActualWidth / 2 +DEFAULT_SPRITE_HALF_SIZE, SCREEN_HEIGHT / 2 - _startScreenUiFrame.ActualHeight / 2 +DEFAULT_SPRITE_HALF_SIZE);
+                _startScreenUiFrame.Update(gameTime);
+            }
+
+
             base.Update(gameTime);
         }
 
@@ -348,21 +368,6 @@ namespace MonoSnake
                 _applePlaced = true;
                 _appleEaten = false;
             }
-
-            _startScreenUiFrame = new UiFrame
-            (new Vector2(20, 20),
-                15,
-                15,
-                _snakeStraightBodySprite,
-                _snakeStraightBodySprite,
-                _snakeCwUpToRightCcwLeftToDownSprite,
-                _snakeCwRightToDownCcwUpToLeftSprite,
-                _snakeCwDownToLeftCcwRightToUpSprite,
-                _snakeCwLeftToUpCcwDownToRightSprite
-            );
-
-            _startScreenUiFrame.Position = new Vector2(SCREEN_WIDTH /2 - _startScreenUiFrame.ActualWidth /2, 0);
-            _startScreenUiFrame.Position = new Vector2(SCREEN_HEIGHT / 2 - _startScreenUiFrame.ActualHeight / 2, 0);
         }
 
         protected override void Draw(GameTime gameTime)

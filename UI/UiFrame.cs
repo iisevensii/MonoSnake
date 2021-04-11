@@ -26,10 +26,10 @@ namespace MonoSnake.UI
         private readonly List<UiObject> _rightUiObjectColumn = new List<UiObject>();
         private readonly List<UiObject> _bottomUiObjectRow = new List<UiObject>();
         private readonly List<UiObject> _leftUiObjectColumn = new List<UiObject>();
-        private readonly UiObject _topLeftUiObject;
-        private readonly UiObject _topRightUiObject;
-        private readonly UiObject _bottomRightUiObject;
-        private readonly UiObject _bottomLeftUiObject;
+        private UiObject _topLeftUiObject;
+        private UiObject _topRightUiObject;
+        private UiObject _bottomRightUiObject;
+        private UiObject _bottomLeftUiObject;
         private const float _rotate90CW = (float)(90 * Math.PI / 180);
 
         public int ActualWidth { get; set; }
@@ -48,8 +48,33 @@ namespace MonoSnake.UI
 
             Position = position;
 
-            _topLeftUiObject = new UiObject(_topLeftSprite, position, 0f);
-            Vector2 nextTopRowPosition = position;
+            _topLeftUiObject = new UiObject(_topLeftSprite, Position, 0f);
+            _topRightUiObject = new UiObject(_topRightSprite, Position, 0f);
+            _bottomRightUiObject = new UiObject(_bottomRightSprite, Position, 0f);
+            _bottomLeftUiObject = new UiObject(_bottomLeftSprite, Position, 0f);
+
+            ActualWidth += _topLeftSprite.Width;
+            for (int i = 0; i < width -2; i++)
+            {
+                ActualWidth += _horizontalSprite.Width;
+            }
+            ActualWidth += _topRightSprite.Width;
+
+            ActualHeight += _topLeftSprite.Height;
+            for (int i = 0; i < height -2; i++)
+            {
+                ActualHeight += _verticalSprite.Height;
+            }
+            ActualHeight += _bottomLeftSprite.Height;
+
+            //ActualWidth = ActualWidth - (_topLeftSprite.Width);
+            //ActualHeight = ActualHeight - (_topLeftSprite.Height * 2);
+        }
+
+        public void Update(GameTime gameTime)
+        {
+            _topLeftUiObject.Position = Position;
+            Vector2 nextTopRowPosition = Position;
 
             nextTopRowPosition = new Vector2(nextTopRowPosition.X + _topLeftSprite.Width, nextTopRowPosition.Y);
             for (int i = 0; i < _frameWidth - 2; i++)
@@ -59,7 +84,7 @@ namespace MonoSnake.UI
                 nextTopRowPosition = new Vector2(uiObject.Position.X + uiObject.Sprite.Width, uiObject.Position.Y);
             }
 
-            _topRightUiObject = new UiObject(_topRightSprite, nextTopRowPosition, 0f);
+            _topRightUiObject.Position = nextTopRowPosition;
             Vector2 nextRightColumnPosition = new Vector2(nextTopRowPosition.X, nextTopRowPosition.Y + _topRightSprite.Height);
 
             for (int i = 0; i < _frameHeight - 2; i++)
@@ -69,7 +94,7 @@ namespace MonoSnake.UI
                 nextRightColumnPosition = new Vector2(uiObject.Position.X, uiObject.Position.Y + _verticalSprite.Height);
             }
 
-            _bottomRightUiObject = new UiObject(_bottomRightSprite, nextRightColumnPosition, 0f);
+            _bottomRightUiObject.Position = nextRightColumnPosition;
             Vector2 nextBottomRowPosition = new Vector2(nextRightColumnPosition.X - _bottomRightSprite.Width, nextRightColumnPosition.Y);
 
             for (int i = 0; i < _frameWidth - 2; i++)
@@ -79,7 +104,7 @@ namespace MonoSnake.UI
                 nextBottomRowPosition = new Vector2(uiObject.Position.X - _horizontalSprite.Width, uiObject.Position.Y);
             }
 
-            _bottomLeftUiObject = new UiObject(_bottomLeftSprite, nextBottomRowPosition, 0f);
+            _bottomLeftUiObject.Position = nextBottomRowPosition;
             Vector2 nextLeftColumnPosition = new Vector2(nextBottomRowPosition.X, nextBottomRowPosition.Y - _bottomLeftSprite.Height);
 
             for (int i = 0; i < _frameHeight - 2; i++)
@@ -88,19 +113,6 @@ namespace MonoSnake.UI
                 this._leftUiObjectColumn.Add(uiObject);
                 nextLeftColumnPosition = new Vector2(uiObject.Position.X, uiObject.Position.Y - _verticalSprite.Height);
             }
-
-            ActualWidth += _topLeftSprite.Width;
-            _topUiObjectRow.ForEach(r => ActualWidth += r.Sprite.Width);
-            ActualHeight += _topRightSprite.Width;
-
-            ActualHeight += _topLeftSprite.Height;
-            _rightUiObjectColumn.ForEach(c => ActualHeight += c.Sprite.Height);
-            ActualHeight += _bottomLeftSprite.Height;
-        }
-
-        public void Update(GameTime gameTime)
-        {
-            
         }
 
         public void Draw(SpriteBatch spriteBatch, GameTime gameTime)
