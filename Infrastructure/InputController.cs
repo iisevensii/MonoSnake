@@ -13,6 +13,7 @@ namespace MonoSnake.Infrastructure
 
         public event EventHandler ExitEvent;
         public event EventHandler RestartEvent;
+        public event EventHandler StartEvent;
 
         private KeyboardState _oldKeyboardState;
         private KeyboardState _newKeyboardState;
@@ -24,16 +25,21 @@ namespace MonoSnake.Infrastructure
             _snake = snake;
         }
 
-
-        protected virtual void OnExit(EventArgs e)
+        protected virtual void OnStart(EventArgs e)
         {
-            EventHandler handler = this.ExitEvent;
+            EventHandler handler = this.StartEvent;
             handler?.Invoke(this, e);
         }
 
         protected virtual void OnRestart(EventArgs e)
         {
             EventHandler handler = this.RestartEvent;
+            handler?.Invoke(this, e);
+        }
+
+        protected virtual void OnExit(EventArgs e)
+        {
+            EventHandler handler = this.ExitEvent;
             handler?.Invoke(this, e);
         }
 

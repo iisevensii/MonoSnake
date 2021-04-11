@@ -105,17 +105,19 @@ namespace MonoSnake
 
             // Initialize InputController
             _inputController = new InputController(_snake);
-            _inputController.ExitEvent += _inputController_ExitEvent;
-            _inputController.RestartEvent += _inputController_RestartEvent;
+            _inputController.StartEvent += InputController_StartEvent;
+            _inputController.RestartEvent += InputController_RestartEvent;
+            _inputController.ExitEvent += InputController_ExitEvent;
         }
 
-        private void _inputController_RestartEvent(object sender, EventArgs e)
+        private void InputController_StartEvent(object sender, EventArgs e)
         {
             InitializeGameObjects();
             // Initialize InputController
             _inputController = new InputController(_snake);
-            _inputController.ExitEvent += _inputController_ExitEvent;
-            _inputController.RestartEvent += _inputController_RestartEvent;
+            _inputController.StartEvent += InputController_StartEvent;
+            _inputController.ExitEvent += InputController_ExitEvent;
+            _inputController.RestartEvent += InputController_RestartEvent;
             GenerateGrid();
             _appleEaten = false;
             _applePlaced = false;
@@ -123,7 +125,23 @@ namespace MonoSnake
             _isGameOver = false;
         }
 
-        private void _inputController_ExitEvent(object sender, EventArgs e)
+        private void InputController_RestartEvent(object sender, EventArgs e)
+        {
+            InitializeGameObjects();
+            // Initialize InputController
+            _inputController = new InputController(_snake);
+            _inputController.StartEvent += InputController_StartEvent;
+            _inputController.ExitEvent += InputController_ExitEvent;
+            _inputController.RestartEvent += InputController_RestartEvent;
+            GenerateGrid();
+            _atStartMenu = false;
+            _appleEaten = false;
+            _applePlaced = false;
+            GenerateApple();
+            _isGameOver = false;
+        }
+
+        private void InputController_ExitEvent(object sender, EventArgs e)
         {
             Exit();
         }
