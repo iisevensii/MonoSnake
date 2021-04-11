@@ -23,6 +23,19 @@ namespace MonoSnake.Infrastructure
             Height = height;
         }
 
+        public Sprite(PositionedTexture2D positionedTexture2D, int width, int height)
+        {
+            SpriteSheet = positionedTexture2D.SpriteSheet;
+            Width = width;
+            Height = height;
+            int margin = positionedTexture2D.Margin;
+            int xIndex = positionedTexture2D.SprintXIndex;
+            int yIndex = positionedTexture2D.SpriteYIndex;
+
+            Left = (xIndex * (margin * 2)) + margin + (width * xIndex);
+            Top = (yIndex * (margin * 2)) + margin + (width * yIndex);
+        }
+
         public void Draw(SpriteBatch spriteBatch, Vector2 position, float rotation)
         {
             spriteBatch.Draw

@@ -12,7 +12,7 @@ namespace MonoSnake.UI
     public class UiFrame
     {
         public int DrawOrder { get; }
-        private Vector2 Position { get; }
+        public Vector2 Position { get; set; }
         public float Rotation { get; set; }
         private Sprite _horizontalSprite;
         private Sprite _verticalSprite;
@@ -31,6 +31,9 @@ namespace MonoSnake.UI
         private readonly UiObject _bottomRightUiObject;
         private readonly UiObject _bottomLeftUiObject;
         private const float _rotate90CW = (float)(90 * Math.PI / 180);
+
+        public int ActualWidth { get; set; }
+        public int ActualHeight { get; set; }
 
         public UiFrame(Vector2 position, int width, int height, Sprite horizontalSprite, Sprite verticalSprite, Sprite topLeftSprite, Sprite topRightSprite, Sprite bottomRightSprite, Sprite bottomLeftSprite)
         {
@@ -85,6 +88,14 @@ namespace MonoSnake.UI
                 this._leftUiObjectColumn.Add(uiObject);
                 nextLeftColumnPosition = new Vector2(uiObject.Position.X, uiObject.Position.Y - _verticalSprite.Height);
             }
+
+            ActualWidth += _topLeftSprite.Width;
+            _topUiObjectRow.ForEach(r => ActualWidth += r.Sprite.Width);
+            ActualHeight += _topRightSprite.Width;
+
+            ActualHeight += _topLeftSprite.Height;
+            _rightUiObjectColumn.ForEach(c => ActualHeight += c.Sprite.Height);
+            ActualHeight += _bottomLeftSprite.Height;
         }
 
         public void Update(GameTime gameTime)

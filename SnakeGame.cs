@@ -55,13 +55,14 @@ namespace MonoSnake
         private Sprite _snakeCwDownToLeftCcwRightToUpSprite;
         private Sprite _snakeCwLeftToUpCcwDownToRightSprite;
         private Sprite _snakeStraightBodySprite;
-        private UiFrame _uiFrame;
+        private UiFrame _startScreenUiFrame;
+        private bool _drawStartScreenFrame;
         const string GAME_OVER_STRING = "Game Over";
 
         const float GAME_OVER_FONT_SCALE = 1f;
         private const int HIT_BOX_PADDING = 5;
-        private const int DEFAULT_SPRITE_SIZE = 42;
-        private const int DEFAULT_SPRITE_HALF_SIZE = 21;
+        private const int DEFAULT_SPRITE_SIZE = 40;
+        private const int DEFAULT_SPRITE_HALF_SIZE = 20;
         private const string APPLE_SPRITE_SHEET_NAME = "Apple";
         private const string SNAKE_HEAD_SPRITE_SHEET_NAME = "SnakeHead";
         private const string SNAKE_SEGMENTS_SPRITE_SHEET_NAME = "SnakeSegments";
@@ -130,35 +131,43 @@ namespace MonoSnake
             {
                 Origin = new Vector2(_appleTexture.Width / 2f, _appleTexture.Height / 2f)
             };
-            Sprite snakeHeadSprite = new Sprite(_snakeHeadSpriteSheet, 0, 0, _snakeHeadSpriteSheet.Width, DEFAULT_SPRITE_SIZE)
+            PositionedTexture2D headPositionedTexture2D = new PositionedTexture2D(_snakeHeadSpriteSheet, 1, 0, 0);
+            Sprite snakeHeadSprite = new Sprite(headPositionedTexture2D, DEFAULT_SPRITE_SIZE, DEFAULT_SPRITE_SIZE)
             {
                 Origin = new Vector2(DEFAULT_SPRITE_HALF_SIZE, DEFAULT_SPRITE_HALF_SIZE)
             };
-            Sprite snakeTailSprite = new Sprite(_snakeSegmentsSpriteSheet, 84, 0, DEFAULT_SPRITE_SIZE, DEFAULT_SPRITE_SIZE)
+            PositionedTexture2D tailPositionedTexture2D = new PositionedTexture2D(_snakeSegmentsSpriteSheet, 1, 0, 2);
+            Sprite snakeTailSprite = new Sprite(tailPositionedTexture2D, DEFAULT_SPRITE_SIZE, DEFAULT_SPRITE_SIZE)
             {
                 Origin = new Vector2(DEFAULT_SPRITE_HALF_SIZE, DEFAULT_SPRITE_HALF_SIZE)
             };
-            _snakeStraightBodySprite = new Sprite(_snakeSegmentsSpriteSheet, 84, DEFAULT_SPRITE_SIZE, DEFAULT_SPRITE_SIZE,
-                DEFAULT_SPRITE_SIZE)
+
+            PositionedTexture2D straightBodyPositionedTexture2D = new PositionedTexture2D(_snakeSegmentsSpriteSheet, 1, 1, 2);
+            _snakeStraightBodySprite = new Sprite(straightBodyPositionedTexture2D,DEFAULT_SPRITE_SIZE, DEFAULT_SPRITE_SIZE)
             {
                 Origin = new Vector2(DEFAULT_SPRITE_HALF_SIZE, DEFAULT_SPRITE_HALF_SIZE)
             };
-            _snakeCwUpToRightCcwLeftToDownSprite = new Sprite(_snakeSegmentsSpriteSheet, 0, 0, DEFAULT_SPRITE_SIZE, DEFAULT_SPRITE_SIZE)
+
+            PositionedTexture2D snakeCwUpToRightCcwLeftToDownPositionedTexture2D = new PositionedTexture2D(_snakeSegmentsSpriteSheet, 1, 0, 0);
+            _snakeCwUpToRightCcwLeftToDownSprite = new Sprite(snakeCwUpToRightCcwLeftToDownPositionedTexture2D, DEFAULT_SPRITE_SIZE, DEFAULT_SPRITE_SIZE)
             {
                 Origin = new Vector2(DEFAULT_SPRITE_HALF_SIZE, DEFAULT_SPRITE_HALF_SIZE)
             };
-            _snakeCwRightToDownCcwUpToLeftSprite = new Sprite(_snakeSegmentsSpriteSheet, 0, DEFAULT_SPRITE_SIZE,
-                DEFAULT_SPRITE_SIZE, DEFAULT_SPRITE_SIZE)
+            
+            PositionedTexture2D snakeCwRightToDownCcwUpToLeftPositionedTexture2D = new PositionedTexture2D(_snakeSegmentsSpriteSheet, 1, 1, 0);
+            _snakeCwRightToDownCcwUpToLeftSprite = new Sprite(snakeCwRightToDownCcwUpToLeftPositionedTexture2D, DEFAULT_SPRITE_SIZE, DEFAULT_SPRITE_SIZE)
             {
                 Origin = new Vector2(DEFAULT_SPRITE_HALF_SIZE, DEFAULT_SPRITE_HALF_SIZE)
             };
-            _snakeCwDownToLeftCcwRightToUpSprite = new Sprite(_snakeSegmentsSpriteSheet, DEFAULT_SPRITE_SIZE,
-                DEFAULT_SPRITE_SIZE, DEFAULT_SPRITE_SIZE, DEFAULT_SPRITE_SIZE)
+
+            PositionedTexture2D snakeCwDownToLeftCcwRightToUpPositionedTexture2D = new PositionedTexture2D(_snakeSegmentsSpriteSheet, 1, 1, 1);
+            _snakeCwDownToLeftCcwRightToUpSprite = new Sprite(snakeCwDownToLeftCcwRightToUpPositionedTexture2D, DEFAULT_SPRITE_SIZE, DEFAULT_SPRITE_SIZE)
             {
                 Origin = new Vector2(DEFAULT_SPRITE_HALF_SIZE, DEFAULT_SPRITE_HALF_SIZE)
             };
-            _snakeCwLeftToUpCcwDownToRightSprite = new Sprite(_snakeSegmentsSpriteSheet, DEFAULT_SPRITE_SIZE, 0,
-                DEFAULT_SPRITE_SIZE, DEFAULT_SPRITE_SIZE)
+
+            PositionedTexture2D snakeCwLeftToUpCcwDownToRightPositionedTexture2D = new PositionedTexture2D(_snakeSegmentsSpriteSheet, 1, 0, 1);
+            _snakeCwLeftToUpCcwDownToRightSprite = new Sprite(snakeCwLeftToUpCcwDownToRightPositionedTexture2D, DEFAULT_SPRITE_SIZE, DEFAULT_SPRITE_SIZE)
             {
                 Origin = new Vector2(DEFAULT_SPRITE_HALF_SIZE, DEFAULT_SPRITE_HALF_SIZE)
             };
@@ -340,7 +349,7 @@ namespace MonoSnake
                 _appleEaten = false;
             }
 
-            _uiFrame = new UiFrame
+            _startScreenUiFrame = new UiFrame
             (new Vector2(20, 20),
                 15,
                 15,
@@ -351,6 +360,9 @@ namespace MonoSnake
                 _snakeCwDownToLeftCcwRightToUpSprite,
                 _snakeCwLeftToUpCcwDownToRightSprite
             );
+
+            _startScreenUiFrame.Position = new Vector2(SCREEN_WIDTH /2 - _startScreenUiFrame.ActualWidth /2, 0);
+            _startScreenUiFrame.Position = new Vector2(SCREEN_HEIGHT / 2 - _startScreenUiFrame.ActualHeight / 2, 0);
         }
 
         protected override void Draw(GameTime gameTime)
@@ -373,9 +385,11 @@ namespace MonoSnake
 
             _spriteBatch.Begin();
 
-            //DrawUiFrame(gameTime);
+            _drawStartScreenFrame = true;
+            if(_drawStartScreenFrame)
+                DrawStartScreenUiFrame(gameTime);
 
-            if(_showFpsMonitor)
+            if (_showFpsMonitor)
                 _spriteBatch.DrawString
                     (
                         _scoreBoardFont,
@@ -429,10 +443,10 @@ namespace MonoSnake
 
             base.Draw(gameTime);
         }
-
-        private void DrawUiFrame(GameTime gameTime)
+        
+        private void DrawStartScreenUiFrame(GameTime gameTime)
         {
-            _uiFrame.Draw(_spriteBatch, gameTime);
+            _startScreenUiFrame.Draw(_spriteBatch, gameTime);
         }
 
         private void DrawGameOverText()
