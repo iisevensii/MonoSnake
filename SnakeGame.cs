@@ -57,6 +57,7 @@ namespace MonoSnake
         private Sprite _snakeStraightBodySprite;
         private UiFrame _startScreenUiFrame;
         private bool _drawStartScreenFrame = false;
+        private const int START_SCREEN_TRANSPARENCY = 255;
         const string GAME_OVER_STRING = "Game Over";
 
         const float GAME_OVER_FONT_SCALE = 1f;
@@ -194,18 +195,27 @@ namespace MonoSnake
                 _snakeCwLeftToUpCcwDownToRightSprite
             );
 
-            _startScreenUiFrame = new UiFrame
-            (
-                Vector2.Zero, 
-                18,
-                18,
-                _snakeStraightBodySprite,
-                _snakeStraightBodySprite,
-                _snakeCwUpToRightCcwLeftToDownSprite,
-                _snakeCwRightToDownCcwUpToLeftSprite,
-                _snakeCwDownToLeftCcwRightToUpSprite,
-                _snakeCwLeftToUpCcwDownToRightSprite
-            );
+
+            if (_drawStartScreenFrame)
+            {
+                //Vector2 startScreenUiFramePosition = new Vector2(SCREEN_WIDTH / 2 - _startScreenUiFrame.ActualWidth / 2 + DEFAULT_SPRITE_HALF_SIZE, SCREEN_HEIGHT / 2 - _startScreenUiFrame.ActualHeight / 2 + DEFAULT_SPRITE_HALF_SIZE);
+                _startScreenUiFrame = new CenteredUiFrame
+                (
+                    _graphics,
+                    Vector2.Zero,
+                    18,
+                    18,
+                    SCREEN_WIDTH,
+                    SCREEN_HEIGHT,
+                    _snakeStraightBodySprite,
+                    _snakeStraightBodySprite,
+                    _snakeCwUpToRightCcwLeftToDownSprite,
+                    _snakeCwRightToDownCcwUpToLeftSprite,
+                    _snakeCwDownToLeftCcwRightToUpSprite,
+                    _snakeCwLeftToUpCcwDownToRightSprite,
+                    Color.FromNonPremultiplied(46, 51, 106, START_SCREEN_TRANSPARENCY)
+                );
+            }
         }
 
         private void LoadAssets()
@@ -288,7 +298,6 @@ namespace MonoSnake
 
             if (_drawStartScreenFrame)
             {
-                _startScreenUiFrame.Position = new Vector2(SCREEN_WIDTH / 2 - _startScreenUiFrame.ActualWidth / 2 +DEFAULT_SPRITE_HALF_SIZE, SCREEN_HEIGHT / 2 - _startScreenUiFrame.ActualHeight / 2 +DEFAULT_SPRITE_HALF_SIZE);
                 _startScreenUiFrame.Update(gameTime);
             }
 
@@ -390,9 +399,6 @@ namespace MonoSnake
 
             _spriteBatch.Begin();
 
-            if(_drawStartScreenFrame)
-                DrawStartScreenUiFrame(gameTime);
-
             if (_showFpsMonitor)
                 _spriteBatch.DrawString
                     (
@@ -442,6 +448,9 @@ namespace MonoSnake
                     _spriteBatch.Draw(_snakeHeadRectangleTexture, outlinePixel, Color.Red);
                 }
             }
+
+            if (_drawStartScreenFrame)
+                DrawStartScreenUiFrame(gameTime);
 
             _spriteBatch.End();
 

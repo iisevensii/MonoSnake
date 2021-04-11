@@ -14,14 +14,14 @@ namespace MonoSnake.UI
         public int DrawOrder { get; }
         public Vector2 Position { get; set; }
         public float Rotation { get; set; }
-        private Sprite _horizontalSprite;
-        private Sprite _verticalSprite;
-        private Sprite _topLeftSprite;
-        private Sprite _topRightSprite;
-        private Sprite _bottomLeftSprite;
+        protected Sprite _horizontalSprite;
+        protected Sprite _verticalSprite;
+        protected Sprite _topLeftSprite;
+        protected Sprite _topRightSprite;
+        protected Sprite _bottomLeftSprite;
         private Sprite _bottomRightSprite;
-        private int _frameWidth;
-        private int _frameHeight;
+        protected int _frameWidth;
+        protected int _frameHeight;
         private readonly List<UiObject> _topUiObjectRow = new List<UiObject>();
         private readonly List<UiObject> _rightUiObjectColumn = new List<UiObject>();
         private readonly List<UiObject> _bottomUiObjectRow = new List<UiObject>();
@@ -30,13 +30,20 @@ namespace MonoSnake.UI
         private UiObject _topRightUiObject;
         private UiObject _bottomRightUiObject;
         private UiObject _bottomLeftUiObject;
+        private Color _backgroundColor;
+        private GraphicsDeviceManager _graphics;
         private const float _rotate90CW = (float)(90 * Math.PI / 180);
+        private Texture2D _startScreenBackgroundTexture2D;
+        private Color[] _startScreenBackgroundColors;
+        protected Vector2 _startScreenBackgroundPosition;
+        private Rectangle _backgroundRectangle;
 
-        public int ActualWidth { get; set; }
-        public int ActualHeight { get; set; }
-
-        public UiFrame(Vector2 position, int width, int height, Sprite horizontalSprite, Sprite verticalSprite, Sprite topLeftSprite, Sprite topRightSprite, Sprite bottomRightSprite, Sprite bottomLeftSprite)
+        public int ActualWidth { get; }
+        public int ActualHeight { get; }
+        
+        public UiFrame(GraphicsDeviceManager graphics, Vector2 position, int width, int height, Sprite horizontalSprite, Sprite verticalSprite, Sprite topLeftSprite, Sprite topRightSprite, Sprite bottomRightSprite, Sprite bottomLeftSprite, Color backgroundColor)
         {
+            _graphics = graphics;
             _frameWidth = width;
             _frameHeight = height;
             _horizontalSprite = horizontalSprite;
@@ -45,6 +52,7 @@ namespace MonoSnake.UI
             _topRightSprite = topRightSprite;
             _bottomLeftSprite = bottomLeftSprite;
             _bottomRightSprite = bottomRightSprite;
+            _backgroundColor = backgroundColor;
 
             Position = position;
 
@@ -54,21 +62,31 @@ namespace MonoSnake.UI
             _bottomLeftUiObject = new UiObject(_bottomLeftSprite, Position, 0f);
 
             ActualWidth += _topLeftSprite.Width;
-            for (int i = 0; i < width -2; i++)
+            for (int i = 0; i < _frameWidth - 2; i++)
             {
                 ActualWidth += _horizontalSprite.Width;
             }
             ActualWidth += _topRightSprite.Width;
 
             ActualHeight += _topLeftSprite.Height;
-            for (int i = 0; i < height -2; i++)
+            for (int i = 0; i < _frameHeight -2; i++)
             {
                 ActualHeight += _verticalSprite.Height;
             }
             ActualHeight += _bottomLeftSprite.Height;
 
+            _startScreenBackgroundPosition = Position;
+
             //ActualWidth = ActualWidth - (_topLeftSprite.Width);
             //ActualHeight = ActualHeight - (_topLeftSprite.Height * 2);
+            }
+
+        private void CreateBackgroundRectangleAndTexture2D()
+        {
+            _backgroundRectangle = new Rectangle((int) Position.X, (int) Position.Y, ActualWidth - _topLeftSprite.Width, ActualHeight - _topLeftSprite.Height);
+
+            _startScreenBackgroundTexture2D = new Texture2D(_graphics.GraphicsDevice, 1, 1);
+            _startScreenBackgroundTexture2D.SetData(new [] { Color.White });
         }
 
         public void Update(GameTime gameTime)
@@ -113,10 +131,13 @@ namespace MonoSnake.UI
                 this._leftUiObjectColumn.Add(uiObject);
                 nextLeftColumnPosition = new Vector2(uiObject.Position.X, uiObject.Position.Y - _verticalSprite.Height);
             }
+
+            CreateBackgroundRectangleAndTexture2D();
         }
 
         public void Draw(SpriteBatch spriteBatch, GameTime gameTime)
         {
+            spriteBatch.Draw(_startScreenBackgroundTexture2D, _backgroundRectangle, _backgroundColor);
             _topLeftUiObject.Draw(spriteBatch, gameTime);
             foreach (UiObject uiObject in _topUiObjectRow)
             {
