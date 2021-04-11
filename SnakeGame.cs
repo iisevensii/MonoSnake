@@ -385,7 +385,6 @@ namespace MonoSnake
 
             _spriteBatch.Begin();
 
-            _drawStartScreenFrame = true;
             if(_drawStartScreenFrame)
                 DrawStartScreenUiFrame(gameTime);
 
