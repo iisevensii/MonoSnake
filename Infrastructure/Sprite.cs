@@ -5,7 +5,7 @@ namespace MonoSnake.Infrastructure
 {
     public class Sprite
     {
-        private Texture2D SpriteSheet { get; }
+        public Texture2D SpriteSheet { get; }
         public int Top { get; }
         public int Left { get; }
         public int Width { get; }

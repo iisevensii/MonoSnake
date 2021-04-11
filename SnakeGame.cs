@@ -9,6 +9,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using MonoSnake.GameObjects;
 using MonoSnake.Infrastructure;
+using MonoSnake.UI;
 
 namespace MonoSnake
 {
@@ -49,6 +50,12 @@ namespace MonoSnake
         private bool _applePlaced;
         private bool _isGameOver;
         private bool _showFpsMonitor = false;
+        private Sprite _snakeCwUpToRightCcwLeftToDownSprite;
+        private Sprite _snakeCwRightToDownCcwUpToLeftSprite;
+        private Sprite _snakeCwDownToLeftCcwRightToUpSprite;
+        private Sprite _snakeCwLeftToUpCcwDownToRightSprite;
+        private Sprite _snakeStraightBodySprite;
+        private UiFrame _uiFrame;
         const string GAME_OVER_STRING = "Game Over";
 
         const float GAME_OVER_FONT_SCALE = 1f;
@@ -131,27 +138,26 @@ namespace MonoSnake
             {
                 Origin = new Vector2(DEFAULT_SPRITE_HALF_SIZE, DEFAULT_SPRITE_HALF_SIZE)
             };
-            Sprite snakeStraightBodySprite = new Sprite(_snakeSegmentsSpriteSheet, 84, DEFAULT_SPRITE_SIZE, DEFAULT_SPRITE_SIZE,
+            _snakeStraightBodySprite = new Sprite(_snakeSegmentsSpriteSheet, 84, DEFAULT_SPRITE_SIZE, DEFAULT_SPRITE_SIZE,
                 DEFAULT_SPRITE_SIZE)
             {
                 Origin = new Vector2(DEFAULT_SPRITE_HALF_SIZE, DEFAULT_SPRITE_HALF_SIZE)
             };
-            Sprite snakeCW_UpToRight_CCW_LeftToDownSprite =
-                new Sprite(_snakeSegmentsSpriteSheet, 0, 0, DEFAULT_SPRITE_SIZE, DEFAULT_SPRITE_SIZE)
-                {
-                    Origin = new Vector2(DEFAULT_SPRITE_HALF_SIZE, DEFAULT_SPRITE_HALF_SIZE)
-                };
-            Sprite snakeCW_RightToDown_CCW_UpToLeftSprite = new Sprite(_snakeSegmentsSpriteSheet, 0, DEFAULT_SPRITE_SIZE,
+            _snakeCwUpToRightCcwLeftToDownSprite = new Sprite(_snakeSegmentsSpriteSheet, 0, 0, DEFAULT_SPRITE_SIZE, DEFAULT_SPRITE_SIZE)
+            {
+                Origin = new Vector2(DEFAULT_SPRITE_HALF_SIZE, DEFAULT_SPRITE_HALF_SIZE)
+            };
+            _snakeCwRightToDownCcwUpToLeftSprite = new Sprite(_snakeSegmentsSpriteSheet, 0, DEFAULT_SPRITE_SIZE,
                 DEFAULT_SPRITE_SIZE, DEFAULT_SPRITE_SIZE)
             {
                 Origin = new Vector2(DEFAULT_SPRITE_HALF_SIZE, DEFAULT_SPRITE_HALF_SIZE)
             };
-            Sprite snakeCW_DownToLeft_CCW_RightToUpSprite = new Sprite(_snakeSegmentsSpriteSheet, DEFAULT_SPRITE_SIZE,
+            _snakeCwDownToLeftCcwRightToUpSprite = new Sprite(_snakeSegmentsSpriteSheet, DEFAULT_SPRITE_SIZE,
                 DEFAULT_SPRITE_SIZE, DEFAULT_SPRITE_SIZE, DEFAULT_SPRITE_SIZE)
             {
                 Origin = new Vector2(DEFAULT_SPRITE_HALF_SIZE, DEFAULT_SPRITE_HALF_SIZE)
             };
-            Sprite snakeCW_LeftToUp_CCW_DownToRightSprite = new Sprite(_snakeSegmentsSpriteSheet, DEFAULT_SPRITE_SIZE, 0,
+            _snakeCwLeftToUpCcwDownToRightSprite = new Sprite(_snakeSegmentsSpriteSheet, DEFAULT_SPRITE_SIZE, 0,
                 DEFAULT_SPRITE_SIZE, DEFAULT_SPRITE_SIZE)
             {
                 Origin = new Vector2(DEFAULT_SPRITE_HALF_SIZE, DEFAULT_SPRITE_HALF_SIZE)
@@ -172,11 +178,11 @@ namespace MonoSnake
                 _graphics.PreferredBackBufferHeight,
                 _scoreBoardFont,
                 snakeTailSprite,
-                snakeStraightBodySprite,
-                snakeCW_UpToRight_CCW_LeftToDownSprite,
-                snakeCW_RightToDown_CCW_UpToLeftSprite,
-                snakeCW_DownToLeft_CCW_RightToUpSprite,
-                snakeCW_LeftToUp_CCW_DownToRightSprite
+                _snakeStraightBodySprite,
+                _snakeCwUpToRightCcwLeftToDownSprite,
+                _snakeCwRightToDownCcwUpToLeftSprite,
+                _snakeCwDownToLeftCcwRightToUpSprite,
+                _snakeCwLeftToUpCcwDownToRightSprite
             );
         }
 
@@ -333,6 +339,18 @@ namespace MonoSnake
                 _applePlaced = true;
                 _appleEaten = false;
             }
+
+            _uiFrame = new UiFrame
+            (new Vector2(20, 20),
+                15,
+                15,
+                _snakeStraightBodySprite,
+                _snakeStraightBodySprite,
+                _snakeCwUpToRightCcwLeftToDownSprite,
+                _snakeCwRightToDownCcwUpToLeftSprite,
+                _snakeCwDownToLeftCcwRightToUpSprite,
+                _snakeCwLeftToUpCcwDownToRightSprite
+            );
         }
 
         protected override void Draw(GameTime gameTime)
@@ -354,6 +372,8 @@ namespace MonoSnake
             GraphicsDevice.Clear(Color.Black);
 
             _spriteBatch.Begin();
+
+            //DrawUiFrame(gameTime);
 
             if(_showFpsMonitor)
                 _spriteBatch.DrawString
@@ -408,6 +428,11 @@ namespace MonoSnake
             _spriteBatch.End();
 
             base.Draw(gameTime);
+        }
+
+        private void DrawUiFrame(GameTime gameTime)
+        {
+            _uiFrame.Draw(_spriteBatch, gameTime);
         }
 
         private void DrawGameOverText()
