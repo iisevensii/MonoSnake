@@ -27,6 +27,7 @@ namespace MonoSnake
         private SnakeHead _snakeHeadGameObject;
 
         private InputController _inputController;
+        private SpriteFont _logoFont;
         private SpriteFont _gameOverFont;
         private SpriteFont _scoreBoardFont;
         private Texture2D _appleTexture;
@@ -57,7 +58,9 @@ namespace MonoSnake
         private Sprite _snakeStraightBodySprite;
         private UiFrame _startScreenUiFrame;
         private bool _drawStartScreenFrame = false;
-        private const int START_SCREEN_TRANSPARENCY = 255;
+        private bool _atMainMenu = true;
+        private const string MONO_SNAKE_STRING = "MonoSnake";
+        private const int START_SCREEN_TRANSPARENCY = 200;
         const string GAME_OVER_STRING = "Game Over";
 
         const float GAME_OVER_FONT_SCALE = 1f;
@@ -221,8 +224,9 @@ namespace MonoSnake
         private void LoadAssets()
         {
             // Load Font
-            _scoreBoardFont = Content.Load<SpriteFont>("score");
+            _logoFont = Content.Load<SpriteFont>("Logo");
             _gameOverFont = Content.Load<SpriteFont>("GameOver");
+            _scoreBoardFont = Content.Load<SpriteFont>("score");
             // Load Textures
             _appleTexture = Content.Load<Texture2D>(APPLE_SPRITE_SHEET_NAME);
             _snakeHeadSpriteSheet = Content.Load<Texture2D>(SNAKE_HEAD_SPRITE_SHEET_NAME);
@@ -386,7 +390,11 @@ namespace MonoSnake
             _frameCounter.Update(deltaTime);
 
             var fps = $"FPS: {_frameCounter.CurrentFramesPerSecond}";
+            
+            if (_atMainMenu)
+            {
 
+            }
             if (_isGameOver)
             {
                 _spriteBatch.Begin();
@@ -450,7 +458,10 @@ namespace MonoSnake
             }
 
             if (_drawStartScreenFrame)
+            {
                 DrawStartScreenUiFrame(gameTime);
+                DrawLogoText();
+            }
 
             _spriteBatch.End();
 
@@ -460,6 +471,27 @@ namespace MonoSnake
         private void DrawStartScreenUiFrame(GameTime gameTime)
         {
             _startScreenUiFrame.Draw(_spriteBatch, gameTime);
+        }
+
+        private void DrawLogoText()
+        {
+            Vector2 logoStringWidth = _logoFont.MeasureString(MONO_SNAKE_STRING);
+            float logoX = _startScreenUiFrame.Position.X + _startScreenUiFrame.ActualWidth /2 - logoStringWidth.X / 2 - _snakeCwUpToRightCcwLeftToDownSprite.Width /2;
+            float logoY = _startScreenUiFrame.Position.Y / 2 + logoStringWidth.Y;
+            Vector2 logoPosition = new Vector2(logoX, logoY);
+
+            _spriteBatch.DrawString
+            (
+                _logoFont,
+                MONO_SNAKE_STRING,
+                logoPosition,
+                Color.White,
+                0f,
+                Vector2.Zero,
+                1f,
+                SpriteEffects.None,
+                0f
+            );
         }
 
         private void DrawGameOverText()

@@ -33,7 +33,7 @@ namespace MonoSnake.UI
         private Color _backgroundColor;
         private GraphicsDeviceManager _graphics;
         private const float _rotate90CW = (float)(90 * Math.PI / 180);
-        private Texture2D _startScreenBackgroundTexture2D;
+        private Texture2D _backgroundTexture2D;
         private Color[] _startScreenBackgroundColors;
         protected Vector2 _startScreenBackgroundPosition;
         private Rectangle _backgroundRectangle;
@@ -79,17 +79,31 @@ namespace MonoSnake.UI
 
             //ActualWidth = ActualWidth - (_topLeftSprite.Width);
             //ActualHeight = ActualHeight - (_topLeftSprite.Height * 2);
-            }
+        }
 
-        private void CreateBackgroundRectangleAndTexture2D()
+        protected virtual void Initialize()
+        {
+            InitializeBorderObjects();
+
+            CreateBackgroundRectangleAndTexture2D();
+        }
+
+        protected void CreateBackgroundRectangleAndTexture2D()
         {
             _backgroundRectangle = new Rectangle((int) Position.X, (int) Position.Y, ActualWidth - _topLeftSprite.Width, ActualHeight - _topLeftSprite.Height);
 
-            _startScreenBackgroundTexture2D = new Texture2D(_graphics.GraphicsDevice, 1, 1);
-            _startScreenBackgroundTexture2D.SetData(new [] { Color.White });
+            _backgroundTexture2D = new Texture2D(_graphics.GraphicsDevice, 1, 1);
+            _backgroundTexture2D.SetData(new [] { Color.White });
         }
 
         public void Update(GameTime gameTime)
+        {
+            InitializeBorderObjects();
+
+            CreateBackgroundRectangleAndTexture2D();
+        }
+
+        protected void InitializeBorderObjects()
         {
             _topLeftUiObject.Position = Position;
             Vector2 nextTopRowPosition = Position;
@@ -131,13 +145,11 @@ namespace MonoSnake.UI
                 this._leftUiObjectColumn.Add(uiObject);
                 nextLeftColumnPosition = new Vector2(uiObject.Position.X, uiObject.Position.Y - _verticalSprite.Height);
             }
-
-            CreateBackgroundRectangleAndTexture2D();
         }
 
         public void Draw(SpriteBatch spriteBatch, GameTime gameTime)
         {
-            spriteBatch.Draw(_startScreenBackgroundTexture2D, _backgroundRectangle, _backgroundColor);
+            spriteBatch.Draw(_backgroundTexture2D, _backgroundRectangle, _backgroundColor);
             _topLeftUiObject.Draw(spriteBatch, gameTime);
             foreach (UiObject uiObject in _topUiObjectRow)
             {

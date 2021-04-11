@@ -59,6 +59,14 @@ namespace MonoSnake.UI
             _startScreenBackgroundPosition = Position;
 
             Position = new Vector2(parentWidth / 2 - this.ActualWidth / 2 + _topRightSprite.Width /2, parentHeight / 2 - this.ActualHeight / 2 + _topRightSprite.Width /2);
+            this.Initialize();
+        }
+
+        protected override void Initialize()
+        {
+            InitializeBorderObjects();
+
+            CreateBackgroundRectangleAndTexture2D();
         }
     }
 }
