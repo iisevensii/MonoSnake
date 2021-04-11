@@ -57,7 +57,7 @@ namespace MonoSnake
         private Sprite _snakeCwLeftToUpCcwDownToRightSprite;
         private Sprite _snakeStraightBodySprite;
         private UiFrame _startScreenUiFrame;
-        private bool _drawStartScreenFrame = false;
+        private bool _atStartMenu = true;
         private bool _atMainMenu = true;
         private const string MONO_SNAKE_STRING = "MonoSnake";
         private const int START_SCREEN_TRANSPARENCY = 200;
@@ -199,7 +199,7 @@ namespace MonoSnake
             );
 
 
-            if (_drawStartScreenFrame)
+            if (_atStartMenu)
             {
                 //Vector2 startScreenUiFramePosition = new Vector2(SCREEN_WIDTH / 2 - _startScreenUiFrame.ActualWidth / 2 + DEFAULT_SPRITE_HALF_SIZE, SCREEN_HEIGHT / 2 - _startScreenUiFrame.ActualHeight / 2 + DEFAULT_SPRITE_HALF_SIZE);
                 _startScreenUiFrame = new CenteredUiFrame
@@ -267,7 +267,8 @@ namespace MonoSnake
                 return;
 
             // Update GameObjects
-            _snake.Update(gameTime);
+            if(!_atStartMenu)
+                _snake.Update(gameTime);
 
             _snakeHeadRectangle.X = (int)Math.Round(_snake.SnakeHead.Position.X - _snake.SnakeHead.Sprite.Width / 2f * _snake.SnakeHead.Sprite.Scale.X);
             _snakeHeadRectangle.Y = (int)Math.Round(_snake.SnakeHead.Position.Y - _snake.SnakeHead.Sprite.Height / 2f * _snake.SnakeHead.Sprite.Scale.Y);
@@ -300,7 +301,7 @@ namespace MonoSnake
                 GenerateApple();
             }
 
-            if (_drawStartScreenFrame)
+            if (_atStartMenu)
             {
                 _startScreenUiFrame.Update(gameTime);
             }
@@ -425,14 +426,17 @@ namespace MonoSnake
                 DrawGameOverText();
 
             // Draw Game Area
-            foreach (Vector2 outlinePixel in _gameAreaRectangle.OutlinePixels())
+            if(!_atStartMenu)
+                foreach (Vector2 outlinePixel in _gameAreaRectangle.OutlinePixels())
             {
                 _spriteBatch.Draw(_gameAreaRectangleTexture, outlinePixel, Color.Green);
             }
 
-            _snake.Draw(_spriteBatch, gameTime);
+            if(!_atStartMenu)
+                _snake.Draw(_spriteBatch, gameTime);
 
-            _appleGameObject.Draw(_spriteBatch, gameTime);
+            if(!_atStartMenu)
+                _appleGameObject.Draw(_spriteBatch, gameTime);
             
             if (_drawDiagnosticGrid)
             {
@@ -457,7 +461,7 @@ namespace MonoSnake
                 }
             }
 
-            if (_drawStartScreenFrame)
+            if (_atStartMenu)
             {
                 DrawStartScreenUiFrame(gameTime);
                 DrawLogoText();
