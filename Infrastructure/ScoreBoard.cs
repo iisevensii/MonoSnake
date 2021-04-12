@@ -55,11 +55,14 @@ namespace MonoSnake.Infrastructure
 
         public void AddHighScore(ScoreEntry scoreEntry)
         {
-            // Add new High Score
-            ScoreEntries.Add(scoreEntry);
+            if (ScoreEntries.Any(se => scoreEntry.Score > se.Score))
+            {
+                // Add new High Score
+                ScoreEntries.Add(scoreEntry);
+            }
 
             // Keep only the top 10 High Scores
-            ScoreEntries = ScoreEntries.OrderBy(s => s.Score).Take(10).ToList();
+            ScoreEntries = ScoreEntries.OrderByDescending(s => s.Score).Take(10).ToList();
         }
 }
 
