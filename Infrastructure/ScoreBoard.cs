@@ -10,9 +10,8 @@ namespace MonoSnake.Infrastructure
     public class ScoreBoard
     {
         private const string HIGH_SCORE_FILE_NAME = "HighScores.json";
-        private string _applicationPath;
-        private string _highScoreStoragePath;
-        private JsonSerializerOptions _jsonSerializerOptions;
+        private readonly string _highScoreStoragePath;
+        private readonly JsonSerializerOptions _jsonSerializerOptions;
 
         public int AllTimeHighScore { get; set; }
         public int CurrentScore { get; set; }
@@ -20,14 +19,13 @@ namespace MonoSnake.Infrastructure
 
         public ScoreBoard(string applicationPath)
         {
-            _applicationPath = applicationPath;
-            _highScoreStoragePath = Path.Combine(Path.GetDirectoryName(_applicationPath), HIGH_SCORE_FILE_NAME);
+            _highScoreStoragePath = Path.Combine(Path.GetDirectoryName(applicationPath), HIGH_SCORE_FILE_NAME);
             HighScores = LoadHighScores();
             _jsonSerializerOptions = new JsonSerializerOptions() {WriteIndented = true};
             
         }
 
-        public HighScores LoadHighScores()
+        private HighScores LoadHighScores()
         {
             if (File.Exists(_highScoreStoragePath))
             {
@@ -79,13 +77,8 @@ namespace MonoSnake.Infrastructure
 
     public class ScoreEntry
     {
-        public string Name { get; set; }
-        public int Score { get; set; }
-
-        public ScoreEntry()
-        {
-            
-        }
+        private string Name { get; }
+        public int Score { get; }
 
         public ScoreEntry(string name, int score)
         {
