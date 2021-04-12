@@ -12,9 +12,6 @@ namespace MonoSnake.Infrastructure
         private const string HIGH_SCORE_FILE_NAME = "HighScores.json";
         private readonly string _highScoreStoragePath;
         private readonly JsonSerializerOptions _jsonSerializerOptions;
-
-        public int AllTimeHighScore { get; set; }
-        public int CurrentScore { get; set; }
         public HighScores HighScores { get; set; }
 
         public ScoreBoard(string applicationPath)
