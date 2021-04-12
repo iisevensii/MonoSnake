@@ -46,7 +46,7 @@ namespace MonoSnake.Infrastructure
 
     public class HighScores
     {
-        private List<ScoreEntry> ScoreEntries { get; set; } = new List<ScoreEntry>();
+        public List<ScoreEntry> ScoreEntries { get; set; } = new List<ScoreEntry>();
 
         private IEnumerable<ScoreEntry> Top10OrderedScoreEntries()
         {
@@ -55,7 +55,7 @@ namespace MonoSnake.Infrastructure
 
         public void AddHighScore(ScoreEntry scoreEntry)
         {
-            if (ScoreEntries.Any(se => scoreEntry.Score > se.Score))
+            if (!ScoreEntries.Any() || ScoreEntries.Any(se => scoreEntry.Score > se.Score))
             {
                 // Add new High Score
                 ScoreEntries.Add(scoreEntry);
