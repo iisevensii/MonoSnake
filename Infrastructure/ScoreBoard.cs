@@ -46,11 +46,11 @@ namespace MonoSnake.Infrastructure
 
     public class HighScores
     {
-        public List<ScoreEntry> ScoreEntries { get; set; } = new List<ScoreEntry>();
+        private List<ScoreEntry> ScoreEntries { get; set; } = new List<ScoreEntry>();
 
-        public IEnumerable<ScoreEntry> OrderedScoreEntries()
+        private IEnumerable<ScoreEntry> Top10OrderedScoreEntries()
         {
-            return ScoreEntries.OrderBy(s => s.Score);
+            return ScoreEntries.OrderByDescending(s => s.Score).Take(10);
         }
 
         public void AddHighScore(ScoreEntry scoreEntry)
@@ -62,7 +62,7 @@ namespace MonoSnake.Infrastructure
             }
 
             // Keep only the top 10 High Scores
-            ScoreEntries = ScoreEntries.OrderByDescending(s => s.Score).Take(10).ToList();
+            ScoreEntries = Top10OrderedScoreEntries().ToList();
         }
 }
 
