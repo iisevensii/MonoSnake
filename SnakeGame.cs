@@ -29,6 +29,7 @@ namespace MonoSnake
         private InputController _inputController;
         private SpriteFont _logoFont;
         private SpriteFont _gameOverFont;
+        private SpriteFont _leaderboardFont;
         private SpriteFont _scoreBoardFont;
         private Texture2D _appleTexture;
         private Texture2D _snakeHeadSpriteSheet;
@@ -58,10 +59,12 @@ namespace MonoSnake
         private Sprite _snakeStraightBodySprite;
         private UiFrame _startScreenUiFrame;
         private bool _atStartMenu = true;
-        private bool _atMainMenu = true;
+        private bool _atHighScoreScreen = false;
+        private CenteredUiFrame _highScoreUiFrame;
         private const string MONO_SNAKE_STRING = "MonoSnake";
         private const int START_SCREEN_TRANSPARENCY = 200;
         const string GAME_OVER_STRING = "Game Over";
+        private const string LEADERBOARD_STRING = "Leaderboard";
 
         const float GAME_OVER_FONT_SCALE = 1f;
         private const int HIT_BOX_PADDING = 5;
@@ -135,6 +138,7 @@ namespace MonoSnake
             _inputController.RestartEvent += InputController_RestartEvent;
             GenerateGrid();
             _atStartMenu = false;
+            _atHighScoreScreen = false;
             _appleEaten = false;
             _applePlaced = false;
             GenerateApple();
@@ -216,7 +220,25 @@ namespace MonoSnake
                 _snakeCwLeftToUpCcwDownToRightSprite
             );
 
-
+            if (_atHighScoreScreen)
+            {
+                _highScoreUiFrame = new CenteredUiFrame
+                (
+                    _graphics,
+                    Vector2.Zero,
+                    18,
+                    18,
+                    SCREEN_WIDTH,
+                    SCREEN_HEIGHT,
+                    _snakeStraightBodySprite,
+                    _snakeStraightBodySprite,
+                    _snakeCwUpToRightCcwLeftToDownSprite,
+                    _snakeCwRightToDownCcwUpToLeftSprite,
+                    _snakeCwDownToLeftCcwRightToUpSprite,
+                    _snakeCwLeftToUpCcwDownToRightSprite,
+                    Color.FromNonPremultiplied(46, 51, 106, START_SCREEN_TRANSPARENCY)
+                );
+            }
             if (_atStartMenu)
             {
                 //Vector2 startScreenUiFramePosition = new Vector2(SCREEN_WIDTH / 2 - _startScreenUiFrame.ActualWidth / 2 + DEFAULT_SPRITE_HALF_SIZE, SCREEN_HEIGHT / 2 - _startScreenUiFrame.ActualHeight / 2 + DEFAULT_SPRITE_HALF_SIZE);
@@ -241,9 +263,10 @@ namespace MonoSnake
 
         private void LoadAssets()
         {
-            // Load Font
+            // Load Fonts
             _logoFont = Content.Load<SpriteFont>("Logo");
             _gameOverFont = Content.Load<SpriteFont>("GameOver");
+            _leaderboardFont = Content.Load<SpriteFont>("Arcade");
             _scoreBoardFont = Content.Load<SpriteFont>("score");
             // Load Textures
             _appleTexture = Content.Load<Texture2D>(APPLE_SPRITE_SHEET_NAME);
@@ -285,7 +308,7 @@ namespace MonoSnake
                 return;
 
             // Update GameObjects
-            if(!_atStartMenu)
+            if(!_atStartMenu && !_atHighScoreScreen)
                 _snake.Update(gameTime);
 
             _snakeHeadRectangle.X = (int)Math.Round(_snake.SnakeHead.Position.X - _snake.SnakeHead.Sprite.Width / 2f * _snake.SnakeHead.Sprite.Scale.X);
@@ -324,7 +347,10 @@ namespace MonoSnake
                 _startScreenUiFrame.Update(gameTime);
             }
 
-
+            if (_atHighScoreScreen)
+            {
+                _highScoreUiFrame.Update(gameTime);
+            }
             base.Update(gameTime);
         }
 
@@ -409,11 +435,7 @@ namespace MonoSnake
             _frameCounter.Update(deltaTime);
 
             var fps = $"FPS: {_frameCounter.CurrentFramesPerSecond}";
-            
-            if (_atMainMenu)
-            {
 
-            }
             if (_isGameOver)
             {
                 _spriteBatch.Begin();
@@ -444,16 +466,16 @@ namespace MonoSnake
                 DrawGameOverText();
 
             // Draw Game Area
-            if(!_atStartMenu)
+            if(!_atStartMenu && !_atHighScoreScreen)
                 foreach (Vector2 outlinePixel in _gameAreaRectangle.OutlinePixels())
             {
                 _spriteBatch.Draw(_gameAreaRectangleTexture, outlinePixel, Color.Green);
             }
 
-            if(!_atStartMenu)
+            if(!_atStartMenu && !_atHighScoreScreen)
                 _snake.Draw(_spriteBatch, gameTime);
 
-            if(!_atStartMenu)
+            if(!_atStartMenu && !_atHighScoreScreen)
                 _appleGameObject.Draw(_spriteBatch, gameTime);
             
             if (_drawDiagnosticGrid)
@@ -483,6 +505,12 @@ namespace MonoSnake
             {
                 DrawStartScreenUiFrame(gameTime);
                 DrawLogoText();
+                //DrawLeaderboardText();
+            }
+
+            if (_atHighScoreScreen)
+            {
+                DrawHighScoreUiFrame(gameTime);
             }
 
             _spriteBatch.End();
@@ -493,6 +521,11 @@ namespace MonoSnake
         private void DrawStartScreenUiFrame(GameTime gameTime)
         {
             _startScreenUiFrame.Draw(_spriteBatch, gameTime);
+        }
+
+        private void DrawHighScoreUiFrame(GameTime gameTime)
+        {
+            _highScoreUiFrame.Draw(_spriteBatch, gameTime);
         }
 
         private void DrawLogoText()
@@ -507,6 +540,27 @@ namespace MonoSnake
                 _logoFont,
                 MONO_SNAKE_STRING,
                 logoPosition,
+                Color.White,
+                0f,
+                Vector2.Zero,
+                1f,
+                SpriteEffects.None,
+                0f
+            );
+        }
+
+        private void DrawLeaderboardText()
+        {
+            Vector2 leaderboardStringWidth = _leaderboardFont.MeasureString(LEADERBOARD_STRING);
+            float leaderboardX = _startScreenUiFrame.Position.X + _startScreenUiFrame.ActualWidth / 2 - leaderboardStringWidth.X / 2 - _snakeCwUpToRightCcwLeftToDownSprite.Width / 2;
+            float leaderboardY = _startScreenUiFrame.Position.Y / 2 + leaderboardStringWidth.Y;
+            Vector2 leaderboardPosition = new Vector2(leaderboardX, leaderboardY);
+
+            _spriteBatch.DrawString
+            (
+                _leaderboardFont,
+                LEADERBOARD_STRING,
+                leaderboardPosition,
                 Color.White,
                 0f,
                 Vector2.Zero,
