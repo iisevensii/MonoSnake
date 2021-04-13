@@ -505,12 +505,12 @@ namespace MonoSnake
             {
                 DrawStartScreenUiFrame(gameTime);
                 DrawLogoText();
-                //DrawLeaderboardText();
             }
 
             if (_atHighScoreScreen)
             {
                 DrawHighScoreUiFrame(gameTime);
+                DrawLeaderboardText();
             }
 
             _spriteBatch.End();
@@ -552,8 +552,8 @@ namespace MonoSnake
         private void DrawLeaderboardText()
         {
             Vector2 leaderboardStringWidth = _leaderboardFont.MeasureString(LEADERBOARD_STRING);
-            float leaderboardX = _startScreenUiFrame.Position.X + _startScreenUiFrame.ActualWidth / 2 - leaderboardStringWidth.X / 2 - _snakeCwUpToRightCcwLeftToDownSprite.Width / 2;
-            float leaderboardY = _startScreenUiFrame.Position.Y / 2 + leaderboardStringWidth.Y;
+            float leaderboardX = _highScoreUiFrame.Position.X + _highScoreUiFrame.ActualWidth / 2 - leaderboardStringWidth.X / 2 - _snakeCwUpToRightCcwLeftToDownSprite.Width / 2;
+            float leaderboardY = _highScoreUiFrame.Position.Y / 2 + leaderboardStringWidth.Y;
             Vector2 leaderboardPosition = new Vector2(leaderboardX, leaderboardY);
 
             _spriteBatch.DrawString
