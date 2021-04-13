@@ -77,6 +77,11 @@ namespace MonoSnake.Infrastructure
         private string Name { get; }
         public int Score { get; }
 
+        public ScoreEntry()
+        {
+            
+        }
+
         public ScoreEntry(string name, int score)
         {
             Name = name;
