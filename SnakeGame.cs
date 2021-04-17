@@ -15,65 +15,14 @@ namespace MonoSnake
 {
     public class SnakeGame : Game
     {
-        private readonly GraphicsDeviceManager _graphics;
-        private SpriteBatch _spriteBatch;
-        private FrameCounter _frameCounter = new FrameCounter();
-
-        const int SCREEN_WIDTH = 780;
-        const int SCREEN_HEIGHT = 820;
-
-        // Game Objects
-        private Snake _snake;
-        private Apple _appleGameObject;
-        private SnakeHead _snakeHeadGameObject;
-        private ToggleUiButton _startScreenHighScoresToggleButton;
-
-        private InputController _inputController;
-        private SpriteFont _logoFont;
-        private SpriteFont _gameOverFont;
-        private SpriteFont _leaderboardFont;
-        private SpriteFont _scoreBoardFont;
-        private Texture2D _appleTexture;
-        private Texture2D _snakeHeadSpriteSheet;
-        private Texture2D _snakeSegmentsSpriteSheet;
-        private Texture2D _gameAreaRectangleTexture;
-        private Texture2D _snakeHeadRectangleTexture;
-        private Texture2D _startScreenButtonNormal;
-        private Texture2D _startScreenButtonHover;
-        private Texture2D _highScoresButtonNormal;
-        private Texture2D _highScoresButtonHover;
-        private SoundEffect _eatSoundEffect;
-        private SoundEffect[] _moveSoundEffects;
-        private Rectangle _gameAreaRectangle;
-        private Rectangle _snakeHeadRectangle;
-        private Rectangle _appleRectangle;
-        private List<Rectangle> _cells;
-        private List<Rectangle> _occupiedCells = new List<Rectangle>();
-        private List<Rectangle> _unOccupiedCells = new List<Rectangle>();
-        private ScoreBoard _scoreBoard;
-
-        // Draw diagnostic grid?
-        private bool _drawDiagnosticGrid = false;
-
-        private bool _appleEaten;
-        private bool _applePlaced;
-        private bool _isGameOver;
-        private bool _showFpsMonitor = false;
-        private Sprite _snakeCwUpToRightCcwLeftToDownSprite;
-        private Sprite _snakeCwRightToDownCcwUpToLeftSprite;
-        private Sprite _snakeCwDownToLeftCcwRightToUpSprite;
-        private Sprite _snakeCwLeftToUpCcwDownToRightSprite;
-        private Sprite _snakeStraightBodySprite;
-        private UiFrame _startScreenUiFrame;
-        private bool _atStartMenu = false;
-        private bool _atHighScoresScreen = true;
-        private CenteredUiFrame _highScoresUiFrame;
+        #region Constants
+        private const int SCREEN_WIDTH = 780;
+        private const int SCREEN_HEIGHT = 820;
+        private const string LEADERBOARD_STRING = "Leaderboard";
         private const string MONO_SNAKE_STRING = "MonoSnake";
         private const int START_SCREEN_TRANSPARENCY = 200;
-        const string GAME_OVER_STRING = "Game Over";
-        private const string LEADERBOARD_STRING = "Leaderboard";
-
-        const float GAME_OVER_FONT_SCALE = 1f;
+        private const string GAME_OVER_STRING = "Game Over";
+        private const float GAME_OVER_FONT_SCALE = 1f;
         private const int HIT_BOX_PADDING = 5;
         private const int DEFAULT_SPRITE_SIZE = 40;
         private const int DEFAULT_SPRITE_HALF_SIZE = 20;
@@ -83,6 +32,79 @@ namespace MonoSnake
         private const string EAT_SOUND_EFFECT_NAME = "eat";
         private const string HISS_SOUND_EFFECT_NAME = "hiss";
         private const string MOVE_SOUND_EFFECT_NAME = "sand_rattle";
+        #endregion Constants
+
+        #region Fields
+        private bool _drawDiagnosticGrid = false;
+        private bool _appleEaten;
+        private bool _applePlaced;
+        private bool _isGameOver;
+        private bool _showFpsMonitor = false;
+        private bool _atStartMenu = false;
+        private bool _atHighScoresScreen = true;
+
+            #region System
+            private readonly GraphicsDeviceManager _graphics;
+            private SpriteBatch _spriteBatch;
+            private InputController _inputController;
+            private readonly FrameCounter _frameCounter = new FrameCounter();
+            #endregion System
+
+            #region UI
+            // Draw diagnostic grid?
+            private UiFrame _startScreenUiFrame;
+            private CenteredUiFrame _highScoresUiFrame;
+            private ScoreBoard _scoreBoard;
+            #endregion UI
+
+            #region Sprites
+            private Sprite _snakeCwUpToRightCcwLeftToDownSprite;
+            private Sprite _snakeCwRightToDownCcwUpToLeftSprite;
+            private Sprite _snakeCwDownToLeftCcwRightToUpSprite;
+            private Sprite _snakeCwLeftToUpCcwDownToRightSprite;
+            private Sprite _snakeStraightBodySprite;
+            #endregion Sprites
+
+            #region GameObjects
+            private Snake _snake;
+            private Apple _appleGameObject;
+            private SnakeHead _snakeHeadGameObject;
+            private ToggleUiButton _startScreenHighScoresToggleButton;
+            #endregion GameObjects
+
+            #region SpriteFonts
+            private SpriteFont _logoFont;
+            private SpriteFont _gameOverFont;
+            private SpriteFont _leaderboardFont;
+            private SpriteFont _scoreBoardFont;
+            #endregion SpriteFonts
+
+            #region Textures
+            private Texture2D _appleTexture;
+            private Texture2D _snakeHeadSpriteSheet;
+            private Texture2D _snakeSegmentsSpriteSheet;
+            private Texture2D _gameAreaRectangleTexture;
+            private Texture2D _snakeHeadRectangleTexture;
+            private Texture2D _startScreenButtonNormal;
+            private Texture2D _startScreenButtonHover;
+            private Texture2D _highScoresButtonNormal;
+            private Texture2D _highScoresButtonHover;
+            #endregion Textures
+
+            #region SoundEffects
+            private SoundEffect _eatSoundEffect;
+            private SoundEffect[] _moveSoundEffects;
+            #endregion SoundEffects
+
+            #region Rectangles
+            private Rectangle _gameAreaRectangle;
+            private Rectangle _snakeHeadRectangle;
+            private Rectangle _appleRectangle;
+            private List<Rectangle> _cells;
+            private List<Rectangle> _occupiedCells = new List<Rectangle>();
+            private List<Rectangle> _unOccupiedCells = new List<Rectangle>();
+            #endregion Rectangles
+        #endregion Fields
 
         public SnakeGame()  
         {
