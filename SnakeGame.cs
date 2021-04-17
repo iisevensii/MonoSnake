@@ -140,7 +140,7 @@ namespace MonoSnake
             _inputController = new InputController(_snake);
             _inputController.StartEvent += InputController_StartEvent;
             _inputController.ExitEvent += InputController_ExitEvent;
-            _inputController.RestartEvent += InputController_HeadTurnEvent;
+            _inputController.RestartEvent += InputController_RestartEvent;
             _inputController.HeadTurnEvent += InputController_HeadTurnEvent;
             GenerateGrid();
             _atStartMenu = false;
