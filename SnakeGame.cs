@@ -93,6 +93,7 @@ namespace MonoSnake
 
             #region SoundEffects
             private SoundEffect _eatSoundEffect;
+            private readonly Random _randomSounds = new Random();
             private SoundEffect[] _moveSoundEffects;
             #endregion SoundEffects
 
@@ -112,6 +113,8 @@ namespace MonoSnake
             Content.RootDirectory = "Content";
             IsMouseVisible = true;
         }
+
+        #region Initialization
 
         protected override void Initialize()
         {
@@ -140,61 +143,26 @@ namespace MonoSnake
             InitializeInputController();
         }
 
-        private void InputController_StartEvent(object sender, EventArgs e)
+        private void LoadAssets()
         {
-            InitializeGameObjects();
-            InitializeInputController();
-            GenerateGrid();
-            _appleEaten = false;
-            _applePlaced = false;
-            GenerateApple();
-            _isGameOver = false;
-        }
-
-        private void InputController_RestartEvent(object sender, EventArgs e)
-        {
-            InitializeGameObjects();
-            InitializeInputController();
-            GenerateGrid();
-            _atStartMenu = false;
-            _atHighScoresScreen = false;
-            _appleEaten = false;
-            _applePlaced = false;
-            GenerateApple();
-            _isGameOver = false;
-        }
-
-        private void InitializeInputController()
-        {
-            _inputController = new InputController(_snake);
-            _inputController.StartEvent += InputController_StartEvent;
-            _inputController.ExitEvent += InputController_ExitEvent;
-            _inputController.RestartEvent += InputController_RestartEvent;
-            _inputController.HeadTurnEvent += InputController_HeadTurnEvent;
-        }
-
-        private void InputController_ExitEvent(object sender, EventArgs e)
-        {
-            Exit();
-        }
-
-        private Random random = new Random();
-        private void InputController_HeadTurnEvent(object sender, EventArgs e)
-        {
-            if (_moveSoundEffects != null)
-            {
-                int roll = random.Next(1, 101);
-                if (roll <= 55) //55% chance
-                {
-                    //pick either a hiss or a sand shuffle (or whatever else we put in the array)
-                    int i = random.Next(0, _moveSoundEffects.Length);
-                    //randomly changing the pitch is great way to trick
-                    //player's into not hating the same sound repeated
-                    double randomAmplify = random.NextDouble() - 0.5;
-
-                    _moveSoundEffects[i].Play(1f, (float)randomAmplify, 0f);
-                }
-            }
+            // Load Fonts
+            _logoFont = Content.Load<SpriteFont>("Logo");
+            _gameOverFont = Content.Load<SpriteFont>("GameOver");
+            _leaderboardFont = Content.Load<SpriteFont>("Arcade");
+            _scoreBoardFont = Content.Load<SpriteFont>("score");
+            // Load Textures
+            _appleTexture = Content.Load<Texture2D>(APPLE_SPRITE_SHEET_NAME);
+            _snakeHeadSpriteSheet = Content.Load<Texture2D>(SNAKE_HEAD_SPRITE_SHEET_NAME);
+            _snakeSegmentsSpriteSheet = Content.Load<Texture2D>(SNAKE_SEGMENTS_SPRITE_SHEET_NAME);
+            _eatSoundEffect = Content.Load<SoundEffect>(EAT_SOUND_EFFECT_NAME);
+            _startScreenButtonNormal = Content.Load<Texture2D>("Gear");
+            _startScreenButtonHover = Content.Load<Texture2D>("GearHover");
+            _highScoresButtonNormal = Content.Load<Texture2D>("Ranking");
+            _highScoresButtonHover = Content.Load<Texture2D>("RankingHover");
+            _moveSoundEffects = new SoundEffect[] {
+                Content.Load<SoundEffect>(HISS_SOUND_EFFECT_NAME),
+                Content.Load<SoundEffect>(MOVE_SOUND_EFFECT_NAME)
+            };
         }
 
         private void InitializeGameObjects()
@@ -204,11 +172,15 @@ namespace MonoSnake
             {
                 Origin = new Vector2(_appleTexture.Width / 2f, _appleTexture.Height / 2f)
             };
+
+            #region PositionedTextureSprites
+
             PositionedTexture2D headPositionedTexture2D = new PositionedTexture2D(_snakeHeadSpriteSheet, 1, 0, 0);
             Sprite snakeHeadSprite = new Sprite(headPositionedTexture2D, DEFAULT_SPRITE_SIZE, DEFAULT_SPRITE_SIZE)
             {
                 Origin = new Vector2(DEFAULT_SPRITE_HALF_SIZE, DEFAULT_SPRITE_HALF_SIZE)
             };
+
             PositionedTexture2D tailPositionedTexture2D = new PositionedTexture2D(_snakeSegmentsSpriteSheet, 1, 0, 2);
             Sprite snakeTailSprite = new Sprite(tailPositionedTexture2D, DEFAULT_SPRITE_SIZE, DEFAULT_SPRITE_SIZE)
             {
@@ -216,7 +188,7 @@ namespace MonoSnake
             };
 
             PositionedTexture2D straightBodyPositionedTexture2D = new PositionedTexture2D(_snakeSegmentsSpriteSheet, 1, 1, 2);
-            _snakeStraightBodySprite = new Sprite(straightBodyPositionedTexture2D,DEFAULT_SPRITE_SIZE, DEFAULT_SPRITE_SIZE)
+            _snakeStraightBodySprite = new Sprite(straightBodyPositionedTexture2D, DEFAULT_SPRITE_SIZE, DEFAULT_SPRITE_SIZE)
             {
                 Origin = new Vector2(DEFAULT_SPRITE_HALF_SIZE, DEFAULT_SPRITE_HALF_SIZE)
             };
@@ -226,7 +198,7 @@ namespace MonoSnake
             {
                 Origin = new Vector2(DEFAULT_SPRITE_HALF_SIZE, DEFAULT_SPRITE_HALF_SIZE)
             };
-            
+
             PositionedTexture2D snakeCwRightToDownCcwUpToLeftPositionedTexture2D = new PositionedTexture2D(_snakeSegmentsSpriteSheet, 1, 1, 0);
             _snakeCwRightToDownCcwUpToLeftSprite = new Sprite(snakeCwRightToDownCcwUpToLeftPositionedTexture2D, DEFAULT_SPRITE_SIZE, DEFAULT_SPRITE_SIZE)
             {
@@ -245,12 +217,7 @@ namespace MonoSnake
                 Origin = new Vector2(DEFAULT_SPRITE_HALF_SIZE, DEFAULT_SPRITE_HALF_SIZE)
             };
 
-            Sprite startScreenButtonNormal = new Sprite(_startScreenButtonNormal, 0, 0, 114, 114);
-            Sprite startScreenButtonHover = new Sprite(_startScreenButtonHover, 0, 0, 114, 114);
-            Sprite highScoresButtonNormal = new Sprite(_highScoresButtonNormal, 0, 0, 114, 114);
-            Sprite highScoresButtonHover = new Sprite(_highScoresButtonHover, 0, 0, 114, 114);
-
-            _startScreenHighScoresToggleButton = new ToggleUiButton(startScreenButtonNormal, startScreenButtonHover, highScoresButtonNormal, highScoresButtonHover, new Vector2(0, 0), 0f);
+            #endregion PositionedTextureSprites
 
             // Create GameObjects
             _snakeHeadGameObject = new SnakeHead(snakeHeadSprite, new Vector2(53, 83));
@@ -273,6 +240,24 @@ namespace MonoSnake
                 _snakeCwDownToLeftCcwRightToUpSprite,
                 _snakeCwLeftToUpCcwDownToRightSprite
             );
+
+            #region UI Initialization
+
+            Sprite startScreenButtonNormal = new Sprite(_startScreenButtonNormal, 0, 0, 114, 114);
+            Sprite startScreenButtonHover = new Sprite(_startScreenButtonHover, 0, 0, 114, 114);
+            Sprite highScoresButtonNormal = new Sprite(_highScoresButtonNormal, 0, 0, 114, 114);
+            Sprite highScoresButtonHover = new Sprite(_highScoresButtonHover, 0, 0, 114, 114);
+
+            _startScreenHighScoresToggleButton =
+                new ToggleUiButton
+                    (
+                        startScreenButtonNormal,
+                        startScreenButtonHover,
+                        highScoresButtonNormal,
+                        highScoresButtonHover,
+                        new Vector2(0, 0),
+                        0f
+                    );
 
             if (_atHighScoresScreen)
             {
@@ -313,36 +298,16 @@ namespace MonoSnake
                     Color.FromNonPremultiplied(46, 51, 106, START_SCREEN_TRANSPARENCY)
                 );
             }
-        }
 
-        private void LoadAssets()
-        {
-            // Load Fonts
-            _logoFont = Content.Load<SpriteFont>("Logo");
-            _gameOverFont = Content.Load<SpriteFont>("GameOver");
-            _leaderboardFont = Content.Load<SpriteFont>("Arcade");
-            _scoreBoardFont = Content.Load<SpriteFont>("score");
-            // Load Textures
-            _appleTexture = Content.Load<Texture2D>(APPLE_SPRITE_SHEET_NAME);
-            _snakeHeadSpriteSheet = Content.Load<Texture2D>(SNAKE_HEAD_SPRITE_SHEET_NAME);
-            _snakeSegmentsSpriteSheet = Content.Load<Texture2D>(SNAKE_SEGMENTS_SPRITE_SHEET_NAME);
-            _eatSoundEffect = Content.Load<SoundEffect>(EAT_SOUND_EFFECT_NAME);
-            _startScreenButtonNormal = Content.Load<Texture2D>("Gear");
-            _startScreenButtonHover = Content.Load<Texture2D>("GearHover");
-            _highScoresButtonNormal = Content.Load<Texture2D>("Ranking");
-            _highScoresButtonHover = Content.Load<Texture2D>("RankingHover");
-            _moveSoundEffects = new SoundEffect[] {
-                Content.Load<SoundEffect>(HISS_SOUND_EFFECT_NAME),
-                Content.Load<SoundEffect>(MOVE_SOUND_EFFECT_NAME)
-            };
+            #endregion UI Initialization
         }
 
         private void InitializeDiagnosticObjects()
         {
             _gameAreaRectangleTexture = new Texture2D(GraphicsDevice, 2, 2);
             _snakeHeadRectangleTexture = new Texture2D(GraphicsDevice, 1, 1);
-            _gameAreaRectangleTexture.SetData(new[] {Color.White, Color.White, Color.White, Color.White,});
-            _snakeHeadRectangleTexture.SetData(new[] {Color.White});
+            _gameAreaRectangleTexture.SetData(new[] { Color.White, Color.White, Color.White, Color.White, });
+            _snakeHeadRectangleTexture.SetData(new[] { Color.White });
             _gameAreaRectangle = new Rectangle
             (
                 20,
@@ -352,80 +317,76 @@ namespace MonoSnake
             );
             _snakeHeadRectangle = new Rectangle
             (
-                (int) Math.Round(_snake.SnakeHead.Position.X -
-                                 _snake.SnakeHead.Sprite.Width / 2f * _snake.SnakeHead.Sprite.Scale.X) - HIT_BOX_PADDING,
-                (int) Math.Round(_snake.SnakeHead.Position.Y -
-                                 _snake.SnakeHead.Sprite.Height / 2f * _snake.SnakeHead.Sprite.Scale.Y) - HIT_BOX_PADDING,
-                (int) (_snake.SnakeHead.Sprite.Width * _snake.SnakeHead.Sprite.Scale.X),
-                (int) (_snake.SnakeHead.Sprite.Height * _snake.SnakeHead.Sprite.Scale.Y)
+                (int)Math.Round(_snake.SnakeHead.Position.X -
+                                _snake.SnakeHead.Sprite.Width / 2f * _snake.SnakeHead.Sprite.Scale.X) - HIT_BOX_PADDING,
+                (int)Math.Round(_snake.SnakeHead.Position.Y -
+                                _snake.SnakeHead.Sprite.Height / 2f * _snake.SnakeHead.Sprite.Scale.Y) - HIT_BOX_PADDING,
+                (int)(_snake.SnakeHead.Sprite.Width * _snake.SnakeHead.Sprite.Scale.X),
+                (int)(_snake.SnakeHead.Sprite.Height * _snake.SnakeHead.Sprite.Scale.Y)
             );
         }
 
-        protected override void Update(GameTime gameTime)
+        #endregion Initialization
+
+        #region Input
+
+        private void InitializeInputController()
         {
-            // Process Input
-            _inputController.ProcessInput();
+            _inputController = new InputController(_snake);
+            _inputController.StartEvent += InputController_StartEvent;
+            _inputController.ExitEvent += InputController_ExitEvent;
+            _inputController.RestartEvent += InputController_RestartEvent;
+            _inputController.HeadTurnEvent += InputController_HeadTurnEvent;
+        }
 
-            if (_isGameOver)
-                return;
-
-            // Update GameObjects
-            if(!_atStartMenu && !_atHighScoresScreen)
-                _snake.Update(gameTime);
-
-            _snakeHeadRectangle.X = (int)Math.Round(_snake.SnakeHead.Position.X - _snake.SnakeHead.Sprite.Width / 2f * _snake.SnakeHead.Sprite.Scale.X);
-            _snakeHeadRectangle.Y = (int)Math.Round(_snake.SnakeHead.Position.Y - _snake.SnakeHead.Sprite.Height / 2f * _snake.SnakeHead.Sprite.Scale.Y);
-
-            // Hit edge of play area
-            if (!_gameAreaRectangle.Contains(_snake.SnakeHead.Position))
-            {
-                // GAME OVER!
-                EndGameAndRecordScore();
-            }
-
-            if (_snake.SnakeSegments.Any(s =>
-                s.Position.X == _snake.SnakeHead.Position.X && s.Position.Y == _snake.SnakeHead.Position.Y))
-            {
-                EndGameAndRecordScore();
-            }
-
-            if (_snakeHeadRectangle.Intersects(_appleRectangle))
-            {
-                _appleEaten = true;
-                _applePlaced = false;
-                _eatSoundEffect.Play(1f, 0f, 0f);
-                _snake.AddSegment();
-            }
-
+        private void InputController_StartEvent(object sender, EventArgs e)
+        {
+            InitializeGameObjects();
+            InitializeInputController();
             GenerateGrid();
-
-            if (_appleEaten)
-            {
-                GenerateApple();
-            }
-
-            if (_atStartMenu)
-            {
-                _startScreenUiFrame.Update(gameTime);
-            }
-
-            if (_atHighScoresScreen)
-            {
-                _highScoresUiFrame.Update(gameTime);
-            }
-
-            _startScreenHighScoresToggleButton.Update(gameTime);
-            base.Update(gameTime);
+            _appleEaten = false;
+            _applePlaced = false;
+            GenerateApple();
+            _isGameOver = false;
         }
 
-        private void EndGameAndRecordScore()
+        private void InputController_RestartEvent(object sender, EventArgs e)
         {
-            _scoreBoard.HighScores.AddHighScore(new ScoreEntry("SeVeN", _snake.Score));
-
-            _scoreBoard.SaveHighScores();
-
-            _isGameOver = true;
+            InitializeGameObjects();
+            InitializeInputController();
+            GenerateGrid();
+            _atStartMenu = false;
+            _atHighScoresScreen = false;
+            _appleEaten = false;
+            _applePlaced = false;
+            GenerateApple();
+            _isGameOver = false;
         }
+
+        private void InputController_ExitEvent(object sender, EventArgs e)
+        {
+            Exit();
+        }
+
+        private void InputController_HeadTurnEvent(object sender, EventArgs e)
+        {
+            if (_moveSoundEffects != null)
+            {
+                int roll = _randomSounds.Next(1, 101);
+                if (roll <= 55) //55% chance
+                {
+                    //pick either a hiss or a sand shuffle (or whatever else we put in the array)
+                    int i = _randomSounds.Next(0, _moveSoundEffects.Length);
+                    //randomly changing the pitch is great way to trick
+                    //player's into not hating the same sound repeated
+                    double randomAmplify = _randomSounds.NextDouble() - 0.5;
+
+                    _moveSoundEffects[i].Play(1f, (float)randomAmplify, 0f);
+                }
+            }
+        }
+
+        #endregion Input
 
         private void GenerateGrid()
         {
@@ -479,12 +440,12 @@ namespace MonoSnake
 
                 _appleRectangle = new Rectangle
                 (
-                    (int) Math.Round(_appleGameObject.Position.X -
+                    (int)Math.Round(_appleGameObject.Position.X -
                                      _appleGameObject.Sprite.Width / 2f * _appleGameObject.Sprite.Scale.X) - HIT_BOX_PADDING,
-                    (int) Math.Round(_appleGameObject.Position.Y -
+                    (int)Math.Round(_appleGameObject.Position.Y -
                                      _appleGameObject.Sprite.Height / 2f * _appleGameObject.Sprite.Scale.Y) - HIT_BOX_PADDING,
-                    (int) (_appleGameObject.Sprite.Width * _appleGameObject.Sprite.Scale.X) + HIT_BOX_PADDING * 2,
-                    (int) (_appleGameObject.Sprite.Height * _appleGameObject.Sprite.Scale.Y) + HIT_BOX_PADDING * 2
+                    (int)(_appleGameObject.Sprite.Width * _appleGameObject.Sprite.Scale.X) + HIT_BOX_PADDING * 2,
+                    (int)(_appleGameObject.Sprite.Height * _appleGameObject.Sprite.Scale.Y) + HIT_BOX_PADDING * 2
                 );
 
                 _applePlaced = true;
@@ -492,98 +453,17 @@ namespace MonoSnake
             }
         }
 
-        protected override void Draw(GameTime gameTime)
+        private void EndGameAndRecordScore()
         {
-            var deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
+            _scoreBoard.HighScores.AddHighScore(new ScoreEntry("SeVeN", _snake.Score));
 
-            _frameCounter.Update(deltaTime);
+            _scoreBoard.SaveHighScores();
 
-            var fps = $"FPS: {_frameCounter.CurrentFramesPerSecond}";
-
-            if (_isGameOver)
-            {
-                _spriteBatch.Begin();
-                DrawGameOverText();
-                _spriteBatch.End();
-                return;
-            }
-
-            GraphicsDevice.Clear(Color.Black);
-
-            _spriteBatch.Begin();
-
-            if (_showFpsMonitor)
-                _spriteBatch.DrawString
-                    (
-                        _scoreBoardFont,
-                        fps,
-                        new Vector2(20, 10),
-                        Color.Blue,
-                        0f,
-                        Vector2.Zero,
-                        new Vector2(2, 2),
-                        SpriteEffects.None,
-                    0f
-                    );
-
-            if (_isGameOver)
-                DrawGameOverText();
-
-            // Draw Game Area
-            if(!_atStartMenu && !_atHighScoresScreen)
-                foreach (Vector2 outlinePixel in _gameAreaRectangle.OutlinePixels())
-                {
-                    _spriteBatch.Draw(_gameAreaRectangleTexture, outlinePixel, Color.Green);
-                }
-
-            if(!_atStartMenu && !_atHighScoresScreen)
-                _snake.Draw(_spriteBatch, gameTime);
-
-            if(!_atStartMenu && !_atHighScoresScreen)
-                _appleGameObject.Draw(_spriteBatch, gameTime);
-            
-            if (_drawDiagnosticGrid)
-            {
-                foreach (Rectangle rectangle in _cells)
-                {
-                    foreach (Vector2 outlinePixel in rectangle.OutlinePixels())
-                    {
-                        _spriteBatch.Draw(_snakeHeadRectangleTexture, outlinePixel, Color.Blue);
-                    }
-                }
-
-                // Rectangle around Snake Head
-                foreach (Vector2 outlinePixel in _snakeHeadRectangle.OutlinePixels())
-                {
-                    _spriteBatch.Draw(_snakeHeadRectangleTexture, outlinePixel, Color.Red);
-                }
-
-                // Rectangle around Apple
-                foreach (Vector2 outlinePixel in _appleRectangle.OutlinePixels())
-                {
-                    _spriteBatch.Draw(_snakeHeadRectangleTexture, outlinePixel, Color.Red);
-                }
-            }
-
-            if (_atStartMenu)
-            {
-                DrawStartScreenUiFrame(gameTime);
-                DrawLogoText();
-            }
-
-            if (_atHighScoresScreen)
-            {
-                DrawHighScoresUiFrame(gameTime);
-                DrawLeaderboardText();
-            }
-
-            //_startScreenHighScoresToggleButton.Draw(_spriteBatch, gameTime);
-
-            _spriteBatch.End();
-
-            base.Draw(gameTime);
+            _isGameOver = true;
         }
-        
+
+        #region UIDrawMethods
+
         private void DrawStartScreenUiFrame(GameTime gameTime)
         {
             _startScreenUiFrame.Draw(_spriteBatch, gameTime);
@@ -656,6 +536,157 @@ namespace MonoSnake
                 SpriteEffects.None,
                 0f
             );
+        }
+
+        #endregion UIDrawMethods
+
+        protected override void Update(GameTime gameTime)
+        {
+            // Process Input
+            _inputController.ProcessInput();
+
+            if (_isGameOver)
+                return;
+
+            // Update GameObjects
+            if (!_atStartMenu && !_atHighScoresScreen)
+                _snake.Update(gameTime);
+
+            _snakeHeadRectangle.X = (int)Math.Round(_snake.SnakeHead.Position.X - _snake.SnakeHead.Sprite.Width / 2f * _snake.SnakeHead.Sprite.Scale.X);
+            _snakeHeadRectangle.Y = (int)Math.Round(_snake.SnakeHead.Position.Y - _snake.SnakeHead.Sprite.Height / 2f * _snake.SnakeHead.Sprite.Scale.Y);
+
+            // Hit edge of play area
+            if (!_gameAreaRectangle.Contains(_snake.SnakeHead.Position))
+            {
+                // GAME OVER!
+                EndGameAndRecordScore();
+            }
+
+            if (_snake.SnakeSegments.Any(s =>
+                s.Position.X == _snake.SnakeHead.Position.X && s.Position.Y == _snake.SnakeHead.Position.Y))
+            {
+                EndGameAndRecordScore();
+            }
+
+            if (_snakeHeadRectangle.Intersects(_appleRectangle))
+            {
+                _appleEaten = true;
+                _applePlaced = false;
+                _eatSoundEffect.Play(1f, 0f, 0f);
+                _snake.AddSegment();
+            }
+
+            GenerateGrid();
+
+            if (_appleEaten)
+            {
+                GenerateApple();
+            }
+
+            if (_atStartMenu)
+            {
+                _startScreenUiFrame.Update(gameTime);
+            }
+
+            if (_atHighScoresScreen)
+            {
+                _highScoresUiFrame.Update(gameTime);
+            }
+
+            _startScreenHighScoresToggleButton.Update(gameTime);
+            base.Update(gameTime);
+        }
+
+        protected override void Draw(GameTime gameTime)
+        {
+            var deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
+
+            _frameCounter.Update(deltaTime);
+
+            var fps = $"FPS: {_frameCounter.CurrentFramesPerSecond}";
+
+            if (_isGameOver)
+            {
+                _spriteBatch.Begin();
+                DrawGameOverText();
+                _spriteBatch.End();
+                return;
+            }
+
+            GraphicsDevice.Clear(Color.Black);
+
+            _spriteBatch.Begin();
+
+            if (_showFpsMonitor)
+                _spriteBatch.DrawString
+                    (
+                        _scoreBoardFont,
+                        fps,
+                        new Vector2(20, 10),
+                        Color.Blue,
+                        0f,
+                        Vector2.Zero,
+                        new Vector2(2, 2),
+                        SpriteEffects.None,
+                    0f
+                    );
+
+            if (_isGameOver)
+                DrawGameOverText();
+
+            // Draw Game Area
+            if (!_atStartMenu && !_atHighScoresScreen)
+                foreach (Vector2 outlinePixel in _gameAreaRectangle.OutlinePixels())
+                {
+                    _spriteBatch.Draw(_gameAreaRectangleTexture, outlinePixel, Color.Green);
+                }
+
+            if (!_atStartMenu && !_atHighScoresScreen)
+                _snake.Draw(_spriteBatch, gameTime);
+
+            if (!_atStartMenu && !_atHighScoresScreen)
+                _appleGameObject.Draw(_spriteBatch, gameTime);
+
+            if (_drawDiagnosticGrid)
+            {
+                foreach (Rectangle rectangle in _cells)
+                {
+                    foreach (Vector2 outlinePixel in rectangle.OutlinePixels())
+                    {
+                        _spriteBatch.Draw(_snakeHeadRectangleTexture, outlinePixel, Color.Blue);
+                    }
+                }
+
+                // Rectangle around Snake Head
+                foreach (Vector2 outlinePixel in _snakeHeadRectangle.OutlinePixels())
+                {
+                    _spriteBatch.Draw(_snakeHeadRectangleTexture, outlinePixel, Color.Red);
+                }
+
+                // Rectangle around Apple
+                foreach (Vector2 outlinePixel in _appleRectangle.OutlinePixels())
+                {
+                    _spriteBatch.Draw(_snakeHeadRectangleTexture, outlinePixel, Color.Red);
+                }
+            }
+
+            if (_atStartMenu)
+            {
+                DrawStartScreenUiFrame(gameTime);
+                DrawLogoText();
+            }
+
+            if (_atHighScoresScreen)
+            {
+                DrawHighScoresUiFrame(gameTime);
+                DrawLeaderboardText();
+            }
+
+            //_startScreenHighScoresToggleButton.Draw(_spriteBatch, gameTime);
+
+            _spriteBatch.End();
+
+            base.Draw(gameTime);
         }
     }
 }
