@@ -22,9 +22,11 @@ namespace MonoSnake
         const int SCREEN_WIDTH = 780;
         const int SCREEN_HEIGHT = 820;
 
+        // Game Objects
         private Snake _snake;
         private Apple _appleGameObject;
         private SnakeHead _snakeHeadGameObject;
+        private ToggleUiButton _startScreenHighScoresToggleButton;
 
         private InputController _inputController;
         private SpriteFont _logoFont;
@@ -36,6 +38,10 @@ namespace MonoSnake
         private Texture2D _snakeSegmentsSpriteSheet;
         private Texture2D _gameAreaRectangleTexture;
         private Texture2D _snakeHeadRectangleTexture;
+        private Texture2D _startScreenButtonNormal;
+        private Texture2D _startScreenButtonHover;
+        private Texture2D _highScoresButtonNormal;
+        private Texture2D _highScoresButtonHover;
         private SoundEffect _eatSoundEffect;
         private SoundEffect[] _moveSoundEffects;
         private Rectangle _gameAreaRectangle;
@@ -59,9 +65,9 @@ namespace MonoSnake
         private Sprite _snakeCwLeftToUpCcwDownToRightSprite;
         private Sprite _snakeStraightBodySprite;
         private UiFrame _startScreenUiFrame;
-        private bool _atStartMenu = true;
-        private bool _atHighScoreScreen = false;
-        private CenteredUiFrame _highScoreUiFrame;
+        private bool _atStartMenu = false;
+        private bool _atHighScoresScreen = true;
+        private CenteredUiFrame _highScoresUiFrame;
         private const string MONO_SNAKE_STRING = "MonoSnake";
         private const int START_SCREEN_TRANSPARENCY = 200;
         const string GAME_OVER_STRING = "Game Over";
@@ -144,7 +150,7 @@ namespace MonoSnake
             _inputController.HeadTurnEvent += InputController_HeadTurnEvent;
             GenerateGrid();
             _atStartMenu = false;
-            _atHighScoreScreen = false;
+            _atHighScoresScreen = false;
             _appleEaten = false;
             _applePlaced = false;
             GenerateApple();
@@ -223,6 +229,13 @@ namespace MonoSnake
                 Origin = new Vector2(DEFAULT_SPRITE_HALF_SIZE, DEFAULT_SPRITE_HALF_SIZE)
             };
 
+            Sprite startScreenButtonNormal = new Sprite(_startScreenButtonNormal, 0, 0, 114, 114);
+            Sprite startScreenButtonHover = new Sprite(_startScreenButtonHover, 0, 0, 114, 114);
+            Sprite highScoresButtonNormal = new Sprite(_highScoresButtonNormal, 0, 0, 114, 114);
+            Sprite highScoresButtonHover = new Sprite(_highScoresButtonHover, 0, 0, 114, 114);
+
+            _startScreenHighScoresToggleButton = new ToggleUiButton(startScreenButtonNormal, startScreenButtonHover, highScoresButtonNormal, highScoresButtonHover, new Vector2(0, 0), 0f);
+
             // Create GameObjects
             _snakeHeadGameObject = new SnakeHead(snakeHeadSprite, new Vector2(53, 83));
             _appleGameObject = new Apple(appleSprite,
@@ -245,9 +258,9 @@ namespace MonoSnake
                 _snakeCwLeftToUpCcwDownToRightSprite
             );
 
-            if (_atHighScoreScreen)
+            if (_atHighScoresScreen)
             {
-                _highScoreUiFrame = new CenteredUiFrame
+                _highScoresUiFrame = new CenteredUiFrame
                 (
                     _graphics,
                     Vector2.Zero,
@@ -298,6 +311,10 @@ namespace MonoSnake
             _snakeHeadSpriteSheet = Content.Load<Texture2D>(SNAKE_HEAD_SPRITE_SHEET_NAME);
             _snakeSegmentsSpriteSheet = Content.Load<Texture2D>(SNAKE_SEGMENTS_SPRITE_SHEET_NAME);
             _eatSoundEffect = Content.Load<SoundEffect>(EAT_SOUND_EFFECT_NAME);
+            _startScreenButtonNormal = Content.Load<Texture2D>("Gear");
+            _startScreenButtonHover = Content.Load<Texture2D>("GearHover");
+            _highScoresButtonNormal = Content.Load<Texture2D>("Ranking");
+            _highScoresButtonHover = Content.Load<Texture2D>("RankingHover");
             _moveSoundEffects = new SoundEffect[] {
                 Content.Load<SoundEffect>(HISS_SOUND_EFFECT_NAME),
                 Content.Load<SoundEffect>(MOVE_SOUND_EFFECT_NAME)
@@ -337,7 +354,7 @@ namespace MonoSnake
                 return;
 
             // Update GameObjects
-            if(!_atStartMenu && !_atHighScoreScreen)
+            if(!_atStartMenu && !_atHighScoresScreen)
                 _snake.Update(gameTime);
 
             _snakeHeadRectangle.X = (int)Math.Round(_snake.SnakeHead.Position.X - _snake.SnakeHead.Sprite.Width / 2f * _snake.SnakeHead.Sprite.Scale.X);
@@ -376,10 +393,12 @@ namespace MonoSnake
                 _startScreenUiFrame.Update(gameTime);
             }
 
-            if (_atHighScoreScreen)
+            if (_atHighScoresScreen)
             {
-                _highScoreUiFrame.Update(gameTime);
+                _highScoresUiFrame.Update(gameTime);
             }
+
+            _startScreenHighScoresToggleButton.Update(gameTime);
             base.Update(gameTime);
         }
 
@@ -495,16 +514,16 @@ namespace MonoSnake
                 DrawGameOverText();
 
             // Draw Game Area
-            if(!_atStartMenu && !_atHighScoreScreen)
+            if(!_atStartMenu && !_atHighScoresScreen)
                 foreach (Vector2 outlinePixel in _gameAreaRectangle.OutlinePixels())
-            {
-                _spriteBatch.Draw(_gameAreaRectangleTexture, outlinePixel, Color.Green);
-            }
+                {
+                    _spriteBatch.Draw(_gameAreaRectangleTexture, outlinePixel, Color.Green);
+                }
 
-            if(!_atStartMenu && !_atHighScoreScreen)
+            if(!_atStartMenu && !_atHighScoresScreen)
                 _snake.Draw(_spriteBatch, gameTime);
 
-            if(!_atStartMenu && !_atHighScoreScreen)
+            if(!_atStartMenu && !_atHighScoresScreen)
                 _appleGameObject.Draw(_spriteBatch, gameTime);
             
             if (_drawDiagnosticGrid)
@@ -536,11 +555,13 @@ namespace MonoSnake
                 DrawLogoText();
             }
 
-            if (_atHighScoreScreen)
+            if (_atHighScoresScreen)
             {
-                DrawHighScoreUiFrame(gameTime);
+                DrawHighScoresUiFrame(gameTime);
                 DrawLeaderboardText();
             }
+
+            //_startScreenHighScoresToggleButton.Draw(_spriteBatch, gameTime);
 
             _spriteBatch.End();
 
@@ -552,9 +573,9 @@ namespace MonoSnake
             _startScreenUiFrame.Draw(_spriteBatch, gameTime);
         }
 
-        private void DrawHighScoreUiFrame(GameTime gameTime)
+        private void DrawHighScoresUiFrame(GameTime gameTime)
         {
-            _highScoreUiFrame.Draw(_spriteBatch, gameTime);
+            _highScoresUiFrame.Draw(_spriteBatch, gameTime);
         }
 
         private void DrawLogoText()
@@ -580,9 +601,10 @@ namespace MonoSnake
 
         private void DrawLeaderboardText()
         {
+            _leaderboardFont.Spacing = 0f;
             Vector2 leaderboardStringWidth = _leaderboardFont.MeasureString(LEADERBOARD_STRING);
-            float leaderboardX = _highScoreUiFrame.Position.X + _highScoreUiFrame.ActualWidth / 2 - leaderboardStringWidth.X / 2 - _snakeCwUpToRightCcwLeftToDownSprite.Width / 2;
-            float leaderboardY = _highScoreUiFrame.Position.Y / 2 + leaderboardStringWidth.Y;
+            float leaderboardX = _highScoresUiFrame.Position.X + _highScoresUiFrame.ActualWidth / 2 - leaderboardStringWidth.X / 2 - _snakeCwUpToRightCcwLeftToDownSprite.Width / 2;
+            float leaderboardY = _highScoresUiFrame.Position.Y / 2 + leaderboardStringWidth.Y;
             Vector2 leaderboardPosition = new Vector2(leaderboardX, leaderboardY);
 
             _spriteBatch.DrawString

@@ -13,6 +13,7 @@ namespace MonoSnake.UI
         public Sprite Sprite { get; }
         public Vector2 Position { get; set; }
         public float Rotation { get; set; }
+        public bool IsMouseOver { get; set; }
 
         public UiObject(Sprite sprite, Vector2 position, float rotation)
         {
@@ -28,7 +29,7 @@ namespace MonoSnake.UI
 
         public void Draw(SpriteBatch spriteBatch, GameTime gameTime)
         {
-            Sprite.Draw(spriteBatch, Position, Rotation);
+                Sprite.Draw(spriteBatch, Position, Rotation);
         }
     }
 }

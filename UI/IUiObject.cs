@@ -13,6 +13,7 @@ namespace MonoSnake.UI
         Sprite Sprite { get; }
         Vector2 Position { get; set; }
         public float Rotation { get; set; }
+        bool IsMouseOver { get; set; }
         void Update(GameTime gameTime);
         void Draw(SpriteBatch spriteBatch, GameTime gameTime);
     }
