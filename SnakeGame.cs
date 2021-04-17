@@ -137,23 +137,13 @@ namespace MonoSnake
 
             GenerateApple();
 
-            // Initialize InputController
-            _inputController = new InputController(_snake);
-            _inputController.StartEvent += InputController_StartEvent;
-            _inputController.RestartEvent += InputController_RestartEvent;
-            _inputController.ExitEvent += InputController_ExitEvent;
-            _inputController.HeadTurnEvent += InputController_HeadTurnEvent;
+            InitializeInputController();
         }
 
         private void InputController_StartEvent(object sender, EventArgs e)
         {
             InitializeGameObjects();
-            // Initialize InputController
-            _inputController = new InputController(_snake);
-            _inputController.StartEvent += InputController_StartEvent;
-            _inputController.ExitEvent += InputController_ExitEvent;
-            _inputController.RestartEvent += InputController_RestartEvent;
-            _inputController.HeadTurnEvent += InputController_HeadTurnEvent;
+            InitializeInputController();
             GenerateGrid();
             _appleEaten = false;
             _applePlaced = false;
@@ -164,12 +154,7 @@ namespace MonoSnake
         private void InputController_RestartEvent(object sender, EventArgs e)
         {
             InitializeGameObjects();
-            // Initialize InputController
-            _inputController = new InputController(_snake);
-            _inputController.StartEvent += InputController_StartEvent;
-            _inputController.ExitEvent += InputController_ExitEvent;
-            _inputController.RestartEvent += InputController_RestartEvent;
-            _inputController.HeadTurnEvent += InputController_HeadTurnEvent;
+            InitializeInputController();
             GenerateGrid();
             _atStartMenu = false;
             _atHighScoresScreen = false;
@@ -177,6 +162,15 @@ namespace MonoSnake
             _applePlaced = false;
             GenerateApple();
             _isGameOver = false;
+        }
+
+        private void InitializeInputController()
+        {
+            _inputController = new InputController(_snake);
+            _inputController.StartEvent += InputController_StartEvent;
+            _inputController.ExitEvent += InputController_ExitEvent;
+            _inputController.RestartEvent += InputController_RestartEvent;
+            _inputController.HeadTurnEvent += InputController_HeadTurnEvent;
         }
 
         private void InputController_ExitEvent(object sender, EventArgs e)
