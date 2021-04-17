@@ -37,6 +37,7 @@ namespace MonoSnake
         private Texture2D _gameAreaRectangleTexture;
         private Texture2D _snakeHeadRectangleTexture;
         private SoundEffect _eatSoundEffect;
+        private SoundEffect[] _moveSoundEffects;
         private Rectangle _gameAreaRectangle;
         private Rectangle _snakeHeadRectangle;
         private Rectangle _appleRectangle;
@@ -74,6 +75,8 @@ namespace MonoSnake
         private const string SNAKE_HEAD_SPRITE_SHEET_NAME = "SnakeHead";
         private const string SNAKE_SEGMENTS_SPRITE_SHEET_NAME = "SnakeSegments";
         private const string EAT_SOUND_EFFECT_NAME = "eat";
+        private const string HISS_SOUND_EFFECT_NAME = "hiss";
+        private const string MOVE_SOUND_EFFECT_NAME = "sand_rattle";
 
         public SnakeGame()  
         {
@@ -111,6 +114,7 @@ namespace MonoSnake
             _inputController.StartEvent += InputController_StartEvent;
             _inputController.RestartEvent += InputController_RestartEvent;
             _inputController.ExitEvent += InputController_ExitEvent;
+            _inputController.HeadTurnEvent += InputController_HeadTurnEvent;
         }
 
         private void InputController_StartEvent(object sender, EventArgs e)
@@ -121,6 +125,7 @@ namespace MonoSnake
             _inputController.StartEvent += InputController_StartEvent;
             _inputController.ExitEvent += InputController_ExitEvent;
             _inputController.RestartEvent += InputController_RestartEvent;
+            _inputController.HeadTurnEvent += InputController_HeadTurnEvent;
             GenerateGrid();
             _appleEaten = false;
             _applePlaced = false;
@@ -135,7 +140,8 @@ namespace MonoSnake
             _inputController = new InputController(_snake);
             _inputController.StartEvent += InputController_StartEvent;
             _inputController.ExitEvent += InputController_ExitEvent;
-            _inputController.RestartEvent += InputController_RestartEvent;
+            _inputController.RestartEvent += InputController_HeadTurnEvent;
+            _inputController.HeadTurnEvent += InputController_HeadTurnEvent;
             GenerateGrid();
             _atStartMenu = false;
             _atHighScoreScreen = false;
@@ -148,6 +154,25 @@ namespace MonoSnake
         private void InputController_ExitEvent(object sender, EventArgs e)
         {
             Exit();
+        }
+
+        private Random random = new Random();
+        private void InputController_HeadTurnEvent(object sender, EventArgs e)
+        {
+            if (_moveSoundEffects != null)
+            {
+                int roll = random.Next(1, 101);
+                if (roll <= 55) //55% chance
+                {
+                    //pick either a hiss or a sand shuffle (or whatever else we put in the array)
+                    int i = random.Next(0, _moveSoundEffects.Length);
+                    //randomly changing the pitch is great way to trick
+                    //player's into not hating the same sound repeated
+                    double randomAmplify = random.NextDouble() - 0.5;
+
+                    _moveSoundEffects[i].Play(1f, (float)randomAmplify, 0f);
+                }
+            }
         }
 
         private void InitializeGameObjects()
@@ -273,6 +298,10 @@ namespace MonoSnake
             _snakeHeadSpriteSheet = Content.Load<Texture2D>(SNAKE_HEAD_SPRITE_SHEET_NAME);
             _snakeSegmentsSpriteSheet = Content.Load<Texture2D>(SNAKE_SEGMENTS_SPRITE_SHEET_NAME);
             _eatSoundEffect = Content.Load<SoundEffect>(EAT_SOUND_EFFECT_NAME);
+            _moveSoundEffects = new SoundEffect[] {
+                Content.Load<SoundEffect>(HISS_SOUND_EFFECT_NAME),
+                Content.Load<SoundEffect>(MOVE_SOUND_EFFECT_NAME)
+            };
         }
 
         private void InitializeDiagnosticObjects()
