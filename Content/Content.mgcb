@@ -38,6 +38,18 @@
 /processorParam:Quality=Best
 /build:eat.wav
 
+#begin hiss.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:hiss.wav
+
+#begin sand_rattle.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:sand_rattle.wav
+
 #begin GameOver.spritefont
 /importer:FontDescriptionImporter
 /processor:FontDescriptionProcessor

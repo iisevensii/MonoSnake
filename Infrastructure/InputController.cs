@@ -14,6 +14,7 @@ namespace MonoSnake.Infrastructure
         public event EventHandler ExitEvent;
         public event EventHandler RestartEvent;
         public event EventHandler StartEvent;
+        public event EventHandler HeadTurnEvent;
 
         private KeyboardState _oldKeyboardState;
         private KeyboardState _newKeyboardState;
@@ -101,7 +102,10 @@ namespace MonoSnake.Infrastructure
 
         private void MoveSnakeHead(SnakeDirection direction)
         {
+            bool isDifferent = direction != _snake.LastInputDirection;
             _snake.LastInputDirection = direction;
+            if (isDifferent)
+                HeadTurnEvent?.Invoke(this, EventArgs.Empty);
         }
     }
 }
