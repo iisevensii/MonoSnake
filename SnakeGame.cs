@@ -243,10 +243,10 @@ namespace MonoSnake
 
             #region UI Initialization
 
-            Sprite startScreenButtonNormal = new Sprite(_startScreenButtonNormal, 0, 0, 114, 114);
-            Sprite startScreenButtonHover = new Sprite(_startScreenButtonHover, 0, 0, 114, 114);
-            Sprite highScoresButtonNormal = new Sprite(_highScoresButtonNormal, 0, 0, 114, 114);
-            Sprite highScoresButtonHover = new Sprite(_highScoresButtonHover, 0, 0, 114, 114);
+            Sprite startScreenButtonNormal = new Sprite(_startScreenButtonNormal, 0, 0, 57, 57);
+            Sprite startScreenButtonHover = new Sprite(_startScreenButtonHover, 0, 0, 57, 57);
+            Sprite highScoresButtonNormal = new Sprite(_highScoresButtonNormal, 0, 0, 57, 57);
+            Sprite highScoresButtonHover = new Sprite(_highScoresButtonHover, 0, 0, 57, 57);
 
             _startScreenHighScoresToggleButton =
                 new ToggleUiButton
@@ -255,7 +255,7 @@ namespace MonoSnake
                         startScreenButtonHover,
                         highScoresButtonNormal,
                         highScoresButtonHover,
-                        new Vector2(0, 0),
+                        new Vector2(SCREEN_WIDTH - startScreenButtonNormal.Width - 10, 10),
                         0f
                     );
 
