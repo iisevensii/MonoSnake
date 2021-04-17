@@ -18,7 +18,7 @@ namespace MonoSnake
         #region Constants
         private const int SCREEN_WIDTH = 780;
         private const int SCREEN_HEIGHT = 820;
-        private const string LEADERBOARD_STRING = "Leaderboard";
+        private const string LEADERBOARD_STRING = "L E A D E R B O A R D";
         private const string MONO_SNAKE_STRING = "MonoSnake";
         private const int START_SCREEN_TRANSPARENCY = 200;
         private const string GAME_OVER_STRING = "Game Over";
@@ -35,13 +35,13 @@ namespace MonoSnake
         #endregion Constants
 
         #region Fields
-        private bool _drawDiagnosticGrid = false;
-        private bool _appleEaten;
-        private bool _applePlaced;
-        private bool _isGameOver;
-        private bool _showFpsMonitor = false;
-        private bool _atStartMenu = false;
-        private bool _atHighScoresScreen = true;
+            private bool _drawDiagnosticGrid = false;
+            private bool _appleEaten;
+            private bool _applePlaced;
+            private bool _isGameOver;
+            private bool _showFpsMonitor = false;
+            private bool _atStartMenu = true;
+            private bool _atHighScoresScreen = false;
 
             #region System
             private readonly GraphicsDeviceManager _graphics;
@@ -258,48 +258,49 @@ namespace MonoSnake
                         new Vector2(SCREEN_WIDTH - startScreenButtonNormal.Width - 10, 10),
                         0f
                     );
+            _startScreenHighScoresToggleButton.ClickEvent += OnStartScreenHighScoresToggleButtonClick;
 
-            if (_atHighScoresScreen)
-            {
-                _highScoresUiFrame = new CenteredUiFrame
-                (
-                    _graphics,
-                    Vector2.Zero,
-                    18,
-                    18,
-                    SCREEN_WIDTH,
-                    SCREEN_HEIGHT,
-                    _snakeStraightBodySprite,
-                    _snakeStraightBodySprite,
-                    _snakeCwUpToRightCcwLeftToDownSprite,
-                    _snakeCwRightToDownCcwUpToLeftSprite,
-                    _snakeCwDownToLeftCcwRightToUpSprite,
-                    _snakeCwLeftToUpCcwDownToRightSprite,
-                    Color.FromNonPremultiplied(46, 51, 106, START_SCREEN_TRANSPARENCY)
-                );
-            }
-            if (_atStartMenu)
-            {
-                //Vector2 startScreenUiFramePosition = new Vector2(SCREEN_WIDTH / 2 - _startScreenUiFrame.ActualWidth / 2 + DEFAULT_SPRITE_HALF_SIZE, SCREEN_HEIGHT / 2 - _startScreenUiFrame.ActualHeight / 2 + DEFAULT_SPRITE_HALF_SIZE);
-                _startScreenUiFrame = new CenteredUiFrame
-                (
-                    _graphics,
-                    Vector2.Zero,
-                    18,
-                    18,
-                    SCREEN_WIDTH,
-                    SCREEN_HEIGHT,
-                    _snakeStraightBodySprite,
-                    _snakeStraightBodySprite,
-                    _snakeCwUpToRightCcwLeftToDownSprite,
-                    _snakeCwRightToDownCcwUpToLeftSprite,
-                    _snakeCwDownToLeftCcwRightToUpSprite,
-                    _snakeCwLeftToUpCcwDownToRightSprite,
-                    Color.FromNonPremultiplied(46, 51, 106, START_SCREEN_TRANSPARENCY)
-                );
-            }
+            _highScoresUiFrame = new CenteredUiFrame
+            (
+                _graphics,
+                Vector2.Zero,
+                17,
+                17,
+                SCREEN_WIDTH,
+                SCREEN_HEIGHT,
+                _snakeStraightBodySprite,
+                _snakeStraightBodySprite,
+                _snakeCwUpToRightCcwLeftToDownSprite,
+                _snakeCwRightToDownCcwUpToLeftSprite,
+                _snakeCwDownToLeftCcwRightToUpSprite,
+                _snakeCwLeftToUpCcwDownToRightSprite,
+                Color.FromNonPremultiplied(46, 51, 106, START_SCREEN_TRANSPARENCY)
+            );
+
+            _startScreenUiFrame = new CenteredUiFrame
+            (
+                _graphics,
+                Vector2.Zero,
+                17,
+                17,
+                SCREEN_WIDTH,
+                SCREEN_HEIGHT,
+                _snakeStraightBodySprite,
+                _snakeStraightBodySprite,
+                _snakeCwUpToRightCcwLeftToDownSprite,
+                _snakeCwRightToDownCcwUpToLeftSprite,
+                _snakeCwDownToLeftCcwRightToUpSprite,
+                _snakeCwLeftToUpCcwDownToRightSprite,
+                Color.FromNonPremultiplied(46, 51, 106, START_SCREEN_TRANSPARENCY)
+            );
 
             #endregion UI Initialization
+        }
+
+        private void OnStartScreenHighScoresToggleButtonClick(object sender, EventArgs e)
+        {
+            _atStartMenu = !_atStartMenu;
+            _atHighScoresScreen = !_atHighScoresScreen;
         }
 
         private void InitializeDiagnosticObjects()
@@ -500,7 +501,7 @@ namespace MonoSnake
             _leaderboardFont.Spacing = 0f;
             Vector2 leaderboardStringWidth = _leaderboardFont.MeasureString(LEADERBOARD_STRING);
             float leaderboardX = _highScoresUiFrame.Position.X + _highScoresUiFrame.ActualWidth / 2 - leaderboardStringWidth.X / 2 - _snakeCwUpToRightCcwLeftToDownSprite.Width / 2;
-            float leaderboardY = _highScoresUiFrame.Position.Y / 2 + leaderboardStringWidth.Y;
+            float leaderboardY = _highScoresUiFrame.Position.Y / 2 + leaderboardStringWidth.Y + _snakeCwUpToRightCcwLeftToDownSprite.Width / 2;
             Vector2 leaderboardPosition = new Vector2(leaderboardX, leaderboardY);
 
             _spriteBatch.DrawString
@@ -682,7 +683,7 @@ namespace MonoSnake
                 DrawLeaderboardText();
             }
 
-            //_startScreenHighScoresToggleButton.Draw(_spriteBatch, gameTime);
+            _startScreenHighScoresToggleButton.Draw(_spriteBatch, gameTime);
 
             _spriteBatch.End();
 
