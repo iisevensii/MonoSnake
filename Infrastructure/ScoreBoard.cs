@@ -26,7 +26,7 @@ namespace MonoSnake.Infrastructure
         {
             if (File.Exists(_highScoresStoragePath))
             {
-                HighScores = JsonSerializer.Deserialize<HighScores>(File.ReadAllText(_highScoresStoragePath));
+                HighScores = JsonSerializer.Deserialize<HighScores>(File.ReadAllText(_highScoresStoragePath), _jsonSerializerOptions);
 
                 return HighScores;
             }
