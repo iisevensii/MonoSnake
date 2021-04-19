@@ -17,8 +17,9 @@ namespace MonoSnake
     {
         #region Constants
         private const int SCREEN_WIDTH = 780;
-        private const int SCREEN_HEIGHT = 820;
+        private const int SCREEN_HEIGHT = 900;
         private const string LEADERBOARD_STRING = "L E A D E R B O A R D";
+        private const int LEADERBOARD_MINIMUM_LENGTH = 10;
         private const string MONO_SNAKE_STRING = "MonoSnake";
         private const int START_SCREEN_TRANSPARENCY = 200;
         private const string GAME_OVER_STRING = "Game Over";
@@ -32,16 +33,17 @@ namespace MonoSnake
         private const string EAT_SOUND_EFFECT_NAME = "eat";
         private const string HISS_SOUND_EFFECT_NAME = "hiss";
         private const string MOVE_SOUND_EFFECT_NAME = "sand_rattle";
+        private const int SCORE_BOARD_FONT_LEFT_PADDING = 10;
         #endregion Constants
 
         #region Fields
-            private bool _drawDiagnosticGrid = false;
+        private bool _drawDiagnosticGrid = false;
             private bool _appleEaten;
             private bool _applePlaced;
             private bool _isGameOver;
             private bool _showFpsMonitor = false;
-            private bool _atStartMenu = true;
-            private bool _atHighScoresScreen = false;
+            private bool _atStartMenu = false;
+            private bool _atHighScoresScreen = true;
 
             #region System
             private readonly GraphicsDeviceManager _graphics;
@@ -104,6 +106,7 @@ namespace MonoSnake
             private List<Rectangle> _cells;
             private List<Rectangle> _occupiedCells = new List<Rectangle>();
             private List<Rectangle> _unOccupiedCells = new List<Rectangle>();
+
             #endregion Rectangles
         #endregion Fields
 
@@ -149,7 +152,7 @@ namespace MonoSnake
             _logoFont = Content.Load<SpriteFont>("Logo");
             _gameOverFont = Content.Load<SpriteFont>("GameOver");
             _leaderboardFont = Content.Load<SpriteFont>("Arcade");
-            _scoreBoardFont = Content.Load<SpriteFont>("score");
+            _scoreBoardFont = Content.Load<SpriteFont>("ArcadeClassic");
             // Load Textures
             _appleTexture = Content.Load<Texture2D>(APPLE_SPRITE_SHEET_NAME);
             _snakeHeadSpriteSheet = Content.Load<Texture2D>(SNAKE_HEAD_SPRITE_SHEET_NAME);
@@ -220,7 +223,7 @@ namespace MonoSnake
             #endregion PositionedTextureSprites
 
             // Create GameObjects
-            _snakeHeadGameObject = new SnakeHead(snakeHeadSprite, new Vector2(53, 83));
+            _snakeHeadGameObject = new SnakeHead(snakeHeadSprite, new Vector2(53, 123));
             _appleGameObject = new Apple(appleSprite,
                 new Vector2(_graphics.PreferredBackBufferWidth / 2f + DEFAULT_SPRITE_HALF_SIZE,
                     _graphics.PreferredBackBufferHeight / 2f + DEFAULT_SPRITE_HALF_SIZE));
@@ -312,9 +315,9 @@ namespace MonoSnake
             _gameAreaRectangle = new Rectangle
             (
                 20,
-                50,
+                90,
                 _graphics.PreferredBackBufferWidth - 35,
-                _graphics.PreferredBackBufferHeight - 70
+                _graphics.PreferredBackBufferHeight - 110
             );
             _snakeHeadRectangle = new Rectangle
             (
@@ -473,6 +476,69 @@ namespace MonoSnake
         private void DrawHighScoresUiFrame(GameTime gameTime)
         {
             _highScoresUiFrame.Draw(_spriteBatch, gameTime);
+        }
+
+        private void DrawHighScores(GameTime gameTime)
+        {
+            int scoreBoardHorizontalMargin = 20;
+            int scoreBoardVerticalMargin = 20;
+
+            //float leaderboardX = _highScoresUiFrame.Position.X + _highScoresUiFrame.ActualWidth / 2 - leaderboardStringWidth.X / 2 - _snakeCwUpToRightCcwLeftToDownSprite.Width / 2;
+            //float leaderboardY = _highScoresUiFrame.Position.Y / 2 + leaderboardStringWidth.Y + _snakeCwUpToRightCcwLeftToDownSprite.Width / 2;
+
+            int scoreVerticalSpacing = 50;
+            foreach (ScoreEntry scoreEntry in _scoreBoard.HighScores.ScoreEntries)
+            {
+                int margin = (SCREEN_WIDTH - _startScreenUiFrame.ActualWidth) / 2;
+                int leftInsideEdgeOfFrame = scoreBoardHorizontalMargin + margin + SCORE_BOARD_FONT_LEFT_PADDING + DEFAULT_SPRITE_SIZE / 2;
+                int rightInsideEdgeOfFrame = SCREEN_WIDTH - scoreBoardHorizontalMargin - margin - SCORE_BOARD_FONT_LEFT_PADDING - DEFAULT_SPRITE_SIZE / 2;
+
+                string scoreEntryName = scoreEntry.Name ?? "";
+                string scoreText = scoreEntry.Score.ToString();
+
+                scoreEntryName = scoreEntryName.PadRight(100, ' ');
+                Vector2 scoreEntryNameScale = _scoreBoardFont.MeasureString(scoreEntryName);
+                Vector2 scoreEntryScoreScale = _scoreBoardFont.MeasureString(scoreText);
+                rightInsideEdgeOfFrame = rightInsideEdgeOfFrame - (int) scoreEntryScoreScale.X;
+
+                float scoreEntryNameX = leftInsideEdgeOfFrame;
+                var scoreEntryIndex = _scoreBoard.HighScores.ScoreEntries.IndexOf(scoreEntry);
+                var frameYPosition = _highScoresUiFrame.Position.Y;
+                float scoreEntryNameY = scoreBoardVerticalMargin + frameYPosition + scoreVerticalSpacing + scoreEntryIndex * scoreVerticalSpacing;
+                float scoreEntryScoreX = rightInsideEdgeOfFrame;
+                float scoreEntryScoreY = scoreBoardVerticalMargin + frameYPosition + scoreVerticalSpacing + scoreEntryIndex * scoreVerticalSpacing;
+
+                Vector2 scoreEntryNamePosition = new Vector2(scoreEntryNameX, scoreEntryNameY);
+                Vector2 scoreEntryScorePosition = new Vector2(scoreEntryScoreX, scoreEntryScoreY);
+
+                if(scoreEntryName.Length > 0)
+                    _spriteBatch.DrawString
+                    (
+                        _scoreBoardFont,
+                        scoreEntryName,
+                        scoreEntryNamePosition,
+                        Color.White,
+                        0f,
+                        Vector2.Zero,
+                        1f,
+                        SpriteEffects.None,
+                        0f
+                    );
+
+                if(scoreEntry.Score > 0)
+                    _spriteBatch.DrawString
+                    (
+                        _scoreBoardFont,
+                        scoreText,
+                        scoreEntryScorePosition,
+                        Color.White,
+                        0f,
+                        Vector2.Zero,
+                        1f,
+                        SpriteEffects.None,
+                        0f
+                    );
+            }
         }
 
         private void DrawLogoText()
@@ -681,6 +747,7 @@ namespace MonoSnake
             {
                 DrawHighScoresUiFrame(gameTime);
                 DrawLeaderboardText();
+                DrawHighScores(gameTime);
             }
 
             _startScreenHighScoresToggleButton.Draw(_spriteBatch, gameTime);

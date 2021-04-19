@@ -310,8 +310,8 @@ namespace MonoSnake.Infrastructure
             string score = _score.ToString();
             float scoreScale = 2f;
 
-            Vector2 scoreStringWidth = _scoreBoardFont.MeasureString(score);
-            Vector2 scorePos = new Vector2(_screenWidth - scoreStringWidth.X *2 - 20, scoreStringWidth.Y /2);
+            Vector2 scoreStringSize = _scoreBoardFont.MeasureString(score);
+            Vector2 scorePos = new Vector2(_screenWidth - scoreStringSize.X *2 - 20, scoreStringSize.Y /2);
             spriteBatch.DrawString
             (
                 _scoreBoardFont,
