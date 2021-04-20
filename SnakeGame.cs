@@ -315,8 +315,6 @@ namespace MonoSnake
 
         private void InitializeUiObjects()
         {
-            #region UI Initialization
-
             Sprite startScreenButtonNormal = new Sprite(_startScreenButtonNormal, 0, 0, 57, 57);
             Sprite startScreenButtonHover = new Sprite(_startScreenButtonHover, 0, 0, 57, 57);
             Sprite highScoresButtonNormal = new Sprite(_highScoresButtonNormal, 0, 0, 57, 57);
@@ -368,8 +366,6 @@ namespace MonoSnake
                 _snakeCwLeftToUpCcwDownToRightSprite,
                 Color.FromNonPremultiplied(46, 51, 106, START_SCREEN_TRANSPARENCY)
             );
-
-            #endregion UI Initialization
         }
 
         private void InputController_StartEvent(object sender, EventArgs e)
