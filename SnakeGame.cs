@@ -641,19 +641,20 @@ namespace MonoSnake
             _snakeHeadRectangle.Y = (int)Math.Round(_snake.SnakeHead.Position.Y - _snake.SnakeHead.Sprite.Height / 2f * _snake.SnakeHead.Sprite.Scale.Y);
 
             // Hit edge of play area
-            if (!_gameAreaRectangle.Contains(_snake.SnakeHead.Position))
+            if (!_isGameOver && !_gameAreaRectangle.Contains(_snake.SnakeHead.Position))
             {
                 // GAME OVER!
                 EndGameAndRecordScore();
             }
 
-            if (_snake.SnakeSegments.Any(s =>
+            // Hit self
+            if (!_isGameOver && _snake.SnakeSegments.Any(s =>
                 s.Position.X == _snake.SnakeHead.Position.X && s.Position.Y == _snake.SnakeHead.Position.Y))
             {
                 EndGameAndRecordScore();
             }
 
-            if (_snakeHeadRectangle.Intersects(_appleRectangle))
+            if (!_isGameOver && _snakeHeadRectangle.Intersects(_appleRectangle))
             {
                 _appleEaten = true;
                 _applePlaced = false;
