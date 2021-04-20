@@ -154,6 +154,8 @@ namespace MonoSnake
 
             InitializeInputController();
 
+            InitializeUiObjects();
+
             _uiState = UiState.StartScreen;
         }
 
@@ -258,67 +260,19 @@ namespace MonoSnake
                 _snakeCwDownToLeftCcwRightToUpSprite,
                 _snakeCwLeftToUpCcwDownToRightSprite
             );
-
-            #region UI Initialization
-
-            Sprite startScreenButtonNormal = new Sprite(_startScreenButtonNormal, 0, 0, 57, 57);
-            Sprite startScreenButtonHover = new Sprite(_startScreenButtonHover, 0, 0, 57, 57);
-            Sprite highScoresButtonNormal = new Sprite(_highScoresButtonNormal, 0, 0, 57, 57);
-            Sprite highScoresButtonHover = new Sprite(_highScoresButtonHover, 0, 0, 57, 57);
-
-            _startScreenHighScoresToggleButton =
-                new ToggleUiButton
-                    (
-                        highScoresButtonNormal,
-                        highScoresButtonHover,
-                        startScreenButtonNormal,
-                        startScreenButtonHover,
-                        new Vector2(10, 10),
-                        0f
-                    );
-            _startScreenHighScoresToggleButton.ClickEvent += OnStartScreenHighScoresToggleButtonClick;
-
-            _highScoresUiFrame = new CenteredUiFrame
-            (
-                _graphics,
-                Vector2.Zero,
-                17,
-                17,
-                SCREEN_WIDTH,
-                SCREEN_HEIGHT,
-                _snakeStraightBodySprite,
-                _snakeStraightBodySprite,
-                _snakeCwUpToRightCcwLeftToDownSprite,
-                _snakeCwRightToDownCcwUpToLeftSprite,
-                _snakeCwDownToLeftCcwRightToUpSprite,
-                _snakeCwLeftToUpCcwDownToRightSprite,
-                Color.FromNonPremultiplied(46, 51, 106, START_SCREEN_TRANSPARENCY)
-            );
-
-            _startScreenUiFrame = new CenteredUiFrame
-            (
-                _graphics,
-                Vector2.Zero,
-                17,
-                17,
-                SCREEN_WIDTH,
-                SCREEN_HEIGHT,
-                _snakeStraightBodySprite,
-                _snakeStraightBodySprite,
-                _snakeCwUpToRightCcwLeftToDownSprite,
-                _snakeCwRightToDownCcwUpToLeftSprite,
-                _snakeCwDownToLeftCcwRightToUpSprite,
-                _snakeCwLeftToUpCcwDownToRightSprite,
-                Color.FromNonPremultiplied(46, 51, 106, START_SCREEN_TRANSPARENCY)
-            );
-
-            #endregion UI Initialization
         }
 
         private void OnStartScreenHighScoresToggleButtonClick(object sender, EventArgs e)
         {
-            if(_uiState != UiState.GamePlay || _isGameOver)
+            if (_uiState != UiState.GamePlay || _isGameOver)
+            {
+                _startScreenHighScoresToggleButton.IsEnabled = true;
                 _uiState = _startScreenHighScoresToggleButton.IsToggled ? UiState.HighScoresScreen : UiState.StartScreen;
+            }
+            else
+            {
+                _startScreenHighScoresToggleButton.IsEnabled = false;
+            }
         }
 
         private void InitializeDiagnosticObjects()
@@ -359,6 +313,65 @@ namespace MonoSnake
             _inputController.HeadTurnEvent += InputController_HeadTurnEvent;
         }
 
+        private void InitializeUiObjects()
+        {
+            #region UI Initialization
+
+            Sprite startScreenButtonNormal = new Sprite(_startScreenButtonNormal, 0, 0, 57, 57);
+            Sprite startScreenButtonHover = new Sprite(_startScreenButtonHover, 0, 0, 57, 57);
+            Sprite highScoresButtonNormal = new Sprite(_highScoresButtonNormal, 0, 0, 57, 57);
+            Sprite highScoresButtonHover = new Sprite(_highScoresButtonHover, 0, 0, 57, 57);
+
+            _startScreenHighScoresToggleButton =
+                new ToggleUiButton
+                    (
+                        highScoresButtonNormal,
+                        highScoresButtonHover,
+                        startScreenButtonNormal,
+                        startScreenButtonHover,
+                        new Vector2(10, 10),
+                        0f
+                    );
+            _startScreenHighScoresToggleButton.IsEnabled = true;
+            _startScreenHighScoresToggleButton.ClickEvent += OnStartScreenHighScoresToggleButtonClick;
+
+            _highScoresUiFrame = new CenteredUiFrame
+            (
+                _graphics,
+                Vector2.Zero,
+                17,
+                17,
+                SCREEN_WIDTH,
+                SCREEN_HEIGHT,
+                _snakeStraightBodySprite,
+                _snakeStraightBodySprite,
+                _snakeCwUpToRightCcwLeftToDownSprite,
+                _snakeCwRightToDownCcwUpToLeftSprite,
+                _snakeCwDownToLeftCcwRightToUpSprite,
+                _snakeCwLeftToUpCcwDownToRightSprite,
+                Color.FromNonPremultiplied(46, 51, 106, START_SCREEN_TRANSPARENCY)
+            );
+
+            _startScreenUiFrame = new CenteredUiFrame
+            (
+                _graphics,
+                Vector2.Zero,
+                17,
+                17,
+                SCREEN_WIDTH,
+                SCREEN_HEIGHT,
+                _snakeStraightBodySprite,
+                _snakeStraightBodySprite,
+                _snakeCwUpToRightCcwLeftToDownSprite,
+                _snakeCwRightToDownCcwUpToLeftSprite,
+                _snakeCwDownToLeftCcwRightToUpSprite,
+                _snakeCwLeftToUpCcwDownToRightSprite,
+                Color.FromNonPremultiplied(46, 51, 106, START_SCREEN_TRANSPARENCY)
+            );
+
+            #endregion UI Initialization
+        }
+
         private void InputController_StartEvent(object sender, EventArgs e)
         {
             InitializeGameObjects();
@@ -380,6 +393,7 @@ namespace MonoSnake
             _applePlaced = false;
             GenerateApple();
             _isGameOver = false;
+            _startScreenHighScoresToggleButton.IsEnabled = false;
         }
 
         private void InputController_ExitEvent(object sender, EventArgs e)
@@ -485,6 +499,8 @@ namespace MonoSnake
             _scoreBoard.SaveHighScores();
 
             _isGameOver = true;
+
+            _startScreenHighScoresToggleButton.IsEnabled = true;
         }
 
         #region UIDrawMethods

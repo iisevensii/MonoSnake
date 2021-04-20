@@ -19,6 +19,7 @@ namespace MonoSnake.UI
         public event EventHandler ClickEvent;
 
         public bool IsToggled => _isToggled;
+        public bool IsEnabled { get; set; }
 
         public ToggleUiButton(Sprite firstNormalStateSprite, Sprite firstHoverStateSprite, Sprite secondNormalStateSprite, Sprite secondHoverStateSprite, Vector2 position, float rotation)
             : base(firstNormalStateSprite, firstHoverStateSprite, position, rotation)
@@ -38,7 +39,8 @@ namespace MonoSnake.UI
 
         private void ToggleUiButton_ClickEvent(object sender, EventArgs e)
         {
-            Toggle();
+            if(IsEnabled)
+                Toggle();
         }
 
         private void Toggle()
@@ -58,6 +60,12 @@ namespace MonoSnake.UI
         protected override void UpdateButtonState()
         {
             base.UpdateButtonState();
+
+            if (!IsEnabled)
+            {
+                Sprite = IsToggled ? _secondNormalStateSprite : _firstNormalStateSprite;
+                return;
+            }
 
             if (IsMouseOver)
             {
