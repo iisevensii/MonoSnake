@@ -48,7 +48,7 @@ namespace MonoSnake
 
         #region Fields
             // Draw diagnostic grid?
-            private bool _drawDiagnosticGrid = true;
+            private bool _drawDiagnosticGrid = false;
             private bool _appleEaten;
             private bool _applePlaced;
             private bool _isGameOver;
