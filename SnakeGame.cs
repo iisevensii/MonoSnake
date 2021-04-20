@@ -17,7 +17,7 @@ namespace MonoSnake
     {
         #region Constants
         private const int SCREEN_WIDTH = 780;
-        private const int SCREEN_HEIGHT = 900;
+        private const int SCREEN_HEIGHT = 820;
         private const string LEADERBOARD_STRING = "L E A D E R B O A R D";
         private const int LEADERBOARD_MINIMUM_LENGTH = 10;
         private const string MONO_SNAKE_STRING = "MonoSnake";
@@ -34,10 +34,13 @@ namespace MonoSnake
         private const string HISS_SOUND_EFFECT_NAME = "hiss";
         private const string MOVE_SOUND_EFFECT_NAME = "sand_rattle";
         private const int SCORE_BOARD_FONT_LEFT_PADDING = 10;
+        private const int GAME_AREA_MARGIN_LEFT = 20;
+        private const int GAME_AREA_MARGIN_TOP = 90;
+        private const int GAME_AREA_PADDING = 10;
         #endregion Constants
 
         #region Fields
-        private bool _drawDiagnosticGrid = false;
+        private bool _drawDiagnosticGrid = true;
             private bool _appleEaten;
             private bool _applePlaced;
             private bool _isGameOver;
@@ -107,7 +110,7 @@ namespace MonoSnake
             private List<Rectangle> _occupiedCells = new List<Rectangle>();
             private List<Rectangle> _unOccupiedCells = new List<Rectangle>();
 
-            #endregion Rectangles
+        #endregion Rectangles
         #endregion Fields
 
         public SnakeGame()  
@@ -223,11 +226,15 @@ namespace MonoSnake
             #endregion PositionedTextureSprites
 
             // Create GameObjects
-            _snakeHeadGameObject = new SnakeHead(snakeHeadSprite, new Vector2(53, 123));
+            _snakeHeadGameObject = new SnakeHead(snakeHeadSprite, 
+                new Vector2(GAME_AREA_MARGIN_LEFT + GAME_AREA_PADDING + DEFAULT_SPRITE_HALF_SIZE,
+                GAME_AREA_MARGIN_TOP + GAME_AREA_PADDING + DEFAULT_SPRITE_HALF_SIZE));
+
             _appleGameObject = new Apple(appleSprite,
-                new Vector2(_graphics.PreferredBackBufferWidth / 2f + DEFAULT_SPRITE_HALF_SIZE,
-                    _graphics.PreferredBackBufferHeight / 2f + DEFAULT_SPRITE_HALF_SIZE));
-            _appleGameObject.Sprite.Scale = new Vector2(0.65f, 0.65f);
+                new Vector2(_graphics.PreferredBackBufferWidth / 2f + GAME_AREA_PADDING + DEFAULT_SPRITE_HALF_SIZE,
+                    _graphics.PreferredBackBufferHeight / 2f + GAME_AREA_PADDING + DEFAULT_SPRITE_HALF_SIZE));
+
+            _appleGameObject.Sprite.Scale = new Vector2(0.72f, 0.72f);
 
             // Initialize Snake
             _snake = new Snake
@@ -312,12 +319,13 @@ namespace MonoSnake
             _snakeHeadRectangleTexture = new Texture2D(GraphicsDevice, 1, 1);
             _gameAreaRectangleTexture.SetData(new[] { Color.White, Color.White, Color.White, Color.White, });
             _snakeHeadRectangleTexture.SetData(new[] { Color.White });
+
             _gameAreaRectangle = new Rectangle
             (
-                20,
-                90,
-                _graphics.PreferredBackBufferWidth - 35,
-                _graphics.PreferredBackBufferHeight - 110
+                GAME_AREA_MARGIN_LEFT,
+                GAME_AREA_MARGIN_TOP,
+                _graphics.PreferredBackBufferWidth - GAME_AREA_MARGIN_LEFT * 2,
+                _graphics.PreferredBackBufferHeight - 120
             );
             _snakeHeadRectangle = new Rectangle
             (
@@ -402,23 +410,29 @@ namespace MonoSnake
             // Rows
             for (int i = 0; i < 18; i++)
             {
-                for (int j = 0; j < 18; j++)
+                for (int j = 0; j < 17; j++)
                 {
-                    Rectangle rectangle = new Rectangle(i * 40 + 32, j * 40 + 62, 42, 42);
+                    Rectangle rectangle = new Rectangle
+                        (
+                            i * DEFAULT_SPRITE_SIZE + GAME_AREA_MARGIN_LEFT + GAME_AREA_PADDING,
+                            j * DEFAULT_SPRITE_SIZE + GAME_AREA_MARGIN_TOP + GAME_AREA_PADDING,
+                            DEFAULT_SPRITE_SIZE,
+                            DEFAULT_SPRITE_SIZE
+                        );
                     _cells.Add(rectangle);
                 }
             }
 
             foreach (Rectangle cell in _cells)
             {
-                if (Math.Round(_snake.SnakeHead.Position.X) == cell.X + 21 &&
-                    Math.Round(_snake.SnakeHead.Position.Y) == cell.Y + 21)
+                if (Math.Round(_snake.SnakeHead.Position.X) == cell.X + DEFAULT_SPRITE_HALF_SIZE &&
+                    Math.Round(_snake.SnakeHead.Position.Y) == cell.Y + DEFAULT_SPRITE_HALF_SIZE)
                 {
                     _occupiedCells.Add(cell);
                 }
 
                 if (_snake.SnakeSegments.Any(s =>
-                    Math.Round(s.Position.X) == cell.X + 21 && Math.Round(s.Position.Y) == cell.Y + 21))
+                    Math.Round(s.Position.X) == cell.X + DEFAULT_SPRITE_HALF_SIZE && Math.Round(s.Position.Y) == cell.Y + DEFAULT_SPRITE_HALF_SIZE))
                 {
                     _occupiedCells.Add(cell);
                 }
@@ -437,7 +451,7 @@ namespace MonoSnake
             {
                 if (_unOccupiedCells.Count > 0)
                 {
-                    Vector2 nextAppleLoc = new Vector2(_unOccupiedCells[nextIndex].X + 22, _unOccupiedCells[nextIndex].Y + 22);
+                    Vector2 nextAppleLoc = new Vector2(_unOccupiedCells[nextIndex].X + DEFAULT_SPRITE_HALF_SIZE, _unOccupiedCells[nextIndex].Y + DEFAULT_SPRITE_HALF_SIZE);
 
                     _appleGameObject.Position = nextAppleLoc;
                 }
