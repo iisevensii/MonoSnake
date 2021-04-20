@@ -60,7 +60,7 @@ namespace MonoSnake.Infrastructure
 
         public void AddHighScore(ScoreEntry scoreEntry)
         {
-            if (!ScoreEntries.Any() || ScoreEntries.All(se => scoreEntry.Score > se.Score))
+            if (!ScoreEntries.Any() || ScoreEntries.Any(se => scoreEntry.Score > se.Score))
             {
                 // Add new High Score
                 ScoreEntries.Add(scoreEntry);
