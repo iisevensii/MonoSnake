@@ -15,6 +15,13 @@ namespace MonoSnake
 {
     public class SnakeGame : Game
     {
+        private enum UiState
+        {
+            GamePlay,
+            StartScreen,
+            HighScoresScreen
+        }
+
         #region Constants
         private const int SCREEN_WIDTH = 780;
         private const int SCREEN_HEIGHT = 820;
@@ -40,23 +47,22 @@ namespace MonoSnake
         #endregion Constants
 
         #region Fields
-        private bool _drawDiagnosticGrid = true;
+            // Draw diagnostic grid?
+            private bool _drawDiagnosticGrid = true;
             private bool _appleEaten;
             private bool _applePlaced;
             private bool _isGameOver;
             private bool _showFpsMonitor = false;
-            private bool _atStartMenu = false;
-            private bool _atHighScoresScreen = true;
 
             #region System
             private readonly GraphicsDeviceManager _graphics;
             private SpriteBatch _spriteBatch;
             private InputController _inputController;
             private readonly FrameCounter _frameCounter = new FrameCounter();
-            #endregion System
+        #endregion System
 
-            #region UI
-            // Draw diagnostic grid?
+        #region UI
+            private UiState _uiState;
             private UiFrame _startScreenUiFrame;
             private CenteredUiFrame _highScoresUiFrame;
             private ScoreBoard _scoreBoard;
@@ -147,6 +153,8 @@ namespace MonoSnake
             GenerateApple();
 
             InitializeInputController();
+
+            _uiState = UiState.StartScreen;
         }
 
         private void LoadAssets()
@@ -261,11 +269,11 @@ namespace MonoSnake
             _startScreenHighScoresToggleButton =
                 new ToggleUiButton
                     (
-                        startScreenButtonNormal,
-                        startScreenButtonHover,
                         highScoresButtonNormal,
                         highScoresButtonHover,
-                        new Vector2(SCREEN_WIDTH - startScreenButtonNormal.Width - 10, 10),
+                        startScreenButtonNormal,
+                        startScreenButtonHover,
+                        new Vector2(10, 10),
                         0f
                     );
             _startScreenHighScoresToggleButton.ClickEvent += OnStartScreenHighScoresToggleButtonClick;
@@ -309,8 +317,8 @@ namespace MonoSnake
 
         private void OnStartScreenHighScoresToggleButtonClick(object sender, EventArgs e)
         {
-            _atStartMenu = !_atStartMenu;
-            _atHighScoresScreen = !_atHighScoresScreen;
+            if(_uiState != UiState.GamePlay || _isGameOver)
+                _uiState = _startScreenHighScoresToggleButton.IsToggled ? UiState.HighScoresScreen : UiState.StartScreen;
         }
 
         private void InitializeDiagnosticObjects()
@@ -367,8 +375,7 @@ namespace MonoSnake
             InitializeGameObjects();
             InitializeInputController();
             GenerateGrid();
-            _atStartMenu = false;
-            _atHighScoresScreen = false;
+            _uiState = UiState.GamePlay;
             _appleEaten = false;
             _applePlaced = false;
             GenerateApple();
@@ -626,11 +633,8 @@ namespace MonoSnake
             // Process Input
             _inputController.ProcessInput();
 
-            if (_isGameOver)
-                return;
-
             // Update GameObjects
-            if (!_atStartMenu && !_atHighScoresScreen)
+            if (_uiState == UiState.GamePlay && !_isGameOver)
                 _snake.Update(gameTime);
 
             _snakeHeadRectangle.X = (int)Math.Round(_snake.SnakeHead.Position.X - _snake.SnakeHead.Sprite.Width / 2f * _snake.SnakeHead.Sprite.Scale.X);
@@ -664,12 +668,12 @@ namespace MonoSnake
                 GenerateApple();
             }
 
-            if (_atStartMenu)
+            if (_uiState == UiState.StartScreen)
             {
                 _startScreenUiFrame.Update(gameTime);
             }
 
-            if (_atHighScoresScreen)
+            if (_uiState == UiState.HighScoresScreen)
             {
                 _highScoresUiFrame.Update(gameTime);
             }
@@ -691,7 +695,6 @@ namespace MonoSnake
                 _spriteBatch.Begin();
                 DrawGameOverText();
                 _spriteBatch.End();
-                return;
             }
 
             GraphicsDevice.Clear(Color.Black);
@@ -715,18 +718,20 @@ namespace MonoSnake
             if (_isGameOver)
                 DrawGameOverText();
 
-            // Draw Game Area
-            if (!_atStartMenu && !_atHighScoresScreen)
+            if (_uiState == UiState.GamePlay && !_isGameOver)
+            {
+                // Draw Game Area
                 foreach (Vector2 outlinePixel in _gameAreaRectangle.OutlinePixels())
                 {
                     _spriteBatch.Draw(_gameAreaRectangleTexture, outlinePixel, Color.Green);
                 }
 
-            if (!_atStartMenu && !_atHighScoresScreen)
+                // Draw Snake
                 _snake.Draw(_spriteBatch, gameTime);
 
-            if (!_atStartMenu && !_atHighScoresScreen)
+                // Draw Apple
                 _appleGameObject.Draw(_spriteBatch, gameTime);
+            }
 
             if (_drawDiagnosticGrid)
             {
@@ -751,13 +756,13 @@ namespace MonoSnake
                 }
             }
 
-            if (_atStartMenu)
+            if (_uiState == UiState.StartScreen)
             {
                 DrawStartScreenUiFrame(gameTime);
                 DrawLogoText();
             }
 
-            if (_atHighScoresScreen)
+            if (_uiState == UiState.HighScoresScreen)
             {
                 DrawHighScoresUiFrame(gameTime);
                 DrawLeaderboardText();

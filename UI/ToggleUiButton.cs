@@ -18,6 +18,8 @@ namespace MonoSnake.UI
         private readonly Sprite _secondHoverStateSprite;
         public event EventHandler ClickEvent;
 
+        public bool IsToggled => _isToggled;
+
         public ToggleUiButton(Sprite firstNormalStateSprite, Sprite firstHoverStateSprite, Sprite secondNormalStateSprite, Sprite secondHoverStateSprite, Vector2 position, float rotation)
             : base(firstNormalStateSprite, firstHoverStateSprite, position, rotation)
         {
