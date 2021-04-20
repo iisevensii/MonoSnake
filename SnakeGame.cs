@@ -520,6 +520,7 @@ namespace MonoSnake
             //float leaderboardY = _highScoresUiFrame.Position.Y / 2 + leaderboardStringWidth.Y + _snakeCwUpToRightCcwLeftToDownSprite.Width / 2;
 
             int scoreVerticalSpacing = 50;
+            int scoresMarginTop = 50;
             foreach (ScoreEntry scoreEntry in _scoreBoard.HighScores.ScoreEntries)
             {
                 int margin = (SCREEN_WIDTH - _startScreenUiFrame.ActualWidth) / 2;
@@ -537,9 +538,9 @@ namespace MonoSnake
                 float scoreEntryNameX = leftInsideEdgeOfFrame;
                 var scoreEntryIndex = _scoreBoard.HighScores.ScoreEntries.IndexOf(scoreEntry);
                 var frameYPosition = _highScoresUiFrame.Position.Y;
-                float scoreEntryNameY = scoreBoardVerticalMargin + frameYPosition + scoreVerticalSpacing + scoreEntryIndex * scoreVerticalSpacing;
+                float scoreEntryNameY = scoreBoardVerticalMargin  + frameYPosition + scoresMarginTop + scoreVerticalSpacing + scoreEntryIndex * scoreVerticalSpacing;
                 float scoreEntryScoreX = rightInsideEdgeOfFrame;
-                float scoreEntryScoreY = scoreBoardVerticalMargin + frameYPosition + scoreVerticalSpacing + scoreEntryIndex * scoreVerticalSpacing;
+                float scoreEntryScoreY = scoreBoardVerticalMargin + frameYPosition + scoresMarginTop + scoreVerticalSpacing + scoreEntryIndex * scoreVerticalSpacing;
 
                 Vector2 scoreEntryNamePosition = new Vector2(scoreEntryNameX, scoreEntryNameY);
                 Vector2 scoreEntryScorePosition = new Vector2(scoreEntryScoreX, scoreEntryScoreY);
@@ -578,7 +579,7 @@ namespace MonoSnake
         {
             Vector2 logoStringWidth = _logoFont.MeasureString(MONO_SNAKE_STRING);
             float logoX = _startScreenUiFrame.Position.X + _startScreenUiFrame.ActualWidth /2 - logoStringWidth.X / 2 - _snakeCwUpToRightCcwLeftToDownSprite.Width /2;
-            float logoY = _startScreenUiFrame.Position.Y / 2 + logoStringWidth.Y;
+            float logoY = _startScreenUiFrame.Position.Y / 2 + logoStringWidth.Y + DEFAULT_SPRITE_HALF_SIZE;
             Vector2 logoPosition = new Vector2(logoX, logoY);
 
             _spriteBatch.DrawString
@@ -600,7 +601,7 @@ namespace MonoSnake
             _leaderboardFont.Spacing = 0f;
             Vector2 leaderboardStringWidth = _leaderboardFont.MeasureString(LEADERBOARD_STRING);
             float leaderboardX = _highScoresUiFrame.Position.X + _highScoresUiFrame.ActualWidth / 2 - leaderboardStringWidth.X / 2 - _snakeCwUpToRightCcwLeftToDownSprite.Width / 2;
-            float leaderboardY = _highScoresUiFrame.Position.Y / 2 + leaderboardStringWidth.Y + _snakeCwUpToRightCcwLeftToDownSprite.Width / 2;
+            float leaderboardY = _highScoresUiFrame.Position.Y / 2 + leaderboardStringWidth.Y + _snakeCwUpToRightCcwLeftToDownSprite.Width / 2 + DEFAULT_SPRITE_HALF_SIZE;
             Vector2 leaderboardPosition = new Vector2(leaderboardX, leaderboardY);
 
             _spriteBatch.DrawString
