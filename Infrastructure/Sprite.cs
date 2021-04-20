@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace MonoSnake.Infrastructure
@@ -16,7 +17,7 @@ namespace MonoSnake.Infrastructure
 
         public Sprite(Texture2D spriteSheet, int top, int left, int width, int height)
         {
-            SpriteSheet = spriteSheet;
+            SpriteSheet = spriteSheet ?? throw new ArgumentException("Texture2D must not be null", nameof(spriteSheet));
             Top = top;
             Left = left;
             Width = width;
@@ -25,7 +26,7 @@ namespace MonoSnake.Infrastructure
 
         public Sprite(PositionedTexture2D positionedTexture2D, int width, int height)
         {
-            SpriteSheet = positionedTexture2D.SpriteSheet;
+            SpriteSheet = positionedTexture2D.SpriteSheet ?? throw new ArgumentException("PositionedTexture2D must not be null", nameof(positionedTexture2D)); ;
             Width = width;
             Height = height;
             int margin = positionedTexture2D.Margin;
@@ -36,7 +37,7 @@ namespace MonoSnake.Infrastructure
             Top = (yIndex * (margin * 2)) + margin + (width * yIndex);
         }
 
-        public void Draw(SpriteBatch spriteBatch, Vector2 position, float rotation)
+        public virtual void Draw(SpriteBatch spriteBatch, Vector2 position, float rotation)
         {
             spriteBatch.Draw
                 (
