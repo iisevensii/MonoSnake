@@ -726,13 +726,6 @@ namespace MonoSnake
 
             var fps = $"FPS: {_frameCounter.CurrentFramesPerSecond}";
 
-            if (_isGameOver)
-            {
-                _spriteBatch.Begin();
-                DrawGameOverText();
-                _spriteBatch.End();
-            }
-
             GraphicsDevice.Clear(Color.Black);
 
             _spriteBatch.Begin();
@@ -751,8 +744,10 @@ namespace MonoSnake
                     0f
                     );
 
-            if (_isGameOver)
+            if (_isGameOver && _uiState == UiState.GamePlay)
+            {
                 DrawGameOverText();
+            }
 
             if (_uiState == UiState.GamePlay && !_isGameOver)
             {
