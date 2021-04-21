@@ -40,8 +40,8 @@ namespace MonoSnake.UI
         private Texture2D _backgroundTexture2D;
         private Rectangle _backgroundRectangle;
 
-        public int ActualWidth { get; protected set; }
-        public int ActualHeight { get; protected set; }
+        public int ActualWidth { get; }
+        public int ActualHeight { get; }
         
         public UiFrame(GraphicsDeviceManager graphics, Vector2 position, int width, int height, Sprite horizontalSprite, Sprite verticalSprite, Sprite topLeftSprite, Sprite topRightSprite, Sprite bottomRightSprite, Sprite bottomLeftSprite, Color backgroundColor)
         {

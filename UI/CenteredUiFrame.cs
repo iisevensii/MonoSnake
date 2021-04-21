@@ -8,6 +8,10 @@ namespace MonoSnake.UI
 {
     public class CenteredUiFrame : UiFrame
     {
+
+        public new int ActualWidth { get; }
+        public new int ActualHeight { get; }
+
         public CenteredUiFrame
             (
                 GraphicsDeviceManager graphics,
