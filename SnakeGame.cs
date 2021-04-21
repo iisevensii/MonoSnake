@@ -211,14 +211,14 @@ namespace MonoSnake
                 Origin = halfSizeOrigin
             };
 
-            List<AnimatedSprite.AnimatedSpriteFrame> asfs = new List<AnimatedSprite.AnimatedSpriteFrame>
+            List<AnimatedSprite.AnimatedSpriteFrame> animatedSnakeHeadFrames = new List<AnimatedSprite.AnimatedSpriteFrame>
             {
                 new AnimatedSprite.AnimatedSpriteFrame(snakeHeadSprite, 0.5f),
                 new AnimatedSprite.AnimatedSpriteFrame(snakeHeadSprite01, 0.5f),
                 new AnimatedSprite.AnimatedSpriteFrame(snakeHeadSprite02, 0.5f)
             };
 
-            _snakeHeadAnimatedSprite = new AnimatedSprite(asfs, 0, 0, DEFAULT_SPRITE_SIZE, DEFAULT_SPRITE_SIZE);
+            _snakeHeadAnimatedSprite = new AnimatedSprite(animatedSnakeHeadFrames, 0, 0, DEFAULT_SPRITE_SIZE, DEFAULT_SPRITE_SIZE);
 
             PositionedTexture2D tailPositionedTexture2D = new PositionedTexture2D(_snakeSegmentsSpriteSheet, 1, 0, 2);
             Sprite snakeTailSprite = new Sprite(tailPositionedTexture2D, DEFAULT_SPRITE_SIZE, DEFAULT_SPRITE_SIZE)
