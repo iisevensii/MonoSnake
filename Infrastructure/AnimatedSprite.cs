@@ -7,42 +7,41 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace MonoSnake.Infrastructure
 {
-    public class AnimatedSprite : Sprite
+    public class AnimatedSprite
     {
         public class AnimatedSpriteFrame
         {
-            public Texture2D Texture2D { get; set; }
+            public Sprite Sprite { get; set; }
             public float FrameDisplayLength { get; set; }
+
+            public AnimatedSpriteFrame(Sprite sprite, float frameDisplayLength)
+            {
+                Sprite = sprite;
+                FrameDisplayLength = frameDisplayLength;
+            }
         }
 
         private List<AnimatedSpriteFrame> _frames = new List<AnimatedSpriteFrame>();
-        private Texture2D _currentFrame;
+        private Sprite _currentFrame;
         private int _currentFrameIndex = 0;
         private double _timeElapsed = 0f;
 
-        public bool Loop { get; set; }
+        public Sprite Sprite => _currentFrame;
 
-        public AnimatedSprite(List<AnimatedSpriteFrame> spriteSheets, int top, int left, int width, int height)
-            : base(spriteSheets.FirstOrDefault()?.Texture2D, top, left, width, height)
-        {
-            _currentFrame = spriteSheets.FirstOrDefault()?.Texture2D;
-        }
+        public bool Loop { get; set; } = true;
 
-        public AnimatedSprite(Texture2D spriteSheet, int top, int left, int width, int height)
-            : base(spriteSheet, top, left, width, height)
+        public AnimatedSprite(List<AnimatedSpriteFrame> animatedSpriteFrames, int top, int left, int width, int height)
         {
-            _currentFrame = spriteSheet;
-        }
+            if (animatedSpriteFrames.Count == 0)
+                throw new ArgumentException("At least one animation frame is required", nameof(animatedSpriteFrames));
 
-        public AnimatedSprite(List<PositionedTexture2D> positionedTexture2D, int width, int height)
-            : base(positionedTexture2D.FirstOrDefault(), width, height)
-        {
-            _currentFrame = positionedTexture2D.FirstOrDefault()?.SpriteSheet;
+            _frames = animatedSpriteFrames;
+            _currentFrame = animatedSpriteFrames.FirstOrDefault()?.Sprite;
         }
 
         public void Update(GameTime gameTime)
         {
-            _timeElapsed += gameTime.ElapsedGameTime.TotalMilliseconds;
+            _timeElapsed += gameTime.ElapsedGameTime.TotalSeconds;
 
             bool onLastFrame = _currentFrameIndex >= _frames.Count - 1;
 
@@ -58,19 +57,21 @@ namespace MonoSnake.Infrastructure
             else
                 if (Loop)
                     _currentFrameIndex = 0;
+
+            _currentFrame = _frames[_currentFrameIndex].Sprite;
         }
 
-        public override void Draw(SpriteBatch spriteBatch, Vector2 position, float rotation)
+        public void Draw(SpriteBatch spriteBatch, Vector2 position, float rotation)
         {
             spriteBatch.Draw
             (
-                _currentFrame,
+                _currentFrame.SpriteSheet,
                 position,
-                new Rectangle(Left, Top, Width, Height),
-                TintColor,
+                new Rectangle(_frames[_currentFrameIndex].Sprite.Left, _frames[_currentFrameIndex].Sprite.Top, _frames[_currentFrameIndex].Sprite.Width, _frames[_currentFrameIndex].Sprite.Height),
+                _currentFrame.TintColor,
                 rotation,
-                Origin,
-                Scale,
+                _currentFrame.Origin,
+                _currentFrame.Scale,
                 SpriteEffects.None,
                 0f
             );

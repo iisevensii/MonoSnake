@@ -115,8 +115,10 @@ namespace MonoSnake
             private List<Rectangle> _cells;
             private List<Rectangle> _occupiedCells = new List<Rectangle>();
             private List<Rectangle> _unOccupiedCells = new List<Rectangle>();
+            private bool _drawTestAnimation = false;
+            private AnimatedSprite _snakeHeadAnimatedSprite;
 
-        #endregion Rectangles
+            #endregion Rectangles
         #endregion Fields
 
         public SnakeGame()  
@@ -192,45 +194,67 @@ namespace MonoSnake
             #region PositionedTextureSprites
 
             PositionedTexture2D headPositionedTexture2D = new PositionedTexture2D(_snakeHeadSpriteSheet, 1, 0, 0);
+            PositionedTexture2D headPositionedTexture2D01 = new PositionedTexture2D(_snakeHeadSpriteSheet, 1, 0, 1);
+            PositionedTexture2D headPositionedTexture2D02 = new PositionedTexture2D(_snakeHeadSpriteSheet, 1, 0, 2);
+
+            var halfSizeOrigin = new Vector2(DEFAULT_SPRITE_HALF_SIZE, DEFAULT_SPRITE_HALF_SIZE);
+
             Sprite snakeHeadSprite = new Sprite(headPositionedTexture2D, DEFAULT_SPRITE_SIZE, DEFAULT_SPRITE_SIZE)
             {
-                Origin = new Vector2(DEFAULT_SPRITE_HALF_SIZE, DEFAULT_SPRITE_HALF_SIZE)
+                Origin = halfSizeOrigin
             };
+            Sprite snakeHeadSprite01 = new Sprite(headPositionedTexture2D01, DEFAULT_SPRITE_SIZE, DEFAULT_SPRITE_SIZE)
+            {
+                Origin = halfSizeOrigin
+            };
+            Sprite snakeHeadSprite02 = new Sprite(headPositionedTexture2D02, DEFAULT_SPRITE_SIZE, DEFAULT_SPRITE_SIZE)
+            {
+                Origin = halfSizeOrigin
+            };
+
+            var asfs = new List<AnimatedSprite.AnimatedSpriteFrame>
+            {
+                new AnimatedSprite.AnimatedSpriteFrame(snakeHeadSprite, 0.5f),
+                new AnimatedSprite.AnimatedSpriteFrame(snakeHeadSprite01, 0.5f),
+                new AnimatedSprite.AnimatedSpriteFrame(snakeHeadSprite02, 0.5f)
+            };
+
+            _snakeHeadAnimatedSprite = new AnimatedSprite(asfs, 0, 0, DEFAULT_SPRITE_SIZE, DEFAULT_SPRITE_SIZE);
 
             PositionedTexture2D tailPositionedTexture2D = new PositionedTexture2D(_snakeSegmentsSpriteSheet, 1, 0, 2);
             Sprite snakeTailSprite = new Sprite(tailPositionedTexture2D, DEFAULT_SPRITE_SIZE, DEFAULT_SPRITE_SIZE)
             {
-                Origin = new Vector2(DEFAULT_SPRITE_HALF_SIZE, DEFAULT_SPRITE_HALF_SIZE)
+                Origin = halfSizeOrigin
             };
 
             PositionedTexture2D straightBodyPositionedTexture2D = new PositionedTexture2D(_snakeSegmentsSpriteSheet, 1, 1, 2);
             _snakeStraightBodySprite = new Sprite(straightBodyPositionedTexture2D, DEFAULT_SPRITE_SIZE, DEFAULT_SPRITE_SIZE)
             {
-                Origin = new Vector2(DEFAULT_SPRITE_HALF_SIZE, DEFAULT_SPRITE_HALF_SIZE)
+                Origin = halfSizeOrigin
             };
 
             PositionedTexture2D snakeCwUpToRightCcwLeftToDownPositionedTexture2D = new PositionedTexture2D(_snakeSegmentsSpriteSheet, 1, 0, 0);
             _snakeCwUpToRightCcwLeftToDownSprite = new Sprite(snakeCwUpToRightCcwLeftToDownPositionedTexture2D, DEFAULT_SPRITE_SIZE, DEFAULT_SPRITE_SIZE)
             {
-                Origin = new Vector2(DEFAULT_SPRITE_HALF_SIZE, DEFAULT_SPRITE_HALF_SIZE)
+                Origin = halfSizeOrigin
             };
 
             PositionedTexture2D snakeCwRightToDownCcwUpToLeftPositionedTexture2D = new PositionedTexture2D(_snakeSegmentsSpriteSheet, 1, 1, 0);
             _snakeCwRightToDownCcwUpToLeftSprite = new Sprite(snakeCwRightToDownCcwUpToLeftPositionedTexture2D, DEFAULT_SPRITE_SIZE, DEFAULT_SPRITE_SIZE)
             {
-                Origin = new Vector2(DEFAULT_SPRITE_HALF_SIZE, DEFAULT_SPRITE_HALF_SIZE)
+                Origin = halfSizeOrigin
             };
 
             PositionedTexture2D snakeCwDownToLeftCcwRightToUpPositionedTexture2D = new PositionedTexture2D(_snakeSegmentsSpriteSheet, 1, 1, 1);
             _snakeCwDownToLeftCcwRightToUpSprite = new Sprite(snakeCwDownToLeftCcwRightToUpPositionedTexture2D, DEFAULT_SPRITE_SIZE, DEFAULT_SPRITE_SIZE)
             {
-                Origin = new Vector2(DEFAULT_SPRITE_HALF_SIZE, DEFAULT_SPRITE_HALF_SIZE)
+                Origin = halfSizeOrigin
             };
 
             PositionedTexture2D snakeCwLeftToUpCcwDownToRightPositionedTexture2D = new PositionedTexture2D(_snakeSegmentsSpriteSheet, 1, 0, 1);
             _snakeCwLeftToUpCcwDownToRightSprite = new Sprite(snakeCwLeftToUpCcwDownToRightPositionedTexture2D, DEFAULT_SPRITE_SIZE, DEFAULT_SPRITE_SIZE)
             {
-                Origin = new Vector2(DEFAULT_SPRITE_HALF_SIZE, DEFAULT_SPRITE_HALF_SIZE)
+                Origin = halfSizeOrigin
             };
 
             #endregion PositionedTextureSprites
@@ -692,6 +716,8 @@ namespace MonoSnake
                 _highScoresUiFrame.Update(gameTime);
             }
 
+            _snakeHeadAnimatedSprite.Update(gameTime);
+
             _startScreenHighScoresToggleButton.Update(gameTime);
             base.Update(gameTime);
         }
@@ -782,6 +808,9 @@ namespace MonoSnake
                 DrawLeaderboardText();
                 DrawHighScores(gameTime);
             }
+
+            if(_drawTestAnimation)
+                _snakeHeadAnimatedSprite.Draw(_spriteBatch, new Vector2(SCREEN_WIDTH /2, SCREEN_HEIGHT /2), 0f);
 
             _startScreenHighScoresToggleButton.Draw(_spriteBatch, gameTime);
 
