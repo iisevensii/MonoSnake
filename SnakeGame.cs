@@ -115,8 +115,7 @@ namespace MonoSnake
             private List<Rectangle> _cells;
             private List<Rectangle> _occupiedCells = new List<Rectangle>();
             private List<Rectangle> _unOccupiedCells = new List<Rectangle>();
-            private bool _drawTestAnimation = false;
-            private AnimatedSprite _snakeHeadAnimatedSprite;
+            private ISprite _snakeHeadAnimatedSprite;
 
             #endregion Rectangles
         #endregion Fields
@@ -197,9 +196,9 @@ namespace MonoSnake
             PositionedTexture2D headPositionedTexture2D01 = new PositionedTexture2D(_snakeHeadSpriteSheet, 1, 0, 1);
             PositionedTexture2D headPositionedTexture2D02 = new PositionedTexture2D(_snakeHeadSpriteSheet, 1, 0, 2);
 
-            var halfSizeOrigin = new Vector2(DEFAULT_SPRITE_HALF_SIZE, DEFAULT_SPRITE_HALF_SIZE);
+            Vector2 halfSizeOrigin = new Vector2(DEFAULT_SPRITE_HALF_SIZE, DEFAULT_SPRITE_HALF_SIZE);
 
-            Sprite snakeHeadSprite = new Sprite(headPositionedTexture2D, DEFAULT_SPRITE_SIZE, DEFAULT_SPRITE_SIZE)
+            ISprite snakeHeadSprite = new Sprite(headPositionedTexture2D, DEFAULT_SPRITE_SIZE, DEFAULT_SPRITE_SIZE)
             {
                 Origin = halfSizeOrigin
             };
@@ -212,7 +211,7 @@ namespace MonoSnake
                 Origin = halfSizeOrigin
             };
 
-            var asfs = new List<AnimatedSprite.AnimatedSpriteFrame>
+            List<AnimatedSprite.AnimatedSpriteFrame> asfs = new List<AnimatedSprite.AnimatedSpriteFrame>
             {
                 new AnimatedSprite.AnimatedSpriteFrame(snakeHeadSprite, 0.5f),
                 new AnimatedSprite.AnimatedSpriteFrame(snakeHeadSprite01, 0.5f),
@@ -260,7 +259,7 @@ namespace MonoSnake
             #endregion PositionedTextureSprites
 
             // Create GameObjects
-            _snakeHeadGameObject = new SnakeHead(snakeHeadSprite, 
+            _snakeHeadGameObject = new SnakeHead(_snakeHeadAnimatedSprite, 
                 new Vector2(GAME_AREA_MARGIN_LEFT + GAME_AREA_PADDING + DEFAULT_SPRITE_HALF_SIZE,
                 GAME_AREA_MARGIN_TOP + GAME_AREA_PADDING + DEFAULT_SPRITE_HALF_SIZE));
 
@@ -808,9 +807,6 @@ namespace MonoSnake
                 DrawLeaderboardText();
                 DrawHighScores(gameTime);
             }
-
-            if(_drawTestAnimation)
-                _snakeHeadAnimatedSprite.Draw(_spriteBatch, new Vector2(SCREEN_WIDTH /2, SCREEN_HEIGHT /2), 0f);
 
             _startScreenHighScoresToggleButton.Draw(_spriteBatch, gameTime);
 

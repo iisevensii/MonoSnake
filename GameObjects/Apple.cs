@@ -7,7 +7,7 @@ namespace MonoSnake.GameObjects
     public class Apple : IGameObject
     {
         public int DrawOrder => 0;
-        public Sprite Sprite { get; }
+        public ISprite Sprite { get; }
         public Vector2 Position { get; set; }
         public float Rotation { get; set; }
 

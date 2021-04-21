@@ -14,7 +14,7 @@ namespace MonoSnake.GameObjects
         private int _framesSinceLastMovement = 20;
         public int MovementSpeed { get; set; } = 18;
         public int DrawOrder => 0;
-        public Sprite Sprite { get; }
+        public ISprite Sprite { get; }
         public Vector2 Position { get; set; }
         public Vector2 NextPosition { get; set; }
         public float Rotation { get; set; }
@@ -22,7 +22,7 @@ namespace MonoSnake.GameObjects
         public SnakeDirection Direction { get; set; } = SnakeDirection.Right;
 
 
-        public SnakeHead(Sprite sprite, Vector2 position)
+        public SnakeHead(ISprite sprite, Vector2 position)
         {
             Sprite = sprite;
             Position = position;

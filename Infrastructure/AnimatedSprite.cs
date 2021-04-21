@@ -7,14 +7,14 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace MonoSnake.Infrastructure
 {
-    public class AnimatedSprite
+    public class AnimatedSprite : ISprite
     {
         public class AnimatedSpriteFrame
         {
-            public Sprite Sprite { get; set; }
+            public ISprite Sprite { get; set; }
             public float FrameDisplayLength { get; set; }
 
-            public AnimatedSpriteFrame(Sprite sprite, float frameDisplayLength)
+            public AnimatedSpriteFrame(ISprite sprite, float frameDisplayLength)
             {
                 Sprite = sprite;
                 FrameDisplayLength = frameDisplayLength;
@@ -22,13 +22,26 @@ namespace MonoSnake.Infrastructure
         }
 
         private List<AnimatedSpriteFrame> _frames = new List<AnimatedSpriteFrame>();
-        private Sprite _currentFrame;
+        private ISprite _currentFrame;
         private int _currentFrameIndex = 0;
         private double _timeElapsed = 0f;
 
-        public Sprite Sprite => _currentFrame;
+        public ISprite Sprite => _currentFrame;
 
         public bool Loop { get; set; } = true;
+
+        #region ISprite
+
+        public Texture2D SpriteSheet { get; }
+        public int Top { get; }
+        public int Left { get; }
+        public int Width { get; }
+        public int Height { get; }
+        public Color TintColor { get; set; }
+        public Vector2 Origin { get; set; }
+        public Vector2 Scale { get; set; }
+
+        #endregion ISprite
 
         public AnimatedSprite(List<AnimatedSpriteFrame> animatedSpriteFrames, int top, int left, int width, int height)
         {

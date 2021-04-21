@@ -4,7 +4,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace MonoSnake.Infrastructure
 {
-    public class Sprite
+    public class Sprite : ISprite
     {
         public Texture2D SpriteSheet { get; }
         public int Top { get; }
@@ -35,6 +35,10 @@ namespace MonoSnake.Infrastructure
 
             Left = (xIndex * (margin * 2)) + margin + (width * xIndex);
             Top = (yIndex * (margin * 2)) + margin + (width * yIndex);
+        }
+
+        public void Update(GameTime gameTime)
+        {
         }
 
         public virtual void Draw(SpriteBatch spriteBatch, Vector2 position, float rotation)

@@ -7,7 +7,7 @@ namespace MonoSnake.GameObjects
     interface IGameObject
     {
         int DrawOrder { get; }
-        Sprite Sprite { get; }
+        ISprite Sprite { get; }
 
         Vector2 Position { get; set; }
         float Rotation { get; set; }

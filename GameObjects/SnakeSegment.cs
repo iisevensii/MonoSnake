@@ -8,7 +8,7 @@ namespace MonoSnake.GameObjects
     {
 
         public int DrawOrder => 0;
-        public Sprite Sprite { get; set; }
+        public ISprite Sprite { get; set; }
         public Vector2 Position { get; set; }
         public float Rotation { get; set; }
         public SnakeDirection Direction { get; set; }
