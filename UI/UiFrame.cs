@@ -73,8 +73,6 @@ namespace MonoSnake.UI
             }
             ActualHeight += _bottomLeftSprite.Height;
 
-            _startScreenBackgroundPosition = Position;
-
             //ActualWidth = ActualWidth - (_topLeftSprite.Width);
             //ActualHeight = ActualHeight - (_topLeftSprite.Height * 2);
         }
