@@ -34,12 +34,10 @@ namespace MonoSnake.UI
         private GraphicsDeviceManager _graphics;
         private const float _rotate90CW = (float)(90 * Math.PI / 180);
         private Texture2D _backgroundTexture2D;
-        private Color[] _startScreenBackgroundColors;
-        protected Vector2 _startScreenBackgroundPosition;
         private Rectangle _backgroundRectangle;
 
-        public int ActualWidth { get; }
-        public int ActualHeight { get; }
+        public int ActualWidth { get; protected set; }
+        public int ActualHeight { get; protected set; }
         
         public UiFrame(GraphicsDeviceManager graphics, Vector2 position, int width, int height, Sprite horizontalSprite, Sprite verticalSprite, Sprite topLeftSprite, Sprite topRightSprite, Sprite bottomRightSprite, Sprite bottomLeftSprite, Color backgroundColor)
         {
