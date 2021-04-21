@@ -539,9 +539,6 @@ namespace MonoSnake
             int scoreBoardHorizontalMargin = 20;
             int scoreBoardVerticalMargin = 20;
 
-            //float leaderboardX = _highScoresUiFrame.Position.X + _highScoresUiFrame.ActualWidth / 2 - leaderboardStringWidth.X / 2 - _snakeCwUpToRightCcwLeftToDownSprite.Width / 2;
-            //float leaderboardY = _highScoresUiFrame.Position.Y / 2 + leaderboardStringWidth.Y + _snakeCwUpToRightCcwLeftToDownSprite.Width / 2;
-
             int scoreVerticalSpacing = 50;
             int scoresMarginTop = 50;
             foreach (ScoreEntry scoreEntry in _scoreBoard.HighScores.ScoreEntries)

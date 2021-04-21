@@ -76,9 +76,6 @@ namespace MonoSnake.UI
                 ActualHeight += _verticalSprite.Height;
             }
             ActualHeight += _bottomLeftSprite.Height;
-
-            //ActualWidth = ActualWidth - (_topLeftSprite.Width);
-            //ActualHeight = ActualHeight - (_topLeftSprite.Height * 2);
         }
 
         protected virtual void Initialize()
