@@ -21,7 +21,7 @@ namespace MonoSnake.Infrastructure
             }
         }
 
-        private List<AnimatedSpriteFrame> _frames = new List<AnimatedSpriteFrame>();
+        private readonly List<AnimatedSpriteFrame> _frames = new List<AnimatedSpriteFrame>();
         private ISprite _currentFrame;
         private int _currentFrameIndex = 0;
         private double _timeElapsed = 0f;

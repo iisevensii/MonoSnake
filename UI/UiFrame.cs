@@ -14,25 +14,29 @@ namespace MonoSnake.UI
         public int DrawOrder { get; }
         public Vector2 Position { get; set; }
         public float Rotation { get; set; }
-        protected Sprite _horizontalSprite;
-        protected Sprite _verticalSprite;
-        protected Sprite _topLeftSprite;
-        protected Sprite _topRightSprite;
-        protected Sprite _bottomLeftSprite;
-        private Sprite _bottomRightSprite;
-        protected int _frameWidth;
-        protected int _frameHeight;
+
+        protected readonly Sprite _horizontalSprite;
+        protected readonly Sprite _verticalSprite;
+        protected readonly Sprite _topLeftSprite;
+        protected readonly Sprite _topRightSprite;
+        protected readonly Sprite _bottomLeftSprite;
+        protected readonly int _frameWidth;
+        protected readonly int _frameHeight;
+
+        private const float ROTATE90_CW = (float)(90 * Math.PI / 180);
+
+        private readonly Sprite _bottomRightSprite;
         private readonly List<UiObject> _topUiObjectRow = new List<UiObject>();
         private readonly List<UiObject> _rightUiObjectColumn = new List<UiObject>();
         private readonly List<UiObject> _bottomUiObjectRow = new List<UiObject>();
         private readonly List<UiObject> _leftUiObjectColumn = new List<UiObject>();
-        private UiObject _topLeftUiObject;
-        private UiObject _topRightUiObject;
-        private UiObject _bottomRightUiObject;
-        private UiObject _bottomLeftUiObject;
-        private Color _backgroundColor;
-        private GraphicsDeviceManager _graphics;
-        private const float _rotate90CW = (float)(90 * Math.PI / 180);
+        private readonly UiObject _topLeftUiObject;
+        private readonly UiObject _topRightUiObject;
+        private readonly UiObject _bottomRightUiObject;
+        private readonly UiObject _bottomLeftUiObject;
+        private readonly Color _backgroundColor;
+        private readonly GraphicsDeviceManager _graphics;
+
         private Texture2D _backgroundTexture2D;
         private Rectangle _backgroundRectangle;
 
@@ -107,7 +111,7 @@ namespace MonoSnake.UI
             nextTopRowPosition = new Vector2(nextTopRowPosition.X + _topLeftSprite.Width, nextTopRowPosition.Y);
             for (int i = 0; i < _frameWidth - 2; i++)
             {
-                UiObject uiObject = new UiObject(_horizontalSprite, nextTopRowPosition, _rotate90CW);
+                UiObject uiObject = new UiObject(_horizontalSprite, nextTopRowPosition, ROTATE90_CW);
                 _topUiObjectRow.Add(uiObject);
                 nextTopRowPosition = new Vector2(uiObject.Position.X + uiObject.Sprite.Width, uiObject.Position.Y);
             }
@@ -127,7 +131,7 @@ namespace MonoSnake.UI
 
             for (int i = 0; i < _frameWidth - 2; i++)
             {
-                UiObject uiObject = new UiObject(_horizontalSprite, nextBottomRowPosition, _rotate90CW);
+                UiObject uiObject = new UiObject(_horizontalSprite, nextBottomRowPosition, ROTATE90_CW);
                 this._bottomUiObjectRow.Add(uiObject);
                 nextBottomRowPosition = new Vector2(uiObject.Position.X - _horizontalSprite.Width, uiObject.Position.Y);
             }

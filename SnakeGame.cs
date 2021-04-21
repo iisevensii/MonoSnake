@@ -48,11 +48,11 @@ namespace MonoSnake
 
         #region Fields
             // Draw diagnostic grid?
-            private bool _drawDiagnosticGrid = false;
+            private readonly bool _drawDiagnosticGrid = false;
             private bool _appleEaten;
             private bool _applePlaced;
             private bool _isGameOver;
-            private bool _showFpsMonitor = false;
+            private readonly bool _showFpsMonitor = false;
 
             #region System
             private readonly GraphicsDeviceManager _graphics;
