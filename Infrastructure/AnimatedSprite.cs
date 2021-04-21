@@ -26,8 +26,6 @@ namespace MonoSnake.Infrastructure
         private int _currentFrameIndex = 0;
         private double _timeElapsed = 0f;
 
-        public ISprite Sprite => _currentFrame;
-
         public bool Loop { get; set; } = true;
 
         #region ISprite
