@@ -118,6 +118,8 @@ namespace MonoSnake
             private ISprite _snakeHeadAnimatedSprite;
 
             #endregion Rectangles
+
+            private TextEntry _textEntry;
         #endregion Fields
 
         public SnakeGame()  
@@ -135,6 +137,7 @@ namespace MonoSnake
             _graphics.PreferredBackBufferWidth = SCREEN_WIDTH;
             _graphics.PreferredBackBufferHeight = SCREEN_HEIGHT;
             _graphics.ApplyChanges();
+            _textEntry = new TextEntry(_graphics.GraphicsDevice, new Vector2(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2));
 
             base.Initialize();
         }
@@ -713,6 +716,7 @@ namespace MonoSnake
             }
 
             _snakeHeadAnimatedSprite.Update(gameTime);
+            _textEntry.Update(gameTime);
 
             _startScreenHighScoresToggleButton.Update(gameTime);
             base.Update(gameTime);
@@ -801,6 +805,10 @@ namespace MonoSnake
             }
 
             _startScreenHighScoresToggleButton.Draw(_spriteBatch, gameTime);
+
+            var letterEntryRectangle = new Rectangle(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2, 20, 5);
+
+            //_textEntry.Draw(_spriteBatch, gameTime);
 
             _spriteBatch.End();
 
