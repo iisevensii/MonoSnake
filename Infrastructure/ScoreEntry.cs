@@ -2,8 +2,9 @@
 {
     public class ScoreEntry
     {
-        public string Name { get; }
-        public int Score { get; }
+        // Property setters needed for deserialization
+        public string Name { get; set; }
+        public int Score { get; set; }
 
         public ScoreEntry()
         {

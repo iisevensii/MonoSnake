@@ -15,8 +15,8 @@ namespace MonoSnake.Infrastructure
         public ScoreBoard(string applicationPath)
         {
             _highScoresStoragePath = Path.Combine(Path.GetDirectoryName(applicationPath), HIGH_SCORES_FILE_NAME);
+            _jsonSerializerOptions = new JsonSerializerOptions() { WriteIndented = true };
             HighScores = LoadHighScores();
-            _jsonSerializerOptions = new JsonSerializerOptions() {WriteIndented = true};
             
         }
 
@@ -24,7 +24,8 @@ namespace MonoSnake.Infrastructure
         {
             if (File.Exists(_highScoresStoragePath))
             {
-                HighScores = JsonSerializer.Deserialize<HighScores>(File.ReadAllText(_highScoresStoragePath), _jsonSerializerOptions);
+                var highScoresText = File.ReadAllText(_highScoresStoragePath);
+                HighScores = JsonSerializer.Deserialize<HighScores>(highScoresText, _jsonSerializerOptions);
 
                 return HighScores;
             }
