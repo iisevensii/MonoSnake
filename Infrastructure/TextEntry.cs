@@ -93,7 +93,7 @@ namespace MonoSnake.Infrastructure
                 if (_currentChar == Keys.None)
                 {
                     _currentChar = Keys.Z;
-                }
+                }   
                 else if (_currentChar == Keys.A)
                 {
                     _currentChar = Keys.None;

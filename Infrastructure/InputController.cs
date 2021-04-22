@@ -86,6 +86,12 @@ namespace MonoSnake.Infrastructure
             KeyboardState keyboardState = Keyboard.GetState();
             var player1GamePadState = GamePad.GetState(PlayerIndex.One);
 
+            // ToDo: Remove this code
+            if (UIState != UIState.GamePlay && WasKeyPressed(Keys.F1))
+            {
+                UIState = UIState.HighScoreEntry;
+            }
+
             if (UIState == UIState.HighScoreEntry)
             {
                 if (WasKeyPressed(Keys.Up) || WasButtonPressed(Buttons.DPadUp))

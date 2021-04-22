@@ -300,9 +300,6 @@ namespace MonoSnake
                 _startScreenHighScoresToggleButton.IsEnabled = true;
 
                 SetUiState(_startScreenHighScoresToggleButton.IsToggled ? UIState.HighScoresScreen : UIState.StartScreen);
-
-                //ToDo: Test Code
-                SetUiState(_uiState = UIState.HighScoreEntry);
             }
             else
             {
