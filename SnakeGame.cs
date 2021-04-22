@@ -15,13 +15,6 @@ namespace MonoSnake
 {
     public class SnakeGame : Game
     {
-        private enum UiState
-        {
-            GamePlay,
-            StartScreen,
-            HighScoresScreen
-        }
-
         #region Constants
         private const int SCREEN_WIDTH = 780;
         private const int SCREEN_HEIGHT = 820;
@@ -46,9 +39,15 @@ namespace MonoSnake
         private const int GAME_AREA_PADDING = 10;
         #endregion Constants
 
+        #region Events
+
+        public event Action<SnakeGame, UIState> UIStateChangeEvent;
+
+        #endregion Events
+
         #region Fields
-            // Draw diagnostic grid?
-            private readonly bool _drawDiagnosticGrid = false;
+        // Draw diagnostic grid?
+        private readonly bool _drawDiagnosticGrid = false;
             private bool _appleEaten;
             private bool _applePlaced;
             private bool _isGameOver;
@@ -62,7 +61,7 @@ namespace MonoSnake
         #endregion System
 
         #region UI
-            private UiState _uiState;
+            private UIState _uiState;
             private UiFrame _startScreenUiFrame;
             private CenteredUiFrame _highScoresUiFrame;
             private ScoreBoard _scoreBoard;
@@ -142,6 +141,12 @@ namespace MonoSnake
             base.Initialize();
         }
 
+        protected void OnUIStateChange(SnakeGame snakeGame, UIState uiState)
+        {
+            Action<SnakeGame, UIState> handler = this.UIStateChangeEvent;
+            handler?.Invoke(snakeGame, uiState);
+        }
+
         protected override void LoadContent()
         {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
@@ -158,9 +163,9 @@ namespace MonoSnake
 
             InitializeInputController();
 
-            InitializeUiObjects();
+            SetUiState(UIState.StartScreen);
 
-            _uiState = UiState.StartScreen;
+            InitializeUiObjects();
         }
 
         private void LoadAssets()
@@ -290,15 +295,25 @@ namespace MonoSnake
 
         private void OnStartScreenHighScoresToggleButtonClick(object sender, EventArgs e)
         {
-            if (_uiState != UiState.GamePlay || _isGameOver)
+            if (_uiState != UIState.GamePlay || _isGameOver)
             {
                 _startScreenHighScoresToggleButton.IsEnabled = true;
-                _uiState = _startScreenHighScoresToggleButton.IsToggled ? UiState.HighScoresScreen : UiState.StartScreen;
+
+                SetUiState(_startScreenHighScoresToggleButton.IsToggled ? UIState.HighScoresScreen : UIState.StartScreen);
+
+                //ToDo: Test Code
+                SetUiState(_uiState = UIState.HighScoreEntry);
             }
             else
             {
                 _startScreenHighScoresToggleButton.IsEnabled = false;
             }
+        }
+
+        private void SetUiState(UIState uiState)
+        {
+            _uiState = uiState;
+            OnUIStateChange(this, uiState);
         }
 
         private void InitializeDiagnosticObjects()
@@ -332,7 +347,8 @@ namespace MonoSnake
 
         private void InitializeInputController()
         {
-            _inputController = new InputController(_snake);
+            _textEntry = new TextEntry(_graphics.GraphicsDevice, new Vector2(SCREEN_WIDTH /2, SCREEN_HEIGHT /2));
+            _inputController = new InputController(this, _snake, _textEntry);
             _inputController.StartEvent += InputController_StartEvent;
             _inputController.ExitEvent += InputController_ExitEvent;
             _inputController.RestartEvent += InputController_RestartEvent;
@@ -398,6 +414,7 @@ namespace MonoSnake
         {
             InitializeGameObjects();
             InitializeInputController();
+            SetUiState(UIState.StartScreen);
             GenerateGrid();
             _appleEaten = false;
             _applePlaced = false;
@@ -409,8 +426,8 @@ namespace MonoSnake
         {
             InitializeGameObjects();
             InitializeInputController();
+            SetUiState(UIState.GamePlay);
             GenerateGrid();
-            _uiState = UiState.GamePlay;
             _appleEaten = false;
             _applePlaced = false;
             GenerateApple();
@@ -670,7 +687,7 @@ namespace MonoSnake
             _inputController.ProcessInput();
 
             // Update GameObjects
-            if (_uiState == UiState.GamePlay && !_isGameOver)
+            if (_uiState == UIState.GamePlay && !_isGameOver)
                 _snake.Update(gameTime);
 
             _snakeHeadRectangle.X = (int)Math.Round(_snake.SnakeHead.Position.X - _snake.SnakeHead.Sprite.Width / 2f * _snake.SnakeHead.Sprite.Scale.X);
@@ -705,12 +722,12 @@ namespace MonoSnake
                 GenerateApple();
             }
 
-            if (_uiState == UiState.StartScreen)
+            if (_uiState == UIState.StartScreen)
             {
                 _startScreenUiFrame.Update(gameTime);
             }
 
-            if (_uiState == UiState.HighScoresScreen)
+            if (_uiState == UIState.HighScoresScreen)
             {
                 _highScoresUiFrame.Update(gameTime);
             }
@@ -748,12 +765,12 @@ namespace MonoSnake
                     0f
                     );
 
-            if (_isGameOver && _uiState == UiState.GamePlay)
+            if (_isGameOver && _uiState == UIState.GamePlay)
             {
                 DrawGameOverText();
             }
 
-            if (_uiState == UiState.GamePlay && !_isGameOver)
+            if (_uiState == UIState.GamePlay && !_isGameOver)
             {
                 // Draw Game Area
                 foreach (Vector2 outlinePixel in _gameAreaRectangle.OutlinePixels())
@@ -791,13 +808,14 @@ namespace MonoSnake
                 }
             }
 
-            if (_uiState == UiState.StartScreen)
+            if (_uiState == UIState.StartScreen)
             {
                 DrawStartScreenUiFrame(gameTime);
                 DrawLogoText();
             }
 
-            if (_uiState == UiState.HighScoresScreen)
+            //ToDo: Remove HighScoreEntry condition
+            if (_uiState == UIState.HighScoresScreen || _uiState == UIState.HighScoreEntry)
             {
                 DrawHighScoresUiFrame(gameTime);
                 DrawLeaderboardText();
