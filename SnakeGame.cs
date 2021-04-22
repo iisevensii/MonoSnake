@@ -33,7 +33,6 @@ namespace MonoSnake
         private const string EAT_SOUND_EFFECT_NAME = "eat";
         private const string HISS_SOUND_EFFECT_NAME = "hiss";
         private const string MOVE_SOUND_EFFECT_NAME = "sand_rattle";
-        private const int SCORE_BOARD_FONT_LEFT_PADDING = 10;
         private const int GAME_AREA_MARGIN_LEFT = 20;
         private const int GAME_AREA_MARGIN_TOP = 90;
         private const int GAME_AREA_PADDING = 10;
@@ -132,7 +131,6 @@ namespace MonoSnake
 
         protected override void Initialize()
         {
-            _scoreBoard = new ScoreBoard(Assembly.GetEntryAssembly().Location);
             _graphics.PreferredBackBufferWidth = SCREEN_WIDTH;
             _graphics.PreferredBackBufferHeight = SCREEN_HEIGHT;
             _graphics.ApplyChanges();
@@ -405,6 +403,8 @@ namespace MonoSnake
                 _snakeCwLeftToUpCcwDownToRightSprite,
                 Color.FromNonPremultiplied(46, 51, 106, START_SCREEN_TRANSPARENCY)
             );
+
+            _scoreBoard = new ScoreBoard(Assembly.GetEntryAssembly().Location, _scoreBoardFont, _highScoresUiFrame, SCREEN_WIDTH);
         }
 
         private void InputController_StartEvent(object sender, EventArgs e)
@@ -550,68 +550,7 @@ namespace MonoSnake
         {
             _highScoresUiFrame.Draw(_spriteBatch, gameTime);
         }
-
-        private void DrawHighScores(GameTime gameTime)
-        {
-            int scoreBoardHorizontalMargin = 20;
-            int scoreBoardVerticalMargin = 20;
-
-            int scoreVerticalSpacing = 50;
-            int scoresMarginTop = 50;
-            foreach (ScoreEntry scoreEntry in _scoreBoard.HighScores.ScoreEntries)
-            {
-                int margin = (SCREEN_WIDTH - _startScreenUiFrame.ActualWidth) / 2;
-                int leftInsideEdgeOfFrame = scoreBoardHorizontalMargin + margin + SCORE_BOARD_FONT_LEFT_PADDING + DEFAULT_SPRITE_SIZE / 2;
-                int rightInsideEdgeOfFrame = SCREEN_WIDTH - scoreBoardHorizontalMargin - margin - SCORE_BOARD_FONT_LEFT_PADDING - DEFAULT_SPRITE_SIZE / 2;
-
-                string scoreEntryName = scoreEntry.Name ?? "";
-                string scoreText = scoreEntry.Score.ToString();
-
-                scoreEntryName = scoreEntryName.PadRight(100, ' ');
-                Vector2 scoreEntryNameScale = _scoreBoardFont.MeasureString(scoreEntryName);
-                Vector2 scoreEntryScoreScale = _scoreBoardFont.MeasureString(scoreText);
-                rightInsideEdgeOfFrame = rightInsideEdgeOfFrame - (int) scoreEntryScoreScale.X;
-
-                float scoreEntryNameX = leftInsideEdgeOfFrame;
-                var scoreEntryIndex = _scoreBoard.HighScores.ScoreEntries.IndexOf(scoreEntry);
-                var frameYPosition = _highScoresUiFrame.Position.Y;
-                float scoreEntryNameY = scoreBoardVerticalMargin  + frameYPosition + scoresMarginTop + scoreVerticalSpacing + scoreEntryIndex * scoreVerticalSpacing;
-                float scoreEntryScoreX = rightInsideEdgeOfFrame;
-                float scoreEntryScoreY = scoreBoardVerticalMargin + frameYPosition + scoresMarginTop + scoreVerticalSpacing + scoreEntryIndex * scoreVerticalSpacing;
-
-                Vector2 scoreEntryNamePosition = new Vector2(scoreEntryNameX, scoreEntryNameY);
-                Vector2 scoreEntryScorePosition = new Vector2(scoreEntryScoreX, scoreEntryScoreY);
-
-                if(scoreEntryName.Length > 0)
-                    _spriteBatch.DrawString
-                    (
-                        _scoreBoardFont,
-                        scoreEntryName,
-                        scoreEntryNamePosition,
-                        Color.White,
-                        0f,
-                        Vector2.Zero,
-                        1f,
-                        SpriteEffects.None,
-                        0f
-                    );
-
-                if(scoreEntry.Score > 0)
-                    _spriteBatch.DrawString
-                    (
-                        _scoreBoardFont,
-                        scoreText,
-                        scoreEntryScorePosition,
-                        Color.White,
-                        0f,
-                        Vector2.Zero,
-                        1f,
-                        SpriteEffects.None,
-                        0f
-                    );
-            }
-        }
-
+        
         private void DrawLogoText()
         {
             Vector2 logoStringWidth = _logoFont.MeasureString(MONO_SNAKE_STRING);
@@ -816,7 +755,7 @@ namespace MonoSnake
             {
                 DrawHighScoresUiFrame(gameTime);
                 DrawLeaderboardText();
-                DrawHighScores(gameTime);
+                _scoreBoard.Draw(_spriteBatch, gameTime);
             }
 
             _startScreenHighScoresToggleButton.Draw(_spriteBatch, gameTime);
