@@ -157,11 +157,11 @@ namespace MonoSnake
 
             GenerateApple();
 
+            InitializeUiObjects();
+
             InitializeInputController();
 
             SetUiState(UIState.StartScreen);
-
-            InitializeUiObjects();
         }
 
         private void LoadAssets()
@@ -340,7 +340,7 @@ namespace MonoSnake
 
         private void InitializeInputController()
         {
-            _inputController = new InputController(this, _snake);
+            _inputController = new InputController(this, _snake, _scoreBoard);
             _inputController.StartEvent += InputController_StartEvent;
             _inputController.ExitEvent += InputController_ExitEvent;
             _inputController.RestartEvent += InputController_RestartEvent;
@@ -531,7 +531,7 @@ namespace MonoSnake
 
             if (_scoreBoard.IsNewHighScore(_snake.Score))
             {
-                _uiState = UIState.HighScoreEntry;
+                SetUiState(UIState.HighScoreEntry);
                 Trace.WriteLine("We have a winner!");
             }
 
@@ -666,7 +666,7 @@ namespace MonoSnake
                 _startScreenUiFrame.Update(gameTime);
             }
 
-            if (_uiState == UIState.HighScoresScreen)
+            if (_uiState == UIState.HighScoresScreen || _uiState == UIState.HighScoreEntry)
             {
                 _highScoresUiFrame.Update(gameTime);
                 _scoreBoard.Update(gameTime);

@@ -5,6 +5,7 @@ using System.Text;
 using System.Text.Json;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 using MonoSnake.UI;
 
 namespace MonoSnake.Infrastructure
@@ -25,6 +26,7 @@ namespace MonoSnake.Infrastructure
         private const int SCORE_BOARD_FONT_LEFT_PADDING = 10;
 
         public HighScores HighScores { get; set; }
+        public bool HighScoreEntryState { get; set; }
 
         public ScoreBoard(string applicationPath, GraphicsDevice graphicsDevice, SpriteFont scoreBoardFont, CenteredUiFrame uiFrame, int screenWidth, int screenHeight)
         {
@@ -73,10 +75,15 @@ namespace MonoSnake.Infrastructure
             return isNewHighScore;
         }
 
+        public void KeyInput(Keys key)
+        {
+            _textEntry.KeyInput(key);
+        }
+
         public void Update(GameTime gameTime)
         {
-            // ToDO: Conditionally draw
-            _textEntry.Update(gameTime);
+            if (HighScoreEntryState)
+                _textEntry.Update(gameTime);
         }
 
         public void Draw(SpriteBatch spriteBatch, GameTime gameTime)
@@ -141,8 +148,8 @@ namespace MonoSnake.Infrastructure
                     );
             }
 
-            // ToDO: Conditionally draw
-            _textEntry.Draw(spriteBatch, gameTime);
+            if(HighScoreEntryState)
+                _textEntry.Draw(spriteBatch, gameTime);
         }
     }
 }

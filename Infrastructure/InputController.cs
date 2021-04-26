@@ -20,21 +20,23 @@ namespace MonoSnake.Infrastructure
         private KeyboardState _newKeyboardState;
         private GamePadState _oldGamePadState;
         private GamePadState _newGamePadState;
-        private TextEntry _textEntry;
         private SnakeGame _snakeGame;
+        private ScoreBoard _scoreBoard;
 
         public UIState UIState { get; set; } = UIState.GamePlay;
 
-        public InputController(SnakeGame snakeGame, Snake snake)
+        public InputController(SnakeGame snakeGame, Snake snake, ScoreBoard scoreBoard)
         {
             _snakeGame = snakeGame;
             _snake = snake;
+            _scoreBoard = scoreBoard;
             _snakeGame.UIStateChangeEvent += _snakeGame_UIStateChangeEvent;
         }
 
         private void _snakeGame_UIStateChangeEvent(SnakeGame snakeGame, UIState uiState)
         {
             this.UIState = uiState;
+            this._scoreBoard.HighScoreEntryState = this.UIState == UIState.HighScoreEntry;
         }
 
         protected virtual void OnStart(EventArgs e)
@@ -95,11 +97,11 @@ namespace MonoSnake.Infrastructure
             {
                 if (WasKeyPressed(Keys.Up) || WasButtonPressed(Buttons.DPadUp))
                 {
-                    _textEntry.KeyInput(Keys.Up);
+                    _scoreBoard.KeyInput(Keys.Up);
                 }
                 else if (WasKeyPressed(Keys.Down) || WasButtonPressed(Buttons.DPadDown))
                 {
-                    _textEntry.KeyInput(Keys.Down);
+                    _scoreBoard.KeyInput(Keys.Down);
                 }
             }
 
