@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
 using System.Text;
 using System.Text.Json;
 using Microsoft.Xna.Framework;
@@ -16,21 +17,28 @@ namespace MonoSnake.Infrastructure
         private readonly SpriteFont _scoreBoardFont;
         private CenteredUiFrame _uiFrame;
         private int _screenWidth;
-
+        private int _screenHeight;
+        private TextEntry _textEntry;
+        private GraphicsDevice _graphicsDevice;
+        public bool InHighScoreEntryMode { get; set; }
 
         private const int SCORE_BOARD_FONT_LEFT_PADDING = 10;
 
         public HighScores HighScores { get; set; }
 
-        public ScoreBoard(string applicationPath, SpriteFont scoreBoardFont, CenteredUiFrame uiFrame, int screenWidth)
+        public ScoreBoard(string applicationPath, GraphicsDevice graphicsDevice, SpriteFont scoreBoardFont, CenteredUiFrame uiFrame, int screenWidth, int screenHeight)
         {
             _highScoresStoragePath = Path.Combine(Path.GetDirectoryName(applicationPath), HIGH_SCORES_FILE_NAME);
+            _graphicsDevice = graphicsDevice;
             _scoreBoardFont = scoreBoardFont;
             _uiFrame = uiFrame;
             _screenWidth = screenWidth;
+            _screenHeight = screenHeight;
             _jsonSerializerOptions = new JsonSerializerOptions() { WriteIndented = true };
+            // ToDo: Temporary position set on TextEntry
+            _textEntry = new TextEntry(graphicsDevice, new Vector2(screenWidth /2, screenHeight /2), scoreBoardFont);
+
             HighScores = LoadHighScores();
-            
         }
 
         private HighScores LoadHighScores()
@@ -59,6 +67,18 @@ namespace MonoSnake.Infrastructure
             }
         }
 
+        public bool IsNewHighScore(int score)
+        {
+            bool isNewHighScore = this.HighScores.ScoreEntries.Any(s => score > s.Score);
+            return isNewHighScore;
+        }
+
+        public void Update(GameTime gameTime)
+        {
+            // ToDO: Conditionally draw
+            _textEntry.Update(gameTime);
+        }
+
         public void Draw(SpriteBatch spriteBatch, GameTime gameTime)
         {
             int scoreBoardHorizontalMargin = 20;
@@ -78,6 +98,8 @@ namespace MonoSnake.Infrastructure
                 scoreEntryName = scoreEntryName.PadRight(100, ' ');
                 Vector2 scoreEntryNameScale = _scoreBoardFont.MeasureString(scoreEntryName);
                 Vector2 scoreEntryScoreScale = _scoreBoardFont.MeasureString(scoreText);
+                Vector2 singleLetterScale = _scoreBoardFont.MeasureString("A");
+
                 rightInsideEdgeOfFrame = rightInsideEdgeOfFrame - (int)scoreEntryScoreScale.X;
 
                 float scoreEntryNameX = leftInsideEdgeOfFrame;
@@ -118,6 +140,9 @@ namespace MonoSnake.Infrastructure
                         0f
                     );
             }
+
+            // ToDO: Conditionally draw
+            _textEntry.Draw(spriteBatch, gameTime);
         }
     }
 }

@@ -117,7 +117,6 @@ namespace MonoSnake
 
             #endregion Rectangles
 
-            private TextEntry _textEntry;
         #endregion Fields
 
         public SnakeGame()  
@@ -134,7 +133,6 @@ namespace MonoSnake
             _graphics.PreferredBackBufferWidth = SCREEN_WIDTH;
             _graphics.PreferredBackBufferHeight = SCREEN_HEIGHT;
             _graphics.ApplyChanges();
-            _textEntry = new TextEntry(_graphics.GraphicsDevice, new Vector2(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2));
 
             base.Initialize();
         }
@@ -342,8 +340,7 @@ namespace MonoSnake
 
         private void InitializeInputController()
         {
-            _textEntry = new TextEntry(_graphics.GraphicsDevice, new Vector2(SCREEN_WIDTH /2, SCREEN_HEIGHT /2));
-            _inputController = new InputController(this, _snake, _textEntry);
+            _inputController = new InputController(this, _snake);
             _inputController.StartEvent += InputController_StartEvent;
             _inputController.ExitEvent += InputController_ExitEvent;
             _inputController.RestartEvent += InputController_RestartEvent;
@@ -404,7 +401,7 @@ namespace MonoSnake
                 Color.FromNonPremultiplied(46, 51, 106, START_SCREEN_TRANSPARENCY)
             );
 
-            _scoreBoard = new ScoreBoard(Assembly.GetEntryAssembly().Location, _scoreBoardFont, _highScoresUiFrame, SCREEN_WIDTH);
+            _scoreBoard = new ScoreBoard(Assembly.GetEntryAssembly().Location, _graphics.GraphicsDevice, _scoreBoardFont, _highScoresUiFrame, SCREEN_WIDTH, SCREEN_HEIGHT);
         }
 
         private void InputController_StartEvent(object sender, EventArgs e)
@@ -531,6 +528,12 @@ namespace MonoSnake
         private void EndGameAndRecordScore()
         {
             _scoreBoard.HighScores.AddHighScore(new ScoreEntry("SeVeN", _snake.Score));
+
+            if (_scoreBoard.IsNewHighScore(_snake.Score))
+            {
+                _uiState = UIState.HighScoreEntry;
+                Trace.WriteLine("We have a winner!");
+            }
 
             _scoreBoard.SaveHighScores();
 
@@ -666,10 +669,10 @@ namespace MonoSnake
             if (_uiState == UIState.HighScoresScreen)
             {
                 _highScoresUiFrame.Update(gameTime);
+                _scoreBoard.Update(gameTime);
             }
 
             _snakeHeadAnimatedSprite.Update(gameTime);
-            _textEntry.Update(gameTime);
 
             _startScreenHighScoresToggleButton.Update(gameTime);
             base.Update(gameTime);
@@ -761,8 +764,6 @@ namespace MonoSnake
             _startScreenHighScoresToggleButton.Draw(_spriteBatch, gameTime);
 
             var letterEntryRectangle = new Rectangle(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2, 20, 5);
-
-            //_textEntry.Draw(_spriteBatch, gameTime);
 
             _spriteBatch.End();
 

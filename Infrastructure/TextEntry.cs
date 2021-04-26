@@ -21,13 +21,16 @@ namespace MonoSnake.Infrastructure
         private readonly ISprite _letterEntrySpriteFrame1;
         private readonly ISprite _letterEntryAnimatedSprite;
         private readonly Vector2 _position;
+        private int _entryPosition = 0;
 
         private Keys _currentChar = Keys.None;
         private string _inputString = String.Empty;
+        private SpriteFont _font;
 
-        public TextEntry(GraphicsDevice graphicsDevice, Vector2 position)
+        public TextEntry(GraphicsDevice graphicsDevice, Vector2 position, SpriteFont font)
         {
             _position = position;
+            _font = font;
             // Test High Score Entry Cursor (Static)
             if (_letterEntryTexture2DFrame0 == null)
             {
@@ -68,6 +71,7 @@ namespace MonoSnake.Infrastructure
             {
                 // Input Char
                 _inputString = _inputString + key;
+                _entryPosition++;
             }
         }
 
@@ -114,6 +118,7 @@ namespace MonoSnake.Infrastructure
 
         public void Draw(SpriteBatch spriteBatch, GameTime gameTime)
         {
+
             _letterEntryAnimatedSprite.Draw(spriteBatch, _position, 0f);
         }
     }

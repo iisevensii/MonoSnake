@@ -25,11 +25,10 @@ namespace MonoSnake.Infrastructure
 
         public UIState UIState { get; set; } = UIState.GamePlay;
 
-        public InputController(SnakeGame snakeGame, Snake snake, TextEntry textEntry)
+        public InputController(SnakeGame snakeGame, Snake snake)
         {
             _snakeGame = snakeGame;
             _snake = snake;
-            _textEntry = textEntry;
             _snakeGame.UIStateChangeEvent += _snakeGame_UIStateChangeEvent;
         }
 
