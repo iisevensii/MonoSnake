@@ -56,7 +56,7 @@ namespace MonoSnake
             private readonly GraphicsDeviceManager _graphics;
             private SpriteBatch _spriteBatch;
             private InputController _inputController;
-            private readonly FrameCounter _frameCounter = new FrameCounter();
+            private FrameCounter _frameCounter;
         #endregion System
 
         #region UI
@@ -349,6 +349,7 @@ namespace MonoSnake
 
         private void InitializeUiObjects()
         {
+            _frameCounter = new FrameCounter(_scoreBoardFont, SCREEN_WIDTH, SCREEN_HEIGHT, Color.Blue, new Vector2(2, 2));
             Sprite startScreenButtonNormal = new Sprite(_startScreenButtonNormal, 0, 0, 57, 57);
             Sprite startScreenButtonHover = new Sprite(_startScreenButtonHover, 0, 0, 57, 57);
             Sprite highScoresButtonNormal = new Sprite(_highScoresButtonNormal, 0, 0, 57, 57);
@@ -675,34 +676,19 @@ namespace MonoSnake
             _snakeHeadAnimatedSprite.Update(gameTime);
 
             _startScreenHighScoresToggleButton.Update(gameTime);
+            var deltaTime = (float) gameTime.ElapsedGameTime.TotalSeconds;
+            _frameCounter.Update(gameTime);
             base.Update(gameTime);
         }
 
         protected override void Draw(GameTime gameTime)
         {
-            var deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
-
-            _frameCounter.Update(deltaTime);
-
-            var fps = $"FPS: {_frameCounter.CurrentFramesPerSecond}";
-
             GraphicsDevice.Clear(Color.Black);
 
             _spriteBatch.Begin();
 
             if (_showFpsMonitor)
-                _spriteBatch.DrawString
-                    (
-                        _scoreBoardFont,
-                        fps,
-                        new Vector2(20, 10),
-                        Color.Blue,
-                        0f,
-                        Vector2.Zero,
-                        new Vector2(2, 2),
-                        SpriteEffects.None,
-                    0f
-                    );
+                _frameCounter.Draw(gameTime, _spriteBatch);
 
             if (_isGameOver && _uiState == UIState.GamePlay)
             {
