@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
@@ -87,6 +88,9 @@ namespace MonoSnake.Infrastructure
             KeyboardState keyboardState = Keyboard.GetState();
             var player1GamePadState = GamePad.GetState(PlayerIndex.One);
 
+            // Keys A-Z
+            IEnumerable<Keys> alphabetKeys = Enum.GetValues(typeof(Keys)).Cast<Keys>().Where(k => k >= Keys.A && k <= Keys.Z);
+
             // ToDo: Remove this code
             if (UIState != UIState.GamePlay && WasKeyPressed(Keys.F1))
             {
@@ -102,6 +106,10 @@ namespace MonoSnake.Infrastructure
                 else if (WasKeyPressed(Keys.Down) || WasButtonPressed(Buttons.DPadDown))
                 {
                     _scoreBoard.KeyInput(Keys.Down);
+                }
+                else if (WasButtonPressed(alphabetKeys, out Keys keyPressed))
+                {
+                    _scoreBoard.KeyInput(keyPressed);
                 }
             }
 
@@ -129,6 +137,22 @@ namespace MonoSnake.Infrastructure
 
             _oldKeyboardState = _newKeyboardState;
             _oldGamePadState = GamePad.GetState(PlayerIndex.One);
+        }
+
+        private bool WasButtonPressed(IEnumerable<Keys> alphabetKeys, out Keys keyPressed)
+        {
+            keyPressed = Keys.None;
+
+            foreach (Keys key in alphabetKeys)
+            {
+                if (_oldKeyboardState.IsKeyDown(key) && _newKeyboardState.IsKeyUp(key))
+                {
+                    keyPressed = key;
+                    return true;
+                }
+            }
+
+            return false;
         }
 
         private void MoveSnakeHead(SnakeDirection direction)
