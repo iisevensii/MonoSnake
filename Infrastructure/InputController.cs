@@ -111,6 +111,10 @@ namespace MonoSnake.Infrastructure
                 {
                     _scoreBoard.KeyInput(Keys.Space);
                 }
+                else if (WasKeyPressed(Keys.Back) || WasButtonPressed(Buttons.X))
+                {
+                    _scoreBoard.KeyInput(Keys.Back);
+                }
                 else if (WasButtonPressed(alphabetKeys, out Keys keyPressed))
                 {
                     _scoreBoard.KeyInput(keyPressed);

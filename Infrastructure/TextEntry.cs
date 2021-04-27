@@ -68,6 +68,13 @@ namespace MonoSnake.Infrastructure
                 _inputString += " ";
                 _entryPosition++;
             }
+            else if (key == Keys.Back)
+            {
+                if (!string.IsNullOrWhiteSpace(_inputString))
+                {
+                    _inputString = _inputString.Substring(0, _inputString.Length - 1);
+                }
+            }
             if (key >= Keys.A && key <= Keys.Z)
             {
                 // Input Char
