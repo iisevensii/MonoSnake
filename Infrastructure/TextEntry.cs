@@ -20,12 +20,24 @@ namespace MonoSnake.Infrastructure
         private readonly ISprite _letterEntrySpriteFrame0;
         private readonly ISprite _letterEntrySpriteFrame1;
         private readonly ISprite _letterEntryAnimatedSprite;
-        private readonly Vector2 _position;
+        private Vector2 _position;
         private int _entryPosition = 0;
 
         private Keys _currentChar = Keys.None;
         private string _inputString = String.Empty;
         private SpriteFont _font;
+
+        public Vector2 Position
+        {
+            get
+            {
+                return _position;
+            }
+            set
+            {
+                _position = value;
+            }
+        }
 
         public TextEntry(GraphicsDevice graphicsDevice, Vector2 position, SpriteFont font)
         {
