@@ -15,11 +15,8 @@ namespace MonoSnake.Infrastructure
             Down
         }
 
-        private readonly Texture2D _letterEntryTexture2DFrame0;
-        private readonly Texture2D _letterEntryTexture2DFrame1;
+        private readonly Texture2D _cursorTexture2D;
         private readonly ISprite _letterEntrySpriteFrame0;
-        private readonly ISprite _letterEntrySpriteFrame1;
-        private readonly ISprite _letterEntryAnimatedSprite;
         private Vector2 _position;
         private int _entryPosition = 0;
         private float _currentCharBlinkTime = 0.375f;
@@ -47,28 +44,13 @@ namespace MonoSnake.Infrastructure
             _position = position;
             _font = font;
             // Test High Score Entry Cursor (Static)
-            if (_letterEntryTexture2DFrame0 == null)
+            if (_cursorTexture2D == null)
             {
-                _letterEntryTexture2DFrame0 = new Texture2D(graphicsDevice, 1, 1);
-                _letterEntryTexture2DFrame0.SetData(new[] { Color.White });
+                _cursorTexture2D = new Texture2D(graphicsDevice, 1, 1);
+                _cursorTexture2D.SetData(new[] { Color.White });
             }
 
-            if (_letterEntryTexture2DFrame1 == null)
-            {
-                _letterEntryTexture2DFrame1 = new Texture2D(graphicsDevice, 1, 1);
-                _letterEntryTexture2DFrame1.SetData(new[] { Color.Transparent });
-            }
-
-            _letterEntrySpriteFrame0 = new Sprite(_letterEntryTexture2DFrame0, 0, 0, 20, 5);
-            _letterEntrySpriteFrame1 = new Sprite(_letterEntryTexture2DFrame1, 0, 0, 20, 5);
-
-            List<AnimatedSprite.AnimatedSpriteFrame> letterEntryAnimatedSpriteFrames =
-                new List<AnimatedSprite.AnimatedSpriteFrame>
-                {
-                    new AnimatedSprite.AnimatedSpriteFrame(_letterEntrySpriteFrame0, 0.5f),
-                    new AnimatedSprite.AnimatedSpriteFrame(_letterEntrySpriteFrame1, 0.5f)
-                };
-            _letterEntryAnimatedSprite = new AnimatedSprite(letterEntryAnimatedSpriteFrames, 0, 0, 0, 0);
+            _letterEntrySpriteFrame0 = new Sprite(_cursorTexture2D, 0, 0, 20, 5);
         }
 
         public void KeyInput(Keys key)
@@ -139,7 +121,7 @@ namespace MonoSnake.Infrastructure
 
         public void Draw(SpriteBatch spriteBatch, GameTime gameTime)
         {
-            Vector2 stringScale = _font.MeasureString(_currentChar.ToString());
+            Vector2 stringScale ;
             if (_currentChar == Keys.None)
             {
                 stringScale = _font.MeasureString("A");
