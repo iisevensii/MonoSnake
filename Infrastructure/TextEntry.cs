@@ -130,8 +130,25 @@ namespace MonoSnake.Infrastructure
 
         public void Draw(SpriteBatch spriteBatch, GameTime gameTime)
         {
+            if(_currentChar == Keys.None)
+                _letterEntryAnimatedSprite.Draw(spriteBatch, _position, 0f);
+            else
+            {
+                var stringScale = _font.MeasureString(_currentChar.ToString());
 
-            _letterEntryAnimatedSprite.Draw(spriteBatch, _position, 0f);
+                spriteBatch.DrawString
+                (
+                    _font,
+                    _currentChar.ToString(),
+                    new Vector2(_position.X, _position.Y - stringScale.Y /2),
+                    Color.White,
+                    0f,
+                    Vector2.Zero,
+                    1f,
+                    SpriteEffects.None,
+                    0f
+                );
+            }
         }
     }
 }
