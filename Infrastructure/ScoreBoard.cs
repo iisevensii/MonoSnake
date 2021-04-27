@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -39,8 +41,37 @@ namespace MonoSnake.Infrastructure
             _jsonSerializerOptions = new JsonSerializerOptions() { WriteIndented = true };
             // ToDo: Temporary position set on TextEntry
             _textEntry = new TextEntry(graphicsDevice, new Vector2(screenWidth /2, screenHeight /2), scoreBoardFont);
+            _margin = (_screenWidth - _uiFrame.ActualWidth) / 2;
+            _leftInsideEdgeOfFrame = SCORE_BOARD_HORIZONTAL_MARGIN + _margin + SCORE_BOARD_FONT_LEFT_PADDING + 40 / 2;
+            _rightInsideEdgeOfFrame = _screenWidth - SCORE_BOARD_HORIZONTAL_MARGIN - _margin - SCORE_BOARD_FONT_LEFT_PADDING - 40 / 2;
 
             HighScores = LoadHighScores();
+        }
+
+        private List<ScoreEntry> _scoreEntryBeforeList = new List<ScoreEntry>();
+        private List<ScoreEntry> _scoreEntryAfterList = new List<ScoreEntry>();
+        private int _newHighScoreRowNumberIndex = 0;
+        private int _margin;
+        private int _leftInsideEdgeOfFrame;
+        private int _rightInsideEdgeOfFrame;
+        private const int SCORES_MARGIN_TOP = 50;
+        private const int SCORE_BOARD_VERTICAL_MARGIN = 20;
+        private const int SCORE_BOARD_HORIZONTAL_MARGIN = 20;
+        private const int SCORE_VERTICAL_SPACING = 50;
+
+        public void AddHighScore(int score)
+        {
+            _scoreEntryBeforeList = HighScores.ScoreEntries.Where(s => s.Score > score).ToList();
+            _scoreEntryAfterList = HighScores.ScoreEntries.Where(s => s.Score < score).Take(10 - _scoreEntryBeforeList.Count -1).ToList();
+            _newHighScoreRowNumberIndex = _scoreEntryBeforeList.Count -1;
+
+            // In Memory Update Test
+            HighScores.ScoreEntries = new List<ScoreEntry>();
+            HighScores.ScoreEntries.AddRange(_scoreEntryBeforeList);
+            HighScores.ScoreEntries.Add(new ScoreEntry("TEST", score));
+            HighScores.ScoreEntries.AddRange(_scoreEntryAfterList);
+
+            Trace.WriteLine("We have a winner!");
         }
 
         private HighScores LoadHighScores()
@@ -88,33 +119,42 @@ namespace MonoSnake.Infrastructure
 
         public void Draw(SpriteBatch spriteBatch, GameTime gameTime)
         {
-            int scoreBoardHorizontalMargin = 20;
-            int scoreBoardVerticalMargin = 20;
+            float frameYPosition = _uiFrame.Position.Y;
+            float yStart = SCORE_BOARD_VERTICAL_MARGIN + frameYPosition + SCORES_MARGIN_TOP + SCORE_VERTICAL_SPACING;
 
-            int scoreVerticalSpacing = 50;
-            int scoresMarginTop = 50;
-            foreach (ScoreEntry scoreEntry in HighScores.ScoreEntries)
+            if (HighScoreEntryState)
             {
-                int margin = (_screenWidth - _uiFrame.ActualWidth) / 2;
-                int leftInsideEdgeOfFrame = scoreBoardHorizontalMargin + margin + SCORE_BOARD_FONT_LEFT_PADDING + 40 / 2;
-                int rightInsideEdgeOfFrame = _screenWidth - scoreBoardHorizontalMargin - margin - SCORE_BOARD_FONT_LEFT_PADDING - 40 / 2;
+                DrawScoreEntries(spriteBatch, gameTime, _scoreEntryBeforeList);
+                // Text Entry Object
+                DrawScoreEntries(spriteBatch, gameTime, _scoreEntryAfterList);
+            }
+            else
+            {
+                DrawScoreEntries(spriteBatch, gameTime, HighScores.ScoreEntries);
+            }
 
+            if(HighScoreEntryState)
+                _textEntry.Draw(spriteBatch, gameTime);
+        }
+
+        private void DrawScoreEntries(SpriteBatch spriteBatch, GameTime gameTime, List<ScoreEntry> scoreEntries)
+        {
+            float frameYPosition = _uiFrame.Position.Y;
+            float yStart = SCORE_BOARD_VERTICAL_MARGIN + frameYPosition + SCORES_MARGIN_TOP + SCORE_VERTICAL_SPACING;
+            foreach (ScoreEntry scoreEntry in scoreEntries)
+            {
                 string scoreEntryName = scoreEntry.Name ?? "";
                 string scoreText = scoreEntry.Score.ToString();
-
                 scoreEntryName = scoreEntryName.PadRight(100, ' ');
-                Vector2 scoreEntryNameScale = _scoreBoardFont.MeasureString(scoreEntryName);
                 Vector2 scoreEntryScoreScale = _scoreBoardFont.MeasureString(scoreText);
-                Vector2 singleLetterScale = _scoreBoardFont.MeasureString("A");
 
-                rightInsideEdgeOfFrame = rightInsideEdgeOfFrame - (int)scoreEntryScoreScale.X;
+                var curX = _rightInsideEdgeOfFrame - (int)scoreEntryScoreScale.X;
+                float scoreEntryNameX = _leftInsideEdgeOfFrame;
+                var scoreEntryIndex = scoreEntries.IndexOf(scoreEntry);
+                float scoreEntryNameY = yStart + scoreEntryIndex * SCORE_VERTICAL_SPACING;
+                float scoreEntryScoreX = curX;
+                float scoreEntryScoreY = yStart + scoreEntryIndex * SCORE_VERTICAL_SPACING;
 
-                float scoreEntryNameX = leftInsideEdgeOfFrame;
-                var scoreEntryIndex = HighScores.ScoreEntries.IndexOf(scoreEntry);
-                var frameYPosition = _uiFrame.Position.Y;
-                float scoreEntryNameY = scoreBoardVerticalMargin + frameYPosition + scoresMarginTop + scoreVerticalSpacing + scoreEntryIndex * scoreVerticalSpacing;
-                float scoreEntryScoreX = rightInsideEdgeOfFrame;
-                float scoreEntryScoreY = scoreBoardVerticalMargin + frameYPosition + scoresMarginTop + scoreVerticalSpacing + scoreEntryIndex * scoreVerticalSpacing;
 
                 Vector2 scoreEntryNamePosition = new Vector2(scoreEntryNameX, scoreEntryNameY);
                 Vector2 scoreEntryScorePosition = new Vector2(scoreEntryScoreX, scoreEntryScoreY);
@@ -147,9 +187,6 @@ namespace MonoSnake.Infrastructure
                         0f
                     );
             }
-
-            if(HighScoreEntryState)
-                _textEntry.Draw(spriteBatch, gameTime);
         }
     }
 }

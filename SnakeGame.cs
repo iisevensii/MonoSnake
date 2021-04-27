@@ -528,12 +528,10 @@ namespace MonoSnake
 
         private void EndGameAndRecordScore()
         {
-            _scoreBoard.HighScores.AddHighScore(new ScoreEntry("SeVeN", _snake.Score));
-
             if (_scoreBoard.IsNewHighScore(_snake.Score))
             {
                 SetUiState(UIState.HighScoreEntry);
-                Trace.WriteLine("We have a winner!");
+                _scoreBoard.AddHighScore(_snake.Score);
             }
 
             _scoreBoard.SaveHighScores();
