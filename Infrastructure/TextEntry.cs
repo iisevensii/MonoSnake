@@ -63,11 +63,15 @@ namespace MonoSnake.Infrastructure
             {
                 CycleLetter(key, CycleDirection.Down);
             }
-
+            else if (key == Keys.Space)
+            {
+                _inputString += " ";
+                _entryPosition++;
+            }
             if (key >= Keys.A && key <= Keys.Z)
             {
                 // Input Char
-                _inputString = _inputString + key;
+                _inputString += key;
                 _entryPosition++;
             }
         }
@@ -121,7 +125,25 @@ namespace MonoSnake.Infrastructure
 
         public void Draw(SpriteBatch spriteBatch, GameTime gameTime)
         {
-            Vector2 stringScale ;
+            Vector2 stringScale = _font.MeasureString("A");
+            int inputStringLength = string.IsNullOrWhiteSpace(_inputString) ? 0 : _inputString.Length;
+
+            if (!string.IsNullOrWhiteSpace(_inputString))
+            {
+                spriteBatch.DrawString
+                (
+                    _font,
+                    _inputString,
+                    new Vector2(_position.X, _position.Y - stringScale.Y / 2),
+                    Color.White,
+                    0f,
+                    Vector2.Zero,
+                    1f,
+                    SpriteEffects.None,
+                    0f
+                );
+            }
+
             if (_currentChar == Keys.None)
             {
                 stringScale = _font.MeasureString("A");
@@ -130,7 +152,7 @@ namespace MonoSnake.Infrastructure
                     spriteBatch.Draw
                     (
                         _letterEntrySpriteFrame0.SpriteSheet,
-                        new Vector2(_position.X, _position.Y + stringScale.Y / 2 - 10),
+                        new Vector2(_position.X + stringScale.X * inputStringLength, _position.Y + stringScale.Y / 2 - 10),
                         new Rectangle(_letterEntrySpriteFrame0.Left, _letterEntrySpriteFrame0.Top, _letterEntrySpriteFrame0.Width, _letterEntrySpriteFrame0.Height),
                         _letterEntrySpriteFrame0.TintColor,
                         0f,
