@@ -747,8 +747,6 @@ namespace MonoSnake
 
             _startScreenHighScoresToggleButton.Draw(_spriteBatch, gameTime);
 
-            var letterEntryRectangle = new Rectangle(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2, 20, 5);
-
             _spriteBatch.End();
 
             base.Draw(gameTime);
