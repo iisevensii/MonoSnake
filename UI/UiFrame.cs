@@ -93,13 +93,6 @@ namespace MonoSnake.UI
             _backgroundTexture2D.SetData(new [] { Color.White });
         }
 
-        public void Update(GameTime gameTime)
-        {
-            InitializeBorderObjects();
-
-            CreateBackgroundRectangleAndTexture2D();
-        }
-
         protected void InitializeBorderObjects()
         {
             _topLeftUiObject.Position = Position;
@@ -142,6 +135,11 @@ namespace MonoSnake.UI
                 this._leftUiObjectColumn.Add(uiObject);
                 nextLeftColumnPosition = new Vector2(uiObject.Position.X, uiObject.Position.Y - _verticalSprite.Height);
             }
+        }
+
+        public void Update(GameTime gameTime)
+        {
+
         }
 
         public void Draw(SpriteBatch spriteBatch, GameTime gameTime)
