@@ -6,6 +6,7 @@ namespace MonoSnake.Infrastructure
 {
     public class Sprite : ISprite
     {
+        private Rectangle _rectangle;
         public Texture2D SpriteSheet { get; }
         public int Top { get; }
         public int Left { get; }
@@ -22,6 +23,8 @@ namespace MonoSnake.Infrastructure
             Left = left;
             Width = width;
             Height = height;
+
+            _rectangle = new Rectangle(Left, Top, Width, Height);
         }
 
         public Sprite(PositionedTexture2D positionedTexture2D, int width, int height)
@@ -35,6 +38,8 @@ namespace MonoSnake.Infrastructure
 
             Left = (xIndex * (margin * 2)) + margin + (width * xIndex);
             Top = (yIndex * (margin * 2)) + margin + (width * yIndex);
+
+            _rectangle = new Rectangle(Left, Top, Width, Height);
         }
 
         public void Update(GameTime gameTime)
@@ -47,7 +52,7 @@ namespace MonoSnake.Infrastructure
                 (
                     SpriteSheet,
                     position,
-                    new Rectangle(Left, Top, Width, Height),
+                    _rectangle,
                     TintColor,
                     rotation,
                     Origin,
