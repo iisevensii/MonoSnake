@@ -186,7 +186,7 @@ namespace MonoSnake.Infrastructure
                         0f
                     );
 
-                if (scoreEntry.Score > 0)
+                if (scoreEntry.Score >= 0)
                     spriteBatch.DrawString
                     (
                         _scoreBoardFont,
