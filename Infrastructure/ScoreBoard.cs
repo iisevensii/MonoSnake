@@ -149,29 +149,44 @@ namespace MonoSnake.Infrastructure
         {
             float frameYPosition = _uiFrame.Position.Y;
             float yStart = SCORE_BOARD_VERTICAL_MARGIN + frameYPosition + SCORES_MARGIN_TOP + SCORE_VERTICAL_SPACING;
+
             foreach (ScoreEntry scoreEntry in scoreEntries)
             {
+                // Current Index
+                var scoreEntryIndex = scoreEntries.IndexOf(scoreEntry);
+
+                // Name Text
                 string scoreEntryName = scoreEntry.Name ?? "";
-                string scoreText = scoreEntry.Score.ToString();
                 scoreEntryName = scoreEntryName.PadRight(100, ' ');
+
+                // Score Text
+                string scoreText = scoreEntry.Score.ToString();
+
+                // Name and Score Text measurements
                 Vector2 scoreEntryNameScale = _scoreBoardFont.MeasureString(scoreEntryName);
                 Vector2 scoreEntryScoreScale = _scoreBoardFont.MeasureString(scoreText);
 
                 var curX = _rightInsideEdgeOfFrame - (int)scoreEntryScoreScale.X;
+
+                // Name Coordinates
                 float scoreEntryNameX = _leftInsideEdgeOfFrame;
-                var scoreEntryIndex = scoreEntries.IndexOf(scoreEntry);
                 float scoreEntryNameY = yStart + scoreEntryIndex * SCORE_VERTICAL_SPACING;
+
+                // Score Coordinates
                 float scoreEntryScoreX = curX;
                 float scoreEntryScoreY = yStart + scoreEntryIndex * SCORE_VERTICAL_SPACING;
 
+                // Name and Score Positions
                 Vector2 scoreEntryNamePosition = new Vector2(scoreEntryNameX, scoreEntryNameY);
                 Vector2 scoreEntryScorePosition = new Vector2(scoreEntryScoreX, scoreEntryScoreY);
 
+                // Position of new high score entry
                 if (scoreEntryIndex == _newHighScoreRowIndex)
                 {
                     _textEntry.Position = new Vector2(scoreEntryNamePosition.X, scoreEntryScorePosition.Y + scoreEntryNameScale.Y /2);
                 }
 
+                // Draw Name
                 if (scoreEntryName.Length > 0)
                     spriteBatch.DrawString
                     (
@@ -186,6 +201,7 @@ namespace MonoSnake.Infrastructure
                         0f
                     );
 
+                // Draw Score
                 if (scoreEntry.Score >= 0)
                     spriteBatch.DrawString
                     (
