@@ -65,8 +65,12 @@ namespace MonoSnake.Infrastructure
             }
             else if (key == Keys.Space)
             {
-                _inputString += " ";
-                _entryPosition++;
+                if (_currentChar != Keys.None)
+                {
+                    _inputString += InputKeyToCharString(_currentChar);
+                    _entryPosition++;
+                    _currentChar = Keys.None;
+                }
             }
             else if (key == Keys.Back)
             {
@@ -76,13 +80,69 @@ namespace MonoSnake.Infrastructure
                     _currentChar = Keys.None;
                 }
             }
-            if (key >= Keys.A && key <= Keys.Z)
+            else if ((key >= Keys.A && key <= Keys.Z) || (key >= Keys.D0 && key <= Keys.D9))
             {
                 // Input Char
-                _inputString += key;
+                if (key >= Keys.A && key <= Keys.Z)
+                {
+                    _inputString += InputKeyToCharString(key);
+                }
+                else if (key >= Keys.D0 && key <= Keys.D9)
+                {
+                    _inputString += InputKeyToCharString(key);
+                }
+
                 _entryPosition++;
                 _currentChar = Keys.None;
             }
+            else if (key >= Keys.D0 && key <= Keys.D9)
+            {
+                _inputString += InputKeyToCharString(key);
+            }
+        }
+
+        private string InputKeyToCharString(Keys key)
+        {
+            string result = "_";
+
+            if (key >= Keys.A && key <= Keys.Z)
+                return key.ToString();
+
+            switch (key)
+            {
+                case Keys.D0:
+                     result = "0";
+                    break;
+                case Keys.D1:
+                     result = "1";
+                    break;
+                case Keys.D2:
+                     result = "2";
+                    break;
+                case Keys.D3:
+                     result = "3";
+                    break;
+                case Keys.D4:
+                     result = "4";
+                    break;
+                case Keys.D5:
+                     result = "5";
+                    break;
+                case Keys.D6:
+                     result = "6";
+                    break;
+                case Keys.D7:
+                     result = "7";
+                    break;
+                case Keys.D8:
+                     result = "8";
+                    break;
+                case Keys.D9:
+                     result = "9";
+                    break;
+            }
+
+            return result;
         }
 
         private Keys CycleLetter(Keys key, CycleDirection cycleDirection)
@@ -93,28 +153,42 @@ namespace MonoSnake.Infrastructure
                 {
                     _currentChar = Keys.A;
                 }
-                else if (_currentChar == Keys.Z)
+                else if (_currentChar == Keys.D9)
                 {
                     _currentChar = Keys.None;
                 }
-                else if (_currentChar >= Keys.A || _currentChar < Keys.Y)
+                else if ((_currentChar >= Keys.A && _currentChar <= Keys.Z) || (_currentChar >= Keys.D0 && _currentChar <= Keys.D9))
                 {
-                    _currentChar++;
+                    if(_currentChar < Keys.Z)
+                        _currentChar++;
+                    else if (_currentChar == Keys.Z)
+                        _currentChar = Keys.D0;
+                    else if (_currentChar >= Keys.D0 && _currentChar <= Keys.D9)
+                        _currentChar++;
                 }
             }
             else if (cycleDirection == CycleDirection.Down)
             {
                 if (_currentChar == Keys.None)
                 {
+                    _currentChar = Keys.D9;
+                }
+                else if (_currentChar == Keys.D0)
+                {
                     _currentChar = Keys.Z;
-                }   
+                }
                 else if (_currentChar == Keys.A)
                 {
                     _currentChar = Keys.None;
                 }
-                else if (_currentChar >= Keys.A || _currentChar < Keys.Y)
+                else if ((_currentChar >= Keys.A && _currentChar <= Keys.Z) || (_currentChar >= Keys.D0 && _currentChar <= Keys.D9))
                 {
-                    _currentChar--;
+                    if (_currentChar <= Keys.Z && _currentChar > Keys.A)
+                        _currentChar--;
+                    else if (_currentChar == Keys.None)
+                        _currentChar = Keys.D9;
+                    else if (_currentChar >= Keys.D0 && _currentChar <= Keys.D9)
+                        _currentChar--;
                 }
             }
 
@@ -174,13 +248,16 @@ namespace MonoSnake.Infrastructure
             }
             else
             {
-                stringScale = _font.MeasureString(_currentChar.ToString());
+                stringScale = _currentChar >= Keys.D0 && _currentChar <= Keys.D9
+                    ? _font.MeasureString(InputKeyToCharString(_currentChar))
+                    : _font.MeasureString(_currentChar.ToString());
+
                 if (_blinkOn)
                 {
                     spriteBatch.DrawString
                     (
                         _font,
-                        _currentChar.ToString(),
+                        InputKeyToCharString(_currentChar).ToString(),
                         new Vector2(_position.X + stringScale.X * inputStringLength, _position.Y - stringScale.Y / 2),
                         Color.White,
                         0f,

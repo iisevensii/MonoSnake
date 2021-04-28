@@ -90,6 +90,8 @@ namespace MonoSnake.Infrastructure
 
             // Keys A-Z
             IEnumerable<Keys> alphabetKeys = Enum.GetValues(typeof(Keys)).Cast<Keys>().Where(k => k >= Keys.A && k <= Keys.Z);
+            // Keys A-Z
+            IEnumerable<Keys> numberKeys = Enum.GetValues(typeof(Keys)).Cast<Keys>().Where(k => k >= Keys.D0 && k <= Keys.D9);
 
             // ToDo: Remove this code
             if (UIState != UIState.GamePlay && WasKeyPressed(Keys.F1))
@@ -115,9 +117,13 @@ namespace MonoSnake.Infrastructure
                 {
                     _scoreBoard.KeyInput(Keys.Back);
                 }
-                else if (WasKeyPressed(alphabetKeys, out Keys keyPressed))
+                else if (WasKeyPressed(alphabetKeys, out Keys alphabetKeyPressed))
                 {
-                    _scoreBoard.KeyInput(keyPressed);
+                    _scoreBoard.KeyInput(alphabetKeyPressed);
+                }
+                else if (WasKeyPressed(numberKeys, out Keys numberKeyPressed))
+                {
+                    _scoreBoard.KeyInput(numberKeyPressed);
                 }
             }
 
