@@ -179,7 +179,7 @@ namespace MonoSnake.Infrastructure
                     (
                         _font,
                         _currentChar.ToString(),
-                        new Vector2(_position.X, _position.Y - stringScale.Y / 2),
+                        new Vector2(_position.X + stringScale.X * inputStringLength, _position.Y - stringScale.Y / 2),
                         Color.White,
                         0f,
                         Vector2.Zero,
