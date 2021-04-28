@@ -115,7 +115,7 @@ namespace MonoSnake.Infrastructure
                 {
                     _scoreBoard.KeyInput(Keys.Back);
                 }
-                else if (WasButtonPressed(alphabetKeys, out Keys keyPressed))
+                else if (WasKeyPressed(alphabetKeys, out Keys keyPressed))
                 {
                     _scoreBoard.KeyInput(keyPressed);
                 }
@@ -147,7 +147,7 @@ namespace MonoSnake.Infrastructure
             _oldGamePadState = GamePad.GetState(PlayerIndex.One);
         }
 
-        private bool WasButtonPressed(IEnumerable<Keys> alphabetKeys, out Keys keyPressed)
+        private bool WasKeyPressed(IEnumerable<Keys> alphabetKeys, out Keys keyPressed)
         {
             keyPressed = Keys.None;
 
