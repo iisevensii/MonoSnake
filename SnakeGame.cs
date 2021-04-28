@@ -114,6 +114,15 @@ namespace MonoSnake
             private List<Rectangle> _occupiedCells = new List<Rectangle>();
             private List<Rectangle> _unOccupiedCells = new List<Rectangle>();
             private ISprite _snakeHeadAnimatedSprite;
+            private Texture2D _uiBlueSpriteSheet;
+            private Sprite _uiWindowTopLeftSprite;
+            private Sprite _uiWindowTopRightSprite;
+            private Sprite _uiWindowBottomLeftSprite;
+            private Sprite _uiWindowBottomRightSprite;
+            private Sprite _uiWindowHorizontalSprite;
+            private CenteredUiFrame _dialogCenteredUiFrame;
+            private Sprite _uiWindowVerticalSprite;
+            private const string UI_BLUE_SPRITE_SHEET_NAME = "UiBlueSheet";
 
             #endregion Rectangles
 
@@ -175,6 +184,7 @@ namespace MonoSnake
             _appleTexture = Content.Load<Texture2D>(APPLE_SPRITE_SHEET_NAME);
             _snakeHeadSpriteSheet = Content.Load<Texture2D>(SNAKE_HEAD_SPRITE_SHEET_NAME);
             _snakeSegmentsSpriteSheet = Content.Load<Texture2D>(SNAKE_SEGMENTS_SPRITE_SHEET_NAME);
+            _uiBlueSpriteSheet = Content.Load<Texture2D>(UI_BLUE_SPRITE_SHEET_NAME);
             _eatSoundEffect = Content.Load<SoundEffect>(EAT_SOUND_EFFECT_NAME);
             _startScreenButtonNormal = Content.Load<Texture2D>("Gear");
             _startScreenButtonHover = Content.Load<Texture2D>("GearHover");
@@ -258,6 +268,31 @@ namespace MonoSnake
             _snakeCwLeftToUpCcwDownToRightSprite = new Sprite(snakeCwLeftToUpCcwDownToRightPositionedTexture2D, DEFAULT_SPRITE_SIZE, DEFAULT_SPRITE_SIZE)
             {
                 Origin = halfSizeOrigin
+            };
+
+            _uiWindowHorizontalSprite = new Sprite(_uiBlueSpriteSheet, 143, 10, 10, 10)
+            {
+                Origin = new Vector2(5, 5)
+            };
+            _uiWindowVerticalSprite = new Sprite(_uiBlueSpriteSheet, 153, 0, 10, 10)
+            {
+                Origin = new Vector2(5, 5)
+            };
+            _uiWindowTopLeftSprite = new Sprite(_uiBlueSpriteSheet, 143, 0, 10, 10)
+            {
+                Origin = new Vector2(5, 5)
+            };
+            _uiWindowTopRightSprite = new Sprite(_uiBlueSpriteSheet, 143, 180, 10, 10)
+            {
+                Origin = new Vector2(5, 5)
+            };
+            _uiWindowBottomRightSprite = new Sprite(_uiBlueSpriteSheet, 182, 180, 10, 10)
+            {
+                Origin = new Vector2(5, 5)
+            };
+            _uiWindowBottomLeftSprite = new Sprite(_uiBlueSpriteSheet, 178, 0, 10, 10)
+            {
+                Origin = new Vector2(5, 5)
             };
 
             #endregion PositionedTextureSprites
@@ -400,6 +435,23 @@ namespace MonoSnake
                 _snakeCwDownToLeftCcwRightToUpSprite,
                 _snakeCwLeftToUpCcwDownToRightSprite,
                 Color.FromNonPremultiplied(46, 51, 106, START_SCREEN_TRANSPARENCY)
+            );
+
+            _dialogCenteredUiFrame = new CenteredUiFrame
+            (
+                _graphics,
+                Vector2.Zero,
+                17,
+                17,
+                SCREEN_WIDTH,
+                SCREEN_HEIGHT,
+                _uiWindowHorizontalSprite,
+                _uiWindowVerticalSprite,
+                _uiWindowTopLeftSprite,
+                _uiWindowTopRightSprite,
+                _uiWindowBottomRightSprite,
+                _uiWindowBottomLeftSprite,
+                Color.White
             );
 
             _scoreBoard = new ScoreBoard(Assembly.GetEntryAssembly().Location, _graphics.GraphicsDevice, _scoreBoardFont, _highScoresUiFrame, SCREEN_WIDTH, SCREEN_HEIGHT);
@@ -746,6 +798,8 @@ namespace MonoSnake
             }
 
             _startScreenHighScoresToggleButton.Draw(_spriteBatch, gameTime);
+
+            _dialogCenteredUiFrame.Draw(_spriteBatch, gameTime);
 
             _spriteBatch.End();
 
