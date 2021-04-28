@@ -73,6 +73,7 @@ namespace MonoSnake.Infrastructure
                 if (!string.IsNullOrWhiteSpace(_inputString))
                 {
                     _inputString = _inputString.Substring(0, _inputString.Length - 1);
+                    _currentChar = Keys.None;
                 }
             }
             if (key >= Keys.A && key <= Keys.Z)
@@ -80,6 +81,7 @@ namespace MonoSnake.Infrastructure
                 // Input Char
                 _inputString += key;
                 _entryPosition++;
+                _currentChar = Keys.None;
             }
         }
 
