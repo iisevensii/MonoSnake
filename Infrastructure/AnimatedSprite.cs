@@ -38,6 +38,7 @@ namespace MonoSnake.Infrastructure
         public Color TintColor { get; set; }
         public Vector2 Origin { get; set; }
         public Vector2 Scale { get; set; }
+        public float Rotation { get; set; }
 
         #endregion ISprite
 
@@ -72,7 +73,7 @@ namespace MonoSnake.Infrastructure
             _currentFrame = _frames[_currentFrameIndex].Sprite;
         }
 
-        public void Draw(SpriteBatch spriteBatch, Vector2 position, float rotation)
+        public void Draw(SpriteBatch spriteBatch, Vector2 position)
         {
             spriteBatch.Draw
             (
@@ -80,7 +81,7 @@ namespace MonoSnake.Infrastructure
                 position,
                 new Rectangle(_frames[_currentFrameIndex].Sprite.Left, _frames[_currentFrameIndex].Sprite.Top, _frames[_currentFrameIndex].Sprite.Width, _frames[_currentFrameIndex].Sprite.Height),
                 _currentFrame.TintColor,
-                rotation,
+                Rotation,
                 _currentFrame.Origin,
                 _currentFrame.Scale,
                 SpriteEffects.None,

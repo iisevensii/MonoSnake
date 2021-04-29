@@ -29,7 +29,7 @@ namespace MonoSnake.UI
 
         public void Draw(SpriteBatch spriteBatch, GameTime gameTime)
         {
-                Sprite.Draw(spriteBatch, Position, Rotation);
+                Sprite.Draw(spriteBatch, Position);
         }
     }
 }

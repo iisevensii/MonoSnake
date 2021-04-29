@@ -15,23 +15,26 @@ namespace MonoSnake.Infrastructure
         public Color TintColor { get; set; } = Color.White;
         public Vector2 Origin { get; set; } = Vector2.Zero;
         public Vector2 Scale { get; set; } = Vector2.One;
+        public float Rotation { get; set; } = 0f;
 
-        public Sprite(Texture2D spriteSheet, int top, int left, int width, int height)
+        public Sprite(Texture2D spriteSheet, int top, int left, int width, int height, float rotation = 0f)
         {
             SpriteSheet = spriteSheet ?? throw new ArgumentException("Texture2D must not be null", nameof(spriteSheet));
             Top = top;
             Left = left;
             Width = width;
             Height = height;
+            Rotation = rotation;
 
             _rectangle = new Rectangle(Left, Top, Width, Height);
         }
 
-        public Sprite(PositionedTexture2D positionedTexture2D, int width, int height)
+        public Sprite(PositionedTexture2D positionedTexture2D, int width, int height, float rotation = 0f)
         {
             SpriteSheet = positionedTexture2D.SpriteSheet ?? throw new ArgumentException("PositionedTexture2D must not be null", nameof(positionedTexture2D)); ;
             Width = width;
             Height = height;
+            Rotation = rotation;
             int margin = positionedTexture2D.Margin;
             int xIndex = positionedTexture2D.SprintXIndex;
             int yIndex = positionedTexture2D.SpriteYIndex;
@@ -46,7 +49,7 @@ namespace MonoSnake.Infrastructure
         {
         }
 
-        public virtual void Draw(SpriteBatch spriteBatch, Vector2 position, float rotation)
+        public virtual void Draw(SpriteBatch spriteBatch, Vector2 position)
         {
             spriteBatch.Draw
                 (
@@ -54,7 +57,7 @@ namespace MonoSnake.Infrastructure
                     position,
                     _rectangle,
                     TintColor,
-                    rotation,
+                    Rotation,
                     Origin,
                     Scale,
                     SpriteEffects.None,

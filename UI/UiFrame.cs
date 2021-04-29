@@ -15,8 +15,6 @@ namespace MonoSnake.UI
         public Vector2 Position { get; set; }
         public float Rotation { get; set; }
 
-        protected readonly Sprite _horizontalSprite;
-        protected readonly Sprite _verticalSprite;
         protected readonly Sprite _topLeftSprite;
         protected readonly Sprite _topRightSprite;
         protected readonly Sprite _bottomLeftSprite;
@@ -39,17 +37,23 @@ namespace MonoSnake.UI
 
         private Texture2D _backgroundTexture2D;
         private Rectangle _backgroundRectangle;
+        protected readonly Sprite _topRowSprite;
+        protected readonly Sprite _bottomRowSprite;
+        protected readonly Sprite _leftColumnSprite;
+        protected readonly Sprite _rightColumnSprite;
 
         public int ActualWidth { get; }
         public int ActualHeight { get; }
         
-        public UiFrame(GraphicsDeviceManager graphics, Vector2 position, int width, int height, Sprite horizontalSprite, Sprite verticalSprite, Sprite topLeftSprite, Sprite topRightSprite, Sprite bottomRightSprite, Sprite bottomLeftSprite, Color backgroundColor)
+        public UiFrame(GraphicsDeviceManager graphics, Vector2 position, int width, int height, Sprite topRowSprite, Sprite bottomRowSprite, Sprite rightColumnSprite, Sprite leftColumnSprite, Sprite topLeftSprite, Sprite topRightSprite, Sprite bottomRightSprite, Sprite bottomLeftSprite, Color backgroundColor)
         {
             _graphics = graphics;
             _frameWidth = width;
             _frameHeight = height;
-            _horizontalSprite = horizontalSprite;
-            _verticalSprite = verticalSprite;
+            _topRowSprite = topRowSprite;
+            _bottomRowSprite = bottomRowSprite;
+            _leftColumnSprite = leftColumnSprite;
+            _rightColumnSprite = rightColumnSprite;
             _topLeftSprite = topLeftSprite;
             _topRightSprite = topRightSprite;
             _bottomLeftSprite = bottomLeftSprite;
@@ -66,14 +70,14 @@ namespace MonoSnake.UI
             ActualWidth += _topLeftSprite.Width;
             for (int i = 0; i < _frameWidth - 2; i++)
             {
-                ActualWidth += _horizontalSprite.Width;
+                ActualWidth += _topRowSprite.Width;
             }
             ActualWidth += _topRightSprite.Width;
 
             ActualHeight += _topLeftSprite.Height;
             for (int i = 0; i < _frameHeight -2; i++)
             {
-                ActualHeight += _verticalSprite.Height;
+                ActualHeight += _leftColumnSprite.Height;
             }
             ActualHeight += _bottomLeftSprite.Height;
         }
@@ -98,10 +102,11 @@ namespace MonoSnake.UI
             _topLeftUiObject.Position = Position;
             Vector2 nextTopRowPosition = Position;
 
+            // Top Row
             nextTopRowPosition = new Vector2(nextTopRowPosition.X + _topLeftSprite.Width, nextTopRowPosition.Y);
             for (int i = 0; i < _frameWidth - 2; i++)
             {
-                UiObject uiObject = new UiObject(_horizontalSprite, nextTopRowPosition, ROTATE90_CW);
+                UiObject uiObject = new UiObject(_topRowSprite, nextTopRowPosition, 0f);
                 _topUiObjectRow.Add(uiObject);
                 nextTopRowPosition = new Vector2(uiObject.Position.X + uiObject.Sprite.Width, uiObject.Position.Y);
             }
@@ -109,31 +114,34 @@ namespace MonoSnake.UI
             _topRightUiObject.Position = nextTopRowPosition;
             Vector2 nextRightColumnPosition = new Vector2(nextTopRowPosition.X, nextTopRowPosition.Y + _topRightSprite.Height);
 
+            // Right Column
             for (int i = 0; i < _frameHeight - 2; i++)
             {
-                UiObject uiObject = new UiObject(_verticalSprite, nextRightColumnPosition, 0f);
+                UiObject uiObject = new UiObject(_rightColumnSprite, nextRightColumnPosition, 0f);
                 this._rightUiObjectColumn.Add(uiObject);
-                nextRightColumnPosition = new Vector2(uiObject.Position.X, uiObject.Position.Y + _verticalSprite.Height);
+                nextRightColumnPosition = new Vector2(uiObject.Position.X, uiObject.Position.Y + _rightColumnSprite.Height);
             }
 
             _bottomRightUiObject.Position = nextRightColumnPosition;
             Vector2 nextBottomRowPosition = new Vector2(nextRightColumnPosition.X - _bottomRightSprite.Width, nextRightColumnPosition.Y);
 
+            // Bottom Row
             for (int i = 0; i < _frameWidth - 2; i++)
             {
-                UiObject uiObject = new UiObject(_horizontalSprite, nextBottomRowPosition, ROTATE90_CW);
+                UiObject uiObject = new UiObject(_bottomRowSprite, nextBottomRowPosition, 0f);
                 this._bottomUiObjectRow.Add(uiObject);
-                nextBottomRowPosition = new Vector2(uiObject.Position.X - _horizontalSprite.Width, uiObject.Position.Y);
+                nextBottomRowPosition = new Vector2(uiObject.Position.X - _bottomRowSprite.Width, uiObject.Position.Y);
             }
 
             _bottomLeftUiObject.Position = nextBottomRowPosition;
             Vector2 nextLeftColumnPosition = new Vector2(nextBottomRowPosition.X, nextBottomRowPosition.Y - _bottomLeftSprite.Height);
 
+            // Left Column
             for (int i = 0; i < _frameHeight - 2; i++)
             {
-                UiObject uiObject = new UiObject(_verticalSprite, nextLeftColumnPosition, 0f);
+                UiObject uiObject = new UiObject(_leftColumnSprite, nextLeftColumnPosition, 0f);
                 this._leftUiObjectColumn.Add(uiObject);
-                nextLeftColumnPosition = new Vector2(uiObject.Position.X, uiObject.Position.Y - _verticalSprite.Height);
+                nextLeftColumnPosition = new Vector2(uiObject.Position.X, uiObject.Position.Y - _leftColumnSprite.Height);
             }
         }
 

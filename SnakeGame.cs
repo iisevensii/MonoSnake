@@ -44,6 +44,9 @@ namespace MonoSnake
 
         #endregion Events
 
+
+        private const float ROTATE90_CW = (float)(90 * Math.PI / 180);
+
         #region Fields
         // Draw diagnostic grid?
         private readonly bool _drawDiagnosticGrid = false;
@@ -119,9 +122,15 @@ namespace MonoSnake
             private Sprite _uiWindowTopRightSprite;
             private Sprite _uiWindowBottomLeftSprite;
             private Sprite _uiWindowBottomRightSprite;
-            private Sprite _uiWindowHorizontalSprite;
+            private Sprite _uiWindowTopRowSprite;
+            private Sprite _uiWindowBottomRowSprite;
             private CenteredUiFrame _dialogCenteredUiFrame;
-            private Sprite _uiWindowVerticalSprite;
+            private Sprite _snakeFrameTopRowRowSprite;
+            private Sprite _snakeFrameBottomRowRowSprite;
+            private Sprite _snakeFrameRightColumnRowSprite;
+            private Sprite _snakeFrameLeftColumnRowSprite;
+            private Sprite _uiWindowRightColumnSprite;
+            private Sprite _uiWindowLeftColumnSprite;
             private const string UI_BLUE_SPRITE_SHEET_NAME = "UiBlueSheet";
 
             #endregion Rectangles
@@ -270,27 +279,66 @@ namespace MonoSnake
                 Origin = halfSizeOrigin
             };
 
-            _uiWindowHorizontalSprite = new Sprite(_uiBlueSpriteSheet, 143, 10, 10, 10)
+            PositionedTexture2D snakeFrameTopRowPositionedTexture2D = new PositionedTexture2D(_snakeSegmentsSpriteSheet, 1, 1, 2);
+            _snakeFrameTopRowRowSprite = new Sprite(snakeFrameTopRowPositionedTexture2D, DEFAULT_SPRITE_SIZE, DEFAULT_SPRITE_SIZE, ROTATE90_CW)
+            {
+                Origin = halfSizeOrigin
+            };
+
+            PositionedTexture2D snakeFrameBottomRowPositionedTexture2D = new PositionedTexture2D(_snakeSegmentsSpriteSheet, 1, 1, 2);
+            _snakeFrameBottomRowRowSprite = new Sprite(snakeFrameBottomRowPositionedTexture2D, DEFAULT_SPRITE_SIZE, DEFAULT_SPRITE_SIZE, ROTATE90_CW)
+            {
+                Origin = halfSizeOrigin
+            };
+
+            PositionedTexture2D snakeFrameRightColumnPositionedTexture2D = new PositionedTexture2D(_snakeSegmentsSpriteSheet, 1, 1, 2);
+            _snakeFrameRightColumnRowSprite = new Sprite(snakeFrameRightColumnPositionedTexture2D, DEFAULT_SPRITE_SIZE, DEFAULT_SPRITE_SIZE)
+            {
+                Origin = halfSizeOrigin
+            };
+
+            PositionedTexture2D snakeFrameLeftColumnPositionedTexture2D = new PositionedTexture2D(_snakeSegmentsSpriteSheet, 1, 1, 2);
+            _snakeFrameLeftColumnRowSprite = new Sprite(snakeFrameLeftColumnPositionedTexture2D, DEFAULT_SPRITE_SIZE, DEFAULT_SPRITE_SIZE)
+            {
+                Origin = halfSizeOrigin
+            };
+
+            _uiWindowTopRowSprite = new Sprite(_uiBlueSpriteSheet, 143, 10, 10, 10)
             {
                 Origin = new Vector2(5, 5)
             };
-            _uiWindowVerticalSprite = new Sprite(_uiBlueSpriteSheet, 153, 0, 10, 10)
+
+            _uiWindowBottomRowSprite = new Sprite(_uiBlueSpriteSheet, 182, 10, 10, 10)
             {
                 Origin = new Vector2(5, 5)
             };
+
+            _uiWindowRightColumnSprite = new Sprite(_uiBlueSpriteSheet, 153, 180, 10, 10)
+            {
+                Origin = new Vector2(5, 5)
+            };
+
+            _uiWindowLeftColumnSprite = new Sprite(_uiBlueSpriteSheet, 153, 0, 10, 10)
+            {
+                Origin = new Vector2(5, 5)
+            };
+
             _uiWindowTopLeftSprite = new Sprite(_uiBlueSpriteSheet, 143, 0, 10, 10)
             {
                 Origin = new Vector2(5, 5)
             };
+
             _uiWindowTopRightSprite = new Sprite(_uiBlueSpriteSheet, 143, 180, 10, 10)
             {
                 Origin = new Vector2(5, 5)
             };
+
             _uiWindowBottomRightSprite = new Sprite(_uiBlueSpriteSheet, 182, 180, 10, 10)
             {
                 Origin = new Vector2(5, 5)
             };
-            _uiWindowBottomLeftSprite = new Sprite(_uiBlueSpriteSheet, 178, 0, 10, 10)
+
+            _uiWindowBottomLeftSprite = new Sprite(_uiBlueSpriteSheet, 182, 0, 10, 10)
             {
                 Origin = new Vector2(5, 5)
             };
@@ -411,8 +459,10 @@ namespace MonoSnake
                 17,
                 SCREEN_WIDTH,
                 SCREEN_HEIGHT,
-                _snakeStraightBodySprite,
-                _snakeStraightBodySprite,
+                _snakeFrameTopRowRowSprite,
+                _snakeFrameBottomRowRowSprite,
+                _snakeFrameLeftColumnRowSprite,
+                _snakeFrameRightColumnRowSprite,
                 _snakeCwUpToRightCcwLeftToDownSprite,
                 _snakeCwRightToDownCcwUpToLeftSprite,
                 _snakeCwDownToLeftCcwRightToUpSprite,
@@ -428,8 +478,10 @@ namespace MonoSnake
                 17,
                 SCREEN_WIDTH,
                 SCREEN_HEIGHT,
-                _snakeStraightBodySprite,
-                _snakeStraightBodySprite,
+                _snakeFrameTopRowRowSprite,
+                _snakeFrameBottomRowRowSprite,
+                _snakeFrameLeftColumnRowSprite,
+                _snakeFrameRightColumnRowSprite,
                 _snakeCwUpToRightCcwLeftToDownSprite,
                 _snakeCwRightToDownCcwUpToLeftSprite,
                 _snakeCwDownToLeftCcwRightToUpSprite,
@@ -441,17 +493,19 @@ namespace MonoSnake
             (
                 _graphics,
                 Vector2.Zero,
-                17,
-                17,
+                45,
+                20,
                 SCREEN_WIDTH,
                 SCREEN_HEIGHT,
-                _uiWindowHorizontalSprite,
-                _uiWindowVerticalSprite,
+                _uiWindowTopRowSprite,
+                _uiWindowBottomRowSprite,
+                _uiWindowLeftColumnSprite,
+                _uiWindowRightColumnSprite,
                 _uiWindowTopLeftSprite,
                 _uiWindowTopRightSprite,
                 _uiWindowBottomRightSprite,
                 _uiWindowBottomLeftSprite,
-                Color.White
+                new Color(new Vector3(0.9333f, 0.9333f, 0.9333f))
             );
 
             _scoreBoard = new ScoreBoard(Assembly.GetEntryAssembly().Location, _graphics.GraphicsDevice, _scoreBoardFont, _highScoresUiFrame, SCREEN_WIDTH, SCREEN_HEIGHT);
@@ -799,7 +853,7 @@ namespace MonoSnake
 
             _startScreenHighScoresToggleButton.Draw(_spriteBatch, gameTime);
 
-            _dialogCenteredUiFrame.Draw(_spriteBatch, gameTime);
+            //_dialogCenteredUiFrame.Draw(_spriteBatch, gameTime);
 
             _spriteBatch.End();
 

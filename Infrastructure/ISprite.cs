@@ -16,7 +16,8 @@ namespace MonoSnake.Infrastructure
         public Color TintColor { get; set; }
         public Vector2 Origin { get; set; }
         public Vector2 Scale { get; set; }
+        float Rotation { get; set; }
         void Update(GameTime gameTime);
-        void Draw(SpriteBatch spriteBatch, Vector2 position, float rotation);
+        void Draw(SpriteBatch spriteBatch, Vector2 position);
     }
 }

@@ -24,11 +24,12 @@ namespace MonoSnake.GameObjects
 
         public void Update(GameTime gameTime)
         {
+            Rotation = NoRotation ? 0f : Rotation;
         }
 
         public void Draw(SpriteBatch spriteBatch, GameTime gameTime)
         {
-            Sprite.Draw(spriteBatch, Position, NoRotation ? 0f : Rotation);
+            Sprite.Draw(spriteBatch, Position);
         }
     }
 }

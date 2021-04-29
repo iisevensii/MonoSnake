@@ -20,8 +20,10 @@ namespace MonoSnake.UI
                 int height,
                 int parentWidth,
                 int parentHeight,
-                Sprite horizontalSprite,
-                Sprite verticalSprite,
+                Sprite topRowSprite,
+                Sprite bottomRowSprite,
+                Sprite leftColumnSprite,
+                Sprite rightColumnSprite,
                 Sprite topLeftSprite,
                 Sprite topRightSprite,
                 Sprite bottomRightSprite,
@@ -34,8 +36,10 @@ namespace MonoSnake.UI
                     position,
                     width,
                     height,
-                    horizontalSprite,
-                    verticalSprite,
+                    topRowSprite,
+                    bottomRowSprite,
+                    rightColumnSprite,
+                    leftColumnSprite,
                     topLeftSprite,
                     topRightSprite,
                     bottomRightSprite,
@@ -46,14 +50,14 @@ namespace MonoSnake.UI
             ActualWidth += _topLeftSprite.Width;
             for (int i = 0; i < _frameWidth - 2; i++)
             {
-                ActualWidth += _horizontalSprite.Width;
+                ActualWidth += _topRowSprite.Width;
             }
             ActualWidth += _topRightSprite.Width;
 
             ActualHeight += _topLeftSprite.Height;
             for (int i = 0; i < _frameHeight - 2; i++)
             {
-                ActualHeight += _verticalSprite.Height;
+                ActualHeight += _leftColumnSprite.Height;
             }
             ActualHeight += _bottomLeftSprite.Height;
 
