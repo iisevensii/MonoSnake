@@ -131,6 +131,9 @@ namespace MonoSnake
             private Sprite _snakeFrameLeftColumnRowSprite;
             private Sprite _uiWindowRightColumnSprite;
             private Sprite _uiWindowLeftColumnSprite;
+            private Sprite _uiButtonBlueSheetCancel;
+            private Sprite _uiButtonBlueSheetConfirm;
+            private CenteredUiDialog _scoreEntryCenteredUiDialog;
             private const string UI_BLUE_SPRITE_SHEET_NAME = "UiBlueSheet";
 
             #endregion Rectangles
@@ -343,6 +346,16 @@ namespace MonoSnake
                 Origin = new Vector2(5, 5)
             };
 
+            _uiButtonBlueSheetCancel = new Sprite(_uiBlueSpriteSheet, 0, 381, 36, 36)
+            {
+                Origin = new Vector2(19, 19)
+            };
+
+            _uiButtonBlueSheetConfirm = new Sprite(_uiBlueSpriteSheet, 36, 381, 36, 36)
+            {
+                Origin = new Vector2(19, 19)
+            };
+
             #endregion PositionedTextureSprites
 
             // Create GameObjects
@@ -507,6 +520,11 @@ namespace MonoSnake
                 _uiWindowBottomLeftSprite,
                 new Color(new Vector3(0.9333f, 0.9333f, 0.9333f))
             );
+
+            UiButton cancelScoreEntryButton = new UiButton(_uiButtonBlueSheetCancel, _uiButtonBlueSheetCancel, Vector2.Zero, 0f);
+            UiButton confirmScoreEntryButton = new UiButton(_uiButtonBlueSheetCancel, _uiButtonBlueSheetCancel, Vector2.Zero, 0f);
+
+            _scoreEntryCenteredUiDialog = new CenteredUiDialog(_dialogCenteredUiFrame, confirmScoreEntryButton, cancelScoreEntryButton);
 
             _scoreBoard = new ScoreBoard(Assembly.GetEntryAssembly().Location, _graphics.GraphicsDevice, _scoreBoardFont, _highScoresUiFrame, SCREEN_WIDTH, SCREEN_HEIGHT);
         }
@@ -849,11 +867,12 @@ namespace MonoSnake
                 DrawHighScoresUiFrame(gameTime);
                 DrawLeaderboardText();
                 _scoreBoard.Draw(_spriteBatch, gameTime);
+
+                //ToDo: Conditionally Draw Confirmation Dialog in Text Entry after high score name is entered and when user hits Enter|Start
+                //_scoreEntryCenteredUiDialog.Draw(_spriteBatch, gameTime);
             }
 
             _startScreenHighScoresToggleButton.Draw(_spriteBatch, gameTime);
-
-            //_dialogCenteredUiFrame.Draw(_spriteBatch, gameTime);
 
             _spriteBatch.End();
 
