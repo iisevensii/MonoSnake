@@ -39,6 +39,20 @@
 /processorParam:TextureFormat=Compressed
 /build:ArcadeClassic.spritefont
 
+#begin DialogPrompt.spritefont
+/importer:FontDescriptionImporter
+/processor:FontDescriptionProcessor
+/processorParam:PremultiplyAlpha=True
+/processorParam:TextureFormat=Compressed
+/build:DialogPrompt.spritefont
+
+#begin DialogTitle.spritefont
+/importer:FontDescriptionImporter
+/processor:FontDescriptionProcessor
+/processorParam:PremultiplyAlpha=True
+/processorParam:TextureFormat=Compressed
+/build:DialogTitle.spritefont
+
 #begin eat.wav
 /importer:WavImporter
 /processor:SoundEffectProcessor
@@ -154,4 +168,16 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:UiBlueSheet.png
+
+#begin UiBlueSheetHover.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:UiBlueSheetHover.png
 

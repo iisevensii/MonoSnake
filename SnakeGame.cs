@@ -36,6 +36,8 @@ namespace MonoSnake
         private const int GAME_AREA_MARGIN_LEFT = 20;
         private const int GAME_AREA_MARGIN_TOP = 90;
         private const int GAME_AREA_PADDING = 10;
+        private const string UI_BLUE_SPRITE_SHEET_NAME = "UiBlueSheet";
+        private const string UI_BLUE_SPRITE_SHEET_HOVER_NAME = "UiBlueSheetHover";
         #endregion Constants
 
         #region Events
@@ -89,10 +91,12 @@ namespace MonoSnake
             private SpriteFont _gameOverFont;
             private SpriteFont _leaderboardFont;
             private SpriteFont _scoreBoardFont;
-            #endregion SpriteFonts
+            private SpriteFont _dialogTitleFont;
+            private SpriteFont _dialogPromptFont;
+        #endregion SpriteFonts
 
-            #region Textures
-            private Texture2D _appleTexture;
+        #region Textures
+        private Texture2D _appleTexture;
             private Texture2D _snakeHeadSpriteSheet;
             private Texture2D _snakeSegmentsSpriteSheet;
             private Texture2D _gameAreaRectangleTexture;
@@ -118,6 +122,7 @@ namespace MonoSnake
             private List<Rectangle> _unOccupiedCells = new List<Rectangle>();
             private ISprite _snakeHeadAnimatedSprite;
             private Texture2D _uiBlueSpriteSheet;
+            private Texture2D _uiBlueSpriteSheetHover;
             private Sprite _uiWindowTopLeftSprite;
             private Sprite _uiWindowTopRightSprite;
             private Sprite _uiWindowBottomLeftSprite;
@@ -134,7 +139,8 @@ namespace MonoSnake
             private Sprite _uiButtonBlueSheetCancel;
             private Sprite _uiButtonBlueSheetConfirm;
             private CenteredUiDialog _scoreEntryCenteredUiDialog;
-            private const string UI_BLUE_SPRITE_SHEET_NAME = "UiBlueSheet";
+            private Sprite _uiButtonBlueSheetHoverCancel;
+            private Sprite _uiButtonBlueSheetHoverConfirm;
 
             #endregion Rectangles
 
@@ -192,11 +198,14 @@ namespace MonoSnake
             _gameOverFont = Content.Load<SpriteFont>("GameOver");
             _leaderboardFont = Content.Load<SpriteFont>("Arcade");
             _scoreBoardFont = Content.Load<SpriteFont>("ArcadeClassic");
+            _dialogTitleFont = Content.Load<SpriteFont>("DialogTitle");
+            _dialogPromptFont = Content.Load<SpriteFont>("DialogPrompt");
             // Load Textures
             _appleTexture = Content.Load<Texture2D>(APPLE_SPRITE_SHEET_NAME);
             _snakeHeadSpriteSheet = Content.Load<Texture2D>(SNAKE_HEAD_SPRITE_SHEET_NAME);
             _snakeSegmentsSpriteSheet = Content.Load<Texture2D>(SNAKE_SEGMENTS_SPRITE_SHEET_NAME);
             _uiBlueSpriteSheet = Content.Load<Texture2D>(UI_BLUE_SPRITE_SHEET_NAME);
+            _uiBlueSpriteSheetHover = Content.Load<Texture2D>(UI_BLUE_SPRITE_SHEET_HOVER_NAME);
             _eatSoundEffect = Content.Load<SoundEffect>(EAT_SOUND_EFFECT_NAME);
             _startScreenButtonNormal = Content.Load<Texture2D>("Gear");
             _startScreenButtonHover = Content.Load<Texture2D>("GearHover");
@@ -346,15 +355,15 @@ namespace MonoSnake
                 Origin = new Vector2(5, 5)
             };
 
-            _uiButtonBlueSheetCancel = new Sprite(_uiBlueSpriteSheet, 0, 381, 36, 36)
-            {
-                Origin = new Vector2(19, 19)
-            };
+            _uiButtonBlueSheetCancel = new Sprite(_uiBlueSpriteSheet, 0, 381, 36, 36);
 
-            _uiButtonBlueSheetConfirm = new Sprite(_uiBlueSpriteSheet, 36, 381, 36, 36)
-            {
-                Origin = new Vector2(19, 19)
-            };
+            _uiButtonBlueSheetConfirm = new Sprite(_uiBlueSpriteSheet, 36, 381, 36, 36);
+
+            _uiButtonBlueSheetHoverCancel = new Sprite(_uiBlueSpriteSheetHover, 0, 381, 36, 36);
+
+            _uiButtonBlueSheetHoverConfirm = new Sprite(_uiBlueSpriteSheetHover, 36, 381, 36, 36);
+
+
 
             #endregion PositionedTextureSprites
 
@@ -521,10 +530,10 @@ namespace MonoSnake
                 new Color(new Vector3(0.9333f, 0.9333f, 0.9333f))
             );
 
-            UiButton cancelScoreEntryButton = new UiButton(_uiButtonBlueSheetCancel, _uiButtonBlueSheetCancel, Vector2.Zero, 0f);
-            UiButton confirmScoreEntryButton = new UiButton(_uiButtonBlueSheetCancel, _uiButtonBlueSheetCancel, Vector2.Zero, 0f);
+            UiButton cancelScoreEntryButton = new UiButton(_uiButtonBlueSheetCancel, _uiButtonBlueSheetHoverCancel, Vector2.Zero, 0f);
+            UiButton confirmScoreEntryButton = new UiButton(_uiButtonBlueSheetConfirm, _uiButtonBlueSheetHoverConfirm, Vector2.Zero, 0f);
 
-            _scoreEntryCenteredUiDialog = new CenteredUiDialog(_dialogCenteredUiFrame, confirmScoreEntryButton, cancelScoreEntryButton);
+            _scoreEntryCenteredUiDialog = new CenteredUiDialog(_graphics.GraphicsDevice, _dialogCenteredUiFrame, _dialogTitleFont, _dialogPromptFont, "New High Score", "Save High Score Entry?", confirmScoreEntryButton, cancelScoreEntryButton, Color.CornflowerBlue, Color.Black);
 
             _scoreBoard = new ScoreBoard(Assembly.GetEntryAssembly().Location, _graphics.GraphicsDevice, _scoreBoardFont, _highScoresUiFrame, SCREEN_WIDTH, SCREEN_HEIGHT);
         }
@@ -800,6 +809,8 @@ namespace MonoSnake
             _startScreenHighScoresToggleButton.Update(gameTime);
             var deltaTime = (float) gameTime.ElapsedGameTime.TotalSeconds;
             _frameCounter.Update(gameTime);
+            //ToDO: Only update score entry dialog at the right time
+            _scoreEntryCenteredUiDialog.Update(gameTime);
             base.Update(gameTime);
         }
 

@@ -12,6 +12,15 @@ namespace MonoSnake.UI
         public new int ActualWidth { get; }
         public new int ActualHeight { get; }
 
+        public int TopLeftSpriteWidth => _topLeftSprite.Width;
+        public int TopLeftSpriteHeight => _topLeftSprite.Height;
+        public int TopRightSpriteWidth => _topRightSprite.Width;
+        public int TopRightSpriteHeight => _topRightSprite.Height;
+        public int BottomLeftSpriteWidth => _bottomLeftSprite.Width;
+        public int BottomLeftSpriteHeight => _bottomLeftSprite.Height;
+        public int BottomRightSpriteWidth => _bottomRowSprite.Width;
+        public int BottomRightSpriteHeight => _bottomRowSprite.Height;
+
         public CenteredUiFrame
             (
                 GraphicsDeviceManager graphics,
