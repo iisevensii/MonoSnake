@@ -73,7 +73,12 @@ namespace MonoSnake.Infrastructure
             _currentFrame = _frames[_currentFrameIndex].Sprite;
         }
 
-        public void Draw(SpriteBatch spriteBatch, Vector2 position)
+        public virtual void Draw(SpriteBatch spriteBatch, Vector2 position)
+        {
+            this.Draw(spriteBatch, position, Rotation);
+        }
+
+        public void Draw(SpriteBatch spriteBatch, Vector2 position, float rotation)
         {
             spriteBatch.Draw
             (
@@ -81,7 +86,7 @@ namespace MonoSnake.Infrastructure
                 position,
                 new Rectangle(_frames[_currentFrameIndex].Sprite.Left, _frames[_currentFrameIndex].Sprite.Top, _frames[_currentFrameIndex].Sprite.Width, _frames[_currentFrameIndex].Sprite.Height),
                 _currentFrame.TintColor,
-                Rotation,
+                rotation,
                 _currentFrame.Origin,
                 _currentFrame.Scale,
                 SpriteEffects.None,

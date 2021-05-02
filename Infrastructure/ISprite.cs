@@ -19,5 +19,6 @@ namespace MonoSnake.Infrastructure
         float Rotation { get; set; }
         void Update(GameTime gameTime);
         void Draw(SpriteBatch spriteBatch, Vector2 position);
+        void Draw(SpriteBatch spriteBatch, Vector2 position, float rotation);
     }
 }

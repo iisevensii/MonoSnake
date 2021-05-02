@@ -51,13 +51,18 @@ namespace MonoSnake.Infrastructure
 
         public virtual void Draw(SpriteBatch spriteBatch, Vector2 position)
         {
+            this.Draw(spriteBatch, position, Rotation);
+        }
+
+        public virtual void Draw(SpriteBatch spriteBatch, Vector2 position, float rotation)
+        {
             spriteBatch.Draw
                 (
                     SpriteSheet,
                     position,
                     _rectangle,
                     TintColor,
-                    Rotation,
+                    rotation,
                     Origin,
                     Scale,
                     SpriteEffects.None,
