@@ -41,6 +41,7 @@ namespace MonoSnake.Infrastructure
         private List<ScoreEntry> _scoreEntryAfterList = new List<ScoreEntry>();
 
         public bool InHighScoreEntryConfirmState { get; set; }
+        public event EventHandler HighScoreEntryCompletedEvent;
 
         private const int SCORE_BOARD_FONT_LEFT_PADDING = 10;
 
@@ -77,6 +78,8 @@ namespace MonoSnake.Infrastructure
         {
             AddHighScore(_newHighScore);
             InHighScoreEntryConfirmState = false;
+            _textEntry.Reset();
+            OnTextEntryCompleted(EventArgs.Empty);
         }
 
         public void ConfirmNewHighScoreEntry(int score)
@@ -84,8 +87,18 @@ namespace MonoSnake.Infrastructure
             ShowConfirmationDialog();
         }
 
-        public void AddHighScore(int score)
+        protected void OnTextEntryCompleted(EventArgs e)
         {
+            EventHandler handler = this.HighScoreEntryCompletedEvent;
+            handler?.Invoke(this, e);
+        }
+
+        private void AddHighScore(int score)
+        {
+            HighScores.ScoreEntries = new List<ScoreEntry>();
+            HighScores.ScoreEntries.AddRange(_scoreEntryBeforeList);
+            HighScores.ScoreEntries.Add(new ScoreEntry(false, _textEntry.InputtedString, _newHighScore));
+            HighScores.ScoreEntries.AddRange(_scoreEntryAfterList);
             this.SaveHighScores();
         }
 
@@ -102,7 +115,7 @@ namespace MonoSnake.Infrastructure
             return new HighScores();
         }
 
-        public void SaveHighScores()
+        private void SaveHighScores()
         {
             if (HighScores.HighScoresUpdated)
             {
@@ -131,9 +144,10 @@ namespace MonoSnake.Infrastructure
             _newHighScoreRowIndex = 10 - _scoreEntryAfterList.Count - 1;
 
             // In Memory Update Test
+            HighScores = LoadHighScores();
             HighScores.ScoreEntries = new List<ScoreEntry>();
             HighScores.ScoreEntries.AddRange(_scoreEntryBeforeList);
-            HighScores.ScoreEntries.Add(new ScoreEntry("", score));
+            HighScores.ScoreEntries.Add(new ScoreEntry(true, "", score));
             HighScores.ScoreEntries.AddRange(_scoreEntryAfterList);
         }
 

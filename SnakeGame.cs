@@ -96,7 +96,7 @@ namespace MonoSnake
         #endregion SpriteFonts
 
         #region Textures
-        private Texture2D _appleTexture;
+            private Texture2D _appleTexture;
             private Texture2D _snakeHeadSpriteSheet;
             private Texture2D _snakeSegmentsSpriteSheet;
             private Texture2D _gameAreaRectangleTexture;
@@ -189,6 +189,13 @@ namespace MonoSnake
             InitializeInputController();
 
             SetUiState(UIState.StartScreen);
+
+            _scoreBoard.HighScoreEntryCompletedEvent += ScoreBoardOnHighScoreEntryCompletedEvent;
+        }
+
+        private void ScoreBoardOnHighScoreEntryCompletedEvent(object sender, EventArgs e)
+        {
+            SetUiState(UIState.HighScoresScreen);
         }
 
         private void LoadAssets()
@@ -394,7 +401,7 @@ namespace MonoSnake
             );
         }
 
-        private void OnStartScreenHighScoresToggleButtonClick(object sender, EventArgs e)
+        protected void OnStartScreenHighScoresToggleButtonClick(object sender, EventArgs e)
         {
             if (_uiState != UIState.GamePlay || _isGameOver)
             {

@@ -27,6 +27,8 @@ namespace MonoSnake.Infrastructure
         private string _inputString = String.Empty;
         private SpriteFont _font;
 
+        public string InputtedString => _inputString;
+
         public Vector2 Position
         {
             get => _position;
@@ -45,6 +47,11 @@ namespace MonoSnake.Infrastructure
             }
 
             _letterEntrySpriteFrame0 = new Sprite(_cursorTexture2D, 0, 0, 20, 5);
+        }
+
+        public void Reset()
+        {
+            _inputString = string.Empty;
         }
 
         public void KeyInput(Keys key)
