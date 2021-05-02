@@ -35,11 +35,12 @@ namespace MonoSnake.Infrastructure
         private int _rightInsideEdgeOfFrame;
         private int _margin;
         private int _newHighScoreRowIndex = 0;
+        private int _newHighScore;
 
         private List<ScoreEntry> _scoreEntryBeforeList = new List<ScoreEntry>();
         private List<ScoreEntry> _scoreEntryAfterList = new List<ScoreEntry>();
 
-        public bool InHighScoreEntryMode { get; set; }
+        public bool InHighScoreEntryConfirmState { get; set; }
 
         private const int SCORE_BOARD_FONT_LEFT_PADDING = 10;
 
@@ -67,30 +68,25 @@ namespace MonoSnake.Infrastructure
             _confirmationDialog.ConfirmEvent += ConfirmationDialogOnConfirmEvent;
         }
 
-        private void ConfirmationDialogOnCancelEvent(object? sender, EventArgs e)
+        private void ConfirmationDialogOnCancelEvent(object sender, EventArgs e)
         {
-            Trace.WriteLine("Cancel");
+            InHighScoreEntryConfirmState = false;
         }
 
-        private void ConfirmationDialogOnConfirmEvent(object? sender, EventArgs e)
+        private void ConfirmationDialogOnConfirmEvent(object sender, EventArgs e)
         {
-            Trace.WriteLine("Confrim");
+            AddHighScore(_newHighScore);
+            InHighScoreEntryConfirmState = false;
+        }
+
+        public void ConfirmNewHighScoreEntry(int score)
+        {
+            ShowConfirmationDialog();
         }
 
         public void AddHighScore(int score)
         {
-            _scoreEntryBeforeList = HighScores.ScoreEntries.Where(s => s.Score > score).ToList();
-            _scoreEntryAfterList = HighScores.ScoreEntries.Where(s => s.Score < score).Take(10 - _scoreEntryBeforeList.Count -1).ToList();
-
-            _newHighScoreRowIndex = 10 - _scoreEntryAfterList.Count - 1;
-
-            // In Memory Update Test
-            HighScores.ScoreEntries = new List<ScoreEntry>();
-            HighScores.ScoreEntries.AddRange(_scoreEntryBeforeList);
-            HighScores.ScoreEntries.Add(new ScoreEntry("", score));
-            HighScores.ScoreEntries.AddRange(_scoreEntryAfterList);
-
-            Trace.WriteLine("We have a winner!");
+            this.SaveHighScores();
         }
 
         private HighScores LoadHighScores()
@@ -112,7 +108,6 @@ namespace MonoSnake.Infrastructure
             {
                 string highScoresSerialized = JsonSerializer.Serialize(HighScores, _jsonSerializerOptions);
 
-
                 File.WriteAllText(_highScoresStoragePath, highScoresSerialized);
 
                 HighScores.HighScoresUpdated = false;
@@ -121,8 +116,25 @@ namespace MonoSnake.Infrastructure
 
         public bool IsNewHighScore(int score)
         {
-            bool isNewHighScore = this.HighScores.ScoreEntries.Any(s => score > s.Score);
+            bool isNewHighScore = this.HighScores.ScoreEntries.All(s => score != s.Score)
+            && this.HighScores.ScoreEntries.Any(s => score > s.Score);
             return isNewHighScore;
+        }
+
+        public void StartHighScoreEntry(int score)
+        {
+            _newHighScore = score;
+
+            _scoreEntryBeforeList = HighScores.ScoreEntries.Where(s => s.Score > score).ToList();
+            _scoreEntryAfterList = HighScores.ScoreEntries.Where(s => s.Score < score).Take(10 - _scoreEntryBeforeList.Count - 1).ToList();
+
+            _newHighScoreRowIndex = 10 - _scoreEntryAfterList.Count - 1;
+
+            // In Memory Update Test
+            HighScores.ScoreEntries = new List<ScoreEntry>();
+            HighScores.ScoreEntries.AddRange(_scoreEntryBeforeList);
+            HighScores.ScoreEntries.Add(new ScoreEntry("", score));
+            HighScores.ScoreEntries.AddRange(_scoreEntryAfterList);
         }
 
         public void KeyInput(Keys key)
@@ -130,14 +142,22 @@ namespace MonoSnake.Infrastructure
             _textEntry.KeyInput(key);
         }
 
+        private void ShowConfirmationDialog()
+        {
+            InHighScoreEntryConfirmState = true;
+        }
+
         public void Update(GameTime gameTime)
         {
             if (HighScoreEntryState)
             {
                 _textEntry.Update(gameTime);
+                if (InHighScoreEntryConfirmState)
+                {
+                    //ToDo: Only update score entry dialog at the right time
+                    _confirmationDialog.Update(gameTime);
+                }
             }
-            //ToDO: Only update score entry dialog at the right time
-            _confirmationDialog.Update(gameTime);
         }
 
         public void Draw(SpriteBatch spriteBatch, GameTime gameTime)
@@ -160,11 +180,15 @@ namespace MonoSnake.Infrastructure
                 DrawScoreEntries(spriteBatch, gameTime, HighScores.ScoreEntries);
             }
 
-            if(HighScoreEntryState)
+            if (HighScoreEntryState)
+            {
                 _textEntry.Draw(spriteBatch, gameTime);
-
-            //ToDo: Conditionally Draw Confirmation Dialog in Text Entry after high score name is entered and when user hits Enter|Start
-            //_confirmationDialog.Draw(spriteBatch, gameTime);
+                if (InHighScoreEntryConfirmState)
+                {
+                    //ToDo: Conditionally Draw Confirmation Dialog in Text Entry after high score name is entered and when user hits Enter|Start
+                    _confirmationDialog.Draw(spriteBatch, gameTime);
+                }
+            }
         }
 
         private void DrawScoreEntries(SpriteBatch spriteBatch, GameTime gameTime, List<ScoreEntry> scoreEntries)

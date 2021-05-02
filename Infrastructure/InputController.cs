@@ -117,6 +117,10 @@ namespace MonoSnake.Infrastructure
                 {
                     _scoreBoard.KeyInput(Keys.Back);
                 }
+                else if(UIState == UIState.HighScoreEntry && WasKeyPressed(Keys.Enter) || WasButtonPressed(Buttons.Start))
+                {
+                    _scoreBoard.ConfirmNewHighScoreEntry(_snake.Score);
+                }
                 else if (WasKeyPressed(alphabetKeys, out Keys alphabetKeyPressed))
                 {
                     _scoreBoard.KeyInput(alphabetKeyPressed);
@@ -130,7 +134,7 @@ namespace MonoSnake.Infrastructure
             if (player1GamePadState.Buttons.Back == ButtonState.Pressed || keyboardState.IsKeyDown(Keys.Escape))
                 OnExit(EventArgs.Empty);
 
-            if (WasKeyPressed(Keys.Enter) || WasButtonPressed(Buttons.Start))
+            if (UIState != UIState.HighScoreEntry && (WasKeyPressed(Keys.Enter) || WasButtonPressed(Buttons.Start))) 
                 OnRestart(EventArgs.Empty);
 
             if (keyboardState.IsKeyDown(Keys.Space))

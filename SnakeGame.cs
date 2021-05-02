@@ -664,10 +664,8 @@ namespace MonoSnake
             if (_scoreBoard.IsNewHighScore(_snake.Score))
             {
                 SetUiState(UIState.HighScoreEntry);
-                _scoreBoard.AddHighScore(_snake.Score);
+                _scoreBoard.StartHighScoreEntry(_snake.Score);
             }
-
-            _scoreBoard.SaveHighScores();
 
             _isGameOver = true;
 

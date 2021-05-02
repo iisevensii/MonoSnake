@@ -67,13 +67,13 @@ namespace MonoSnake.UI
             _confirmButton.ClickedEvent += ConfirmClickedEvent; 
         }
 
-        private void CancelClickedEvent(object? sender, EventArgs e)
+        private void CancelClickedEvent(object sender, EventArgs e)
         {
             EventHandler handler = this.CancelEvent;
             handler?.Invoke(this, e);
         }
 
-        private void ConfirmClickedEvent(object? sender, EventArgs e)
+        private void ConfirmClickedEvent(object sender, EventArgs e)
         {
             EventHandler handler = this.ConfirmEvent;
             handler?.Invoke(this, e);
