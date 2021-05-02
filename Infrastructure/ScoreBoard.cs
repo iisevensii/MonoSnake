@@ -15,29 +15,43 @@ namespace MonoSnake.Infrastructure
     public class ScoreBoard
     {
         private const string HIGH_SCORES_FILE_NAME = "HighScores.json";
+        private const int SCORES_MARGIN_TOP = 50;
+        private const int SCORE_BOARD_VERTICAL_MARGIN = 20;
+        private const int SCORE_BOARD_HORIZONTAL_MARGIN = 20;
+        private const int SCORE_VERTICAL_SPACING = 50;
+
         private readonly string _highScoresStoragePath;
         private readonly JsonSerializerOptions _jsonSerializerOptions;
         private readonly SpriteFont _scoreBoardFont;
+        private readonly CenteredUiDialog _confirmationDialog;
+
+        private GraphicsDevice _graphicsDevice;
         private CenteredUiFrame _uiFrame;
+        private HighScores HighScores { get; set; }
+        private TextEntry _textEntry;
         private int _screenWidth;
         private int _screenHeight;
-        private TextEntry _textEntry;
-        private GraphicsDevice _graphicsDevice;
+        private int _leftInsideEdgeOfFrame;
+        private int _rightInsideEdgeOfFrame;
+        private int _margin;
         private int _newHighScoreRowIndex = 0;
+
+        private List<ScoreEntry> _scoreEntryBeforeList = new List<ScoreEntry>();
+        private List<ScoreEntry> _scoreEntryAfterList = new List<ScoreEntry>();
 
         public bool InHighScoreEntryMode { get; set; }
 
         private const int SCORE_BOARD_FONT_LEFT_PADDING = 10;
 
-        public HighScores HighScores { get; set; }
         public bool HighScoreEntryState { get; set; }
 
-        public ScoreBoard(string applicationPath, GraphicsDevice graphicsDevice, SpriteFont scoreBoardFont, CenteredUiFrame uiFrame, int screenWidth, int screenHeight)
+        public ScoreBoard(string applicationPath, GraphicsDevice graphicsDevice, SpriteFont scoreBoardFont, CenteredUiFrame uiFrame, CenteredUiDialog confirmationDialog, int screenWidth, int screenHeight)
         {
             _highScoresStoragePath = Path.Combine(Path.GetDirectoryName(applicationPath), HIGH_SCORES_FILE_NAME);
             _graphicsDevice = graphicsDevice;
             _scoreBoardFont = scoreBoardFont;
             _uiFrame = uiFrame;
+            _confirmationDialog = confirmationDialog;
             _screenWidth = screenWidth;
             _screenHeight = screenHeight;
             _jsonSerializerOptions = new JsonSerializerOptions() { WriteIndented = true };
@@ -49,16 +63,6 @@ namespace MonoSnake.Infrastructure
 
             HighScores = LoadHighScores();
         }
-
-        private List<ScoreEntry> _scoreEntryBeforeList = new List<ScoreEntry>();
-        private List<ScoreEntry> _scoreEntryAfterList = new List<ScoreEntry>();
-        private int _margin;
-        private int _leftInsideEdgeOfFrame;
-        private int _rightInsideEdgeOfFrame;
-        private const int SCORES_MARGIN_TOP = 50;
-        private const int SCORE_BOARD_VERTICAL_MARGIN = 20;
-        private const int SCORE_BOARD_HORIZONTAL_MARGIN = 20;
-        private const int SCORE_VERTICAL_SPACING = 50;
 
         public void AddHighScore(int score)
         {
@@ -119,6 +123,8 @@ namespace MonoSnake.Infrastructure
             {
                 _textEntry.Update(gameTime);
             }
+            //ToDO: Only update score entry dialog at the right time
+            _confirmationDialog.Update(gameTime);
         }
 
         public void Draw(SpriteBatch spriteBatch, GameTime gameTime)
@@ -143,6 +149,9 @@ namespace MonoSnake.Infrastructure
 
             if(HighScoreEntryState)
                 _textEntry.Draw(spriteBatch, gameTime);
+
+            //ToDo: Conditionally Draw Confirmation Dialog in Text Entry after high score name is entered and when user hits Enter|Start
+            //_confirmationDialog.Draw(spriteBatch, gameTime);
         }
 
         private void DrawScoreEntries(SpriteBatch spriteBatch, GameTime gameTime, List<ScoreEntry> scoreEntries)

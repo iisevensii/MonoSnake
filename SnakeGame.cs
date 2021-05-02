@@ -535,7 +535,7 @@ namespace MonoSnake
 
             _scoreEntryCenteredUiDialog = new CenteredUiDialog(_graphics.GraphicsDevice, _dialogCenteredUiFrame, _dialogTitleFont, _dialogPromptFont, "New High Score", "Save High Score Entry?", confirmScoreEntryButton, cancelScoreEntryButton, Color.CornflowerBlue, Color.Black);
 
-            _scoreBoard = new ScoreBoard(Assembly.GetEntryAssembly().Location, _graphics.GraphicsDevice, _scoreBoardFont, _highScoresUiFrame, SCREEN_WIDTH, SCREEN_HEIGHT);
+            _scoreBoard = new ScoreBoard(Assembly.GetEntryAssembly().Location, _graphics.GraphicsDevice, _scoreBoardFont, _highScoresUiFrame, _scoreEntryCenteredUiDialog, SCREEN_WIDTH, SCREEN_HEIGHT);
         }
 
         private void InputController_StartEvent(object sender, EventArgs e)
@@ -808,9 +808,7 @@ namespace MonoSnake
 
             _startScreenHighScoresToggleButton.Update(gameTime);
             var deltaTime = (float) gameTime.ElapsedGameTime.TotalSeconds;
-            _frameCounter.Update(gameTime);
-            //ToDO: Only update score entry dialog at the right time
-            _scoreEntryCenteredUiDialog.Update(gameTime);
+            _frameCounter.Update(gameTime); 
             base.Update(gameTime);
         }
 
@@ -878,9 +876,6 @@ namespace MonoSnake
                 DrawHighScoresUiFrame(gameTime);
                 DrawLeaderboardText();
                 _scoreBoard.Draw(_spriteBatch, gameTime);
-
-                //ToDo: Conditionally Draw Confirmation Dialog in Text Entry after high score name is entered and when user hits Enter|Start
-                //_scoreEntryCenteredUiDialog.Draw(_spriteBatch, gameTime);
             }
 
             _startScreenHighScoresToggleButton.Draw(_spriteBatch, gameTime);
