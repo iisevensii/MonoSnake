@@ -62,6 +62,19 @@ namespace MonoSnake.Infrastructure
             _rightInsideEdgeOfFrame = _screenWidth - SCORE_BOARD_HORIZONTAL_MARGIN - _margin - SCORE_BOARD_FONT_LEFT_PADDING - 40 / 2;
 
             HighScores = LoadHighScores();
+
+            _confirmationDialog.CancelEvent += ConfirmationDialogOnCancelEvent;
+            _confirmationDialog.ConfirmEvent += ConfirmationDialogOnConfirmEvent;
+        }
+
+        private void ConfirmationDialogOnCancelEvent(object? sender, EventArgs e)
+        {
+            Trace.WriteLine("Cancel");
+        }
+
+        private void ConfirmationDialogOnConfirmEvent(object? sender, EventArgs e)
+        {
+            Trace.WriteLine("Confrim");
         }
 
         public void AddHighScore(int score)

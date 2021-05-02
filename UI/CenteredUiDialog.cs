@@ -14,8 +14,8 @@ namespace MonoSnake.UI
         private readonly SpriteFont _dialogTitleFont;
         private readonly SpriteFont _dialogPromptFont;
         private readonly string _title;
-        private readonly UiButton _confirmButton;
         private readonly UiButton _cancelButton;
+        private readonly UiButton _confirmButton;
         private readonly Rectangle _headerRectangle;
         private readonly Texture2D _headerRectangleTexture2D;
         private readonly Color _headerBackgroundColor;
@@ -24,6 +24,9 @@ namespace MonoSnake.UI
         private readonly Vector2 _titleTextSize;
         private readonly Vector2 _promptTextSize;
         private readonly Vector2 _promptTextPosition;
+
+        public event EventHandler CancelEvent;
+        public event EventHandler ConfirmEvent;
 
         public string Prompt { get; set; }
         public bool DrawHeaderBackground { get; set; } = true;
@@ -59,6 +62,21 @@ namespace MonoSnake.UI
             int y = (int) (((dialogBottom - titleBarBottom) /2) + titleBarBottom - (_promptTextSize.Y));
             _titleTextPosition = new Vector2(_centeredUiFrame.Position.X + _centeredUiFrame.ActualWidth /2 - _titleTextSize.X /2, _centeredUiFrame.Position.Y - _titleTextSize.Y /2 + 25);
             _promptTextPosition = new Vector2(_centeredUiFrame.Position.X + _centeredUiFrame.ActualWidth /2 - _promptTextSize.X /2, y);
+
+            _cancelButton.ClickedEvent += CancelClickedEvent;
+            _confirmButton.ClickedEvent += ConfirmClickedEvent; 
+        }
+
+        private void CancelClickedEvent(object? sender, EventArgs e)
+        {
+            EventHandler handler = this.CancelEvent;
+            handler?.Invoke(this, e);
+        }
+
+        private void ConfirmClickedEvent(object? sender, EventArgs e)
+        {
+            EventHandler handler = this.ConfirmEvent;
+            handler?.Invoke(this, e);
         }
 
         public void Update(GameTime gameTime)
