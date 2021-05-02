@@ -29,14 +29,8 @@ namespace MonoSnake.Infrastructure
 
         public Vector2 Position
         {
-            get
-            {
-                return _position;
-            }
-            set
-            {
-                _position = value;
-            }
+            get => _position;
+            set => _position = value;
         }
 
         public TextEntry(GraphicsDevice graphicsDevice, Vector2 position, SpriteFont font)
