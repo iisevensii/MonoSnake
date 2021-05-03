@@ -156,7 +156,8 @@ namespace MonoSnake.Infrastructure
         public bool IsNewHighScore(int score)
         {
             bool isNewHighScore = this.HighScores.ScoreEntries.All(s => score != s.Score)
-            && this.HighScores.ScoreEntries.Any(s => score > s.Score);
+                                  && (this.HighScores.ScoreEntries.Any(s => score > s.Score)
+                                      || !this.HighScores.ScoreEntries.Any());
             return isNewHighScore;
         }
 
@@ -167,7 +168,7 @@ namespace MonoSnake.Infrastructure
             _scoreEntryBeforeList = HighScores.ScoreEntries.Where(s => s.Score > score).ToList();
             _scoreEntryAfterList = HighScores.ScoreEntries.Where(s => s.Score < score).Take(10 - _scoreEntryBeforeList.Count - 1).ToList();
 
-            _newHighScoreRowIndex = 10 - _scoreEntryAfterList.Count - 1;
+            _newHighScoreRowIndex = HighScores.ScoreEntries.Count - _scoreEntryAfterList.Count;
 
             // In Memory Update Test
             HighScores = LoadHighScores();
