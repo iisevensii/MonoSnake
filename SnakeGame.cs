@@ -200,6 +200,7 @@ namespace MonoSnake
 
         private void ScoreBoardOnHighScoreEntryCompletedEvent(object sender, EventArgs e)
         {
+            _startScreenHighScoresToggleButton.IsEnabled = true;
             SetUiState(UIState.HighScoresScreen);
         }
 
@@ -684,15 +685,20 @@ namespace MonoSnake
 
         private void EndGameAndRecordScore()
         {
+            _isGameOver = true;
+
             if (_scoreBoard.IsNewHighScore(_snake.Score))
             {
                 SetUiState(UIState.HighScoreEntry);
                 _scoreBoard.StartHighScoreEntry(_snake.Score);
+                _startScreenHighScoresToggleButton.IsEnabled = false;
+                if(!_startScreenHighScoresToggleButton.IsToggled)
+                    _startScreenHighScoresToggleButton.Toggle();
             }
-
-            _isGameOver = true;
-
-            _startScreenHighScoresToggleButton.IsEnabled = true;
+            else
+            {
+                _startScreenHighScoresToggleButton.IsEnabled = true;
+            }
         }
 
         #region UIDrawMethods
@@ -906,7 +912,7 @@ namespace MonoSnake
             //_uiCheckBoxBlueSheetCheck.Draw(_spriteBatch, new Vector2(SCREEN_WIDTH / 2 + _uiCheckBoxBlueSheetBox.Width /2 -10, SCREEN_HEIGHT / 2 + _uiCheckBoxBlueSheetBox.Height /2 -12), 0f);
 
             //_soundEnabledCheckBoxToggle.Draw(_spriteBatch, gameTime);
-            
+
             _spriteBatch.End();
 
             base.Draw(gameTime);

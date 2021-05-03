@@ -157,7 +157,7 @@ namespace MonoSnake.Infrastructure
         {
             bool isNewHighScore = this.HighScores.ScoreEntries.All(s => score != s.Score)
                                   && (this.HighScores.ScoreEntries.Any(s => score > s.Score)
-                                      || !this.HighScores.ScoreEntries.Any());
+                                      || score > 0 && !this.HighScores.ScoreEntries.Any());
             return isNewHighScore;
         }
 
