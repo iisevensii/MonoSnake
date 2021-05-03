@@ -69,7 +69,7 @@ namespace MonoSnake.UI
 
             if (IsMouseOver)
             {
-                Sprite = !_isToggled ? _firstHoverStateSprite : _secondHoverStateSprite;
+                    Sprite = !_isToggled ? _firstHoverStateSprite : _secondHoverStateSprite;
             }
             else
             {

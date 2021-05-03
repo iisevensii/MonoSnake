@@ -141,6 +141,11 @@ namespace MonoSnake
             private CenteredUiDialog _scoreEntryCenteredUiDialog;
             private Sprite _uiButtonBlueSheetHoverCancel;
             private Sprite _uiButtonBlueSheetHoverConfirm;
+            private Sprite _uiCheckBoxBlueSheetBox;
+            private Sprite _uiCheckBoxBlueSheetChecked;
+            private ToggleUiButton _soundEnabledCheckBoxToggle;
+            private Sprite _uiCheckBoxBlueSheetHoverChecked;
+            private Sprite _uiCheckBoxBlueSheetHoverBox;
 
             #endregion Rectangles
 
@@ -370,6 +375,14 @@ namespace MonoSnake
 
             _uiButtonBlueSheetHoverConfirm = new Sprite(_uiBlueSpriteSheetHover, 36, 381, 36, 36);
 
+            _uiCheckBoxBlueSheetBox = new Sprite(_uiBlueSpriteSheet, 194, 288, 49, 49);
+
+            _uiCheckBoxBlueSheetChecked = new Sprite(_uiBlueSpriteSheet, 0, 417, 49, 49);
+
+            _uiCheckBoxBlueSheetHoverBox = new Sprite(_uiBlueSpriteSheetHover, 194, 288, 49, 49);
+
+            _uiCheckBoxBlueSheetHoverChecked = new Sprite(_uiBlueSpriteSheetHover, 0, 417, 49, 49);
+
 
 
             #endregion PositionedTextureSprites
@@ -543,6 +556,9 @@ namespace MonoSnake
             _scoreEntryCenteredUiDialog = new CenteredUiDialog(_graphics.GraphicsDevice, _dialogCenteredUiFrame, _dialogTitleFont, _dialogPromptFont, "New High Score", "Save High Score Entry?", confirmScoreEntryButton, cancelScoreEntryButton, Color.CornflowerBlue, Color.Black);
 
             _scoreBoard = new ScoreBoard(Assembly.GetEntryAssembly().Location, _graphics.GraphicsDevice, _scoreBoardFont, _highScoresUiFrame, _scoreEntryCenteredUiDialog, SCREEN_WIDTH, SCREEN_HEIGHT);
+
+            _soundEnabledCheckBoxToggle = new ToggleUiButton(_uiCheckBoxBlueSheetBox, _uiCheckBoxBlueSheetHoverBox, _uiCheckBoxBlueSheetChecked, _uiCheckBoxBlueSheetHoverChecked, new Vector2(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2), 0f);
+            _soundEnabledCheckBoxToggle.IsEnabled = true;
         }
 
         private void InputController_StartEvent(object sender, EventArgs e)
@@ -813,7 +829,8 @@ namespace MonoSnake
 
             _startScreenHighScoresToggleButton.Update(gameTime);
             var deltaTime = (float) gameTime.ElapsedGameTime.TotalSeconds;
-            _frameCounter.Update(gameTime); 
+            _frameCounter.Update(gameTime);
+            _soundEnabledCheckBoxToggle.Update(gameTime);
             base.Update(gameTime);
         }
 
@@ -885,6 +902,11 @@ namespace MonoSnake
 
             _startScreenHighScoresToggleButton.Draw(_spriteBatch, gameTime);
 
+            //_uiCheckBoxBlueSheetBox.Draw(_spriteBatch, new Vector2(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2), 0f);
+            //_uiCheckBoxBlueSheetCheck.Draw(_spriteBatch, new Vector2(SCREEN_WIDTH / 2 + _uiCheckBoxBlueSheetBox.Width /2 -10, SCREEN_HEIGHT / 2 + _uiCheckBoxBlueSheetBox.Height /2 -12), 0f);
+
+            //_soundEnabledCheckBoxToggle.Draw(_spriteBatch, gameTime);
+            
             _spriteBatch.End();
 
             base.Draw(gameTime);
