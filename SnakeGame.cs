@@ -577,7 +577,7 @@ namespace MonoSnake
 
         private void InputController_HeadTurnEvent(object sender, EventArgs e)
         {
-            if (_moveSoundEffects != null)
+            if (_uiState == UIState.GamePlay && _moveSoundEffects != null)
             {
                 int roll = _randomSounds.Next(1, 101);
                 if (roll <= 55) //55% chance
@@ -783,7 +783,7 @@ namespace MonoSnake
                 EndGameAndRecordScore();
             }
 
-            if (!_isGameOver && _snakeHeadRectangle.Intersects(_appleRectangle))
+            if (_uiState == UIState.GamePlay && _snakeHeadRectangle.Intersects(_appleRectangle))
             {
                 _appleEaten = true;
                 _applePlaced = false;
