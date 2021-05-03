@@ -71,15 +71,41 @@ namespace MonoSnake.Infrastructure
 
         private void ConfirmationDialogOnCancelEvent(object sender, EventArgs e)
         {
-            InHighScoreEntryConfirmState = false;
+            EntryCanceled();
         }
 
         private void ConfirmationDialogOnConfirmEvent(object sender, EventArgs e)
+        {
+            EntryConfirmed();
+        }
+
+        private void EntryCanceled()
+        {
+            InHighScoreEntryConfirmState = false;
+        }
+
+        private void EntryConfirmed()
         {
             AddHighScore(_newHighScore);
             InHighScoreEntryConfirmState = false;
             _textEntry.Reset();
             OnTextEntryCompleted(EventArgs.Empty);
+        }
+
+        public void HandleEnterKeyPress(int score = 0)
+        {
+            if (HighScoreEntryState)
+            {
+                if (InHighScoreEntryConfirmState)
+                    EntryConfirmed();
+                else
+                    ConfirmNewHighScoreEntry(score);
+            }
+        }
+
+        public void HandleEscKeyPress()
+        {
+            EntryCanceled();
         }
 
         public void ConfirmNewHighScoreEntry(int score)

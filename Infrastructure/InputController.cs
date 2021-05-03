@@ -32,6 +32,12 @@ namespace MonoSnake.Infrastructure
             _snake = snake;
             _scoreBoard = scoreBoard;
             _snakeGame.UIStateChangeEvent += _snakeGame_UIStateChangeEvent;
+            _scoreBoard.HighScoreEntryCompletedEvent += ScoreBoardOnHighScoreEntryCompletedEvent;
+        }
+
+        private void ScoreBoardOnHighScoreEntryCompletedEvent(object sender, EventArgs e)
+        {
+            StoreOldInputState();
         }
 
         private void _snakeGame_UIStateChangeEvent(SnakeGame snakeGame, UIState uiState)
@@ -92,12 +98,9 @@ namespace MonoSnake.Infrastructure
             IEnumerable<Keys> alphabetKeys = Enum.GetValues(typeof(Keys)).Cast<Keys>().Where(k => k >= Keys.A && k <= Keys.Z);
             // Keys A-Z
             IEnumerable<Keys> numberKeys = Enum.GetValues(typeof(Keys)).Cast<Keys>().Where(k => k >= Keys.D0 && k <= Keys.D9);
-
-            // ToDo: Remove this code
-            if (UIState != UIState.GamePlay && WasKeyPressed(Keys.F1))
-            {
-                UIState = UIState.HighScoreEntry;
-            }
+            
+            if (keyboardState.IsKeyDown(Keys.Space))
+                Trace.WriteLine("Pause Breakpoint");
 
             if (UIState == UIState.HighScoreEntry)
             {
@@ -117,9 +120,13 @@ namespace MonoSnake.Infrastructure
                 {
                     _scoreBoard.KeyInput(Keys.Back);
                 }
-                else if(UIState == UIState.HighScoreEntry && WasKeyPressed(Keys.Enter) || WasButtonPressed(Buttons.Start))
+                else if(UIState == UIState.HighScoreEntry && WasKeyPressed(Keys.Escape) || WasButtonPressed(Buttons.Back))
                 {
-                    _scoreBoard.ConfirmNewHighScoreEntry(_snake.Score);
+                    _scoreBoard.HandleEscKeyPress();
+                }
+                else if (UIState == UIState.HighScoreEntry && WasKeyPressed(Keys.Enter) || WasButtonPressed(Buttons.Start))
+                {
+                    _scoreBoard.HandleEnterKeyPress(_snake.Score);
                 }
                 else if (WasKeyPressed(alphabetKeys, out Keys alphabetKeyPressed))
                 {
@@ -131,14 +138,17 @@ namespace MonoSnake.Infrastructure
                 }
             }
 
+            if (_scoreBoard.InHighScoreEntryConfirmState)
+            {
+                StoreOldInputState();
+                return;
+            }
+
             if (player1GamePadState.Buttons.Back == ButtonState.Pressed || keyboardState.IsKeyDown(Keys.Escape))
                 OnExit(EventArgs.Empty);
 
             if (UIState != UIState.HighScoreEntry && (WasKeyPressed(Keys.Enter) || WasButtonPressed(Buttons.Start))) 
                 OnRestart(EventArgs.Empty);
-
-            if (keyboardState.IsKeyDown(Keys.Space))
-                Trace.WriteLine("Pause Breakpoint");
 
             if ((keyboardState.IsKeyDown(Keys.Up) || player1GamePadState.IsButtonDown(Buttons.DPadUp))
                 && _snake.SnakeHead.Direction != SnakeDirection.Down)
@@ -153,6 +163,11 @@ namespace MonoSnake.Infrastructure
                 && _snake.SnakeHead.Direction != SnakeDirection.Left)
                 MoveSnakeHead(SnakeDirection.Right);
 
+            StoreOldInputState();
+        }
+
+        private void StoreOldInputState()
+        {
             _oldKeyboardState = _newKeyboardState;
             _oldGamePadState = GamePad.GetState(PlayerIndex.One);
         }
