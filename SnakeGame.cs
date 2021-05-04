@@ -378,13 +378,25 @@ namespace MonoSnake
 
             _uiButtonBlueSheetHoverConfirm = new Sprite(_uiBlueSpriteSheetHover, 36, 381, 36, 36);
 
-            _uiCheckBoxBlueSheetBox = new Sprite(_uiBlueSpriteSheet, 194, 288, 49, 49);
+            _uiCheckBoxBlueSheetBox = new Sprite(_uiBlueSpriteSheet, 194, 288, 49, 49)
+            {
+                Scale = new Vector2(0.85f, 0.85f)
+            };
 
-            _uiCheckBoxBlueSheetChecked = new Sprite(_uiBlueSpriteSheet, 0, 417, 49, 49);
+            _uiCheckBoxBlueSheetChecked = new Sprite(_uiBlueSpriteSheet, 0, 417, 49, 49)
+            {
+                Scale = new Vector2(0.85f, 0.85f)
+            };
 
-            _uiCheckBoxBlueSheetHoverBox = new Sprite(_uiBlueSpriteSheetHover, 194, 288, 49, 49);
+            _uiCheckBoxBlueSheetHoverBox = new Sprite(_uiBlueSpriteSheetHover, 194, 288, 49, 49)
+            {
+                Scale = new Vector2(0.85f, 0.85f)
+            };
 
-            _uiCheckBoxBlueSheetHoverChecked = new Sprite(_uiBlueSpriteSheetHover, 0, 417, 49, 49);
+            _uiCheckBoxBlueSheetHoverChecked = new Sprite(_uiBlueSpriteSheetHover, 0, 417, 49, 49)
+            {
+                Scale = new Vector2(0.85f, 0.85f)
+            };
 
 
 
@@ -591,6 +603,7 @@ namespace MonoSnake
 
             _soundEnabledCheckBoxToggle = new ToggleUiButton(_uiCheckBoxBlueSheetBox, _uiCheckBoxBlueSheetHoverBox, _uiCheckBoxBlueSheetChecked, _uiCheckBoxBlueSheetHoverChecked, new Vector2(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2), 0f);
             _soundEnabledCheckBoxToggle.IsEnabled = true;
+            _soundEnabledCheckBoxToggle.Toggle();
         }
 
         private void InputController_StartEvent(object sender, EventArgs e)
@@ -625,7 +638,7 @@ namespace MonoSnake
 
         private void InputController_HeadTurnEvent(object sender, EventArgs e)
         {
-            if (_uiState == UIState.GamePlay && _moveSoundEffects != null)
+            if (_uiState == UIState.GamePlay && _moveSoundEffects != null && _soundEnabledCheckBoxToggle.IsToggled)
             {
                 int roll = _randomSounds.Next(1, 101);
                 if (roll <= 55) //55% chance
@@ -808,6 +821,32 @@ namespace MonoSnake
             );
         }
 
+        private void DrawSoundSettingText()
+        {
+            string soundEffectsStringText = "Sound Effects";
+            float soundEffectsScale = 2f;
+            Vector2 soundEffectStringSize = _dialogPromptFont.MeasureString(soundEffectsStringText);
+            float soundEffectStringX = SCREEN_WIDTH / 2 - soundEffectStringSize.X / 2 - 30;
+            float soundEffectStringY = SCREEN_HEIGHT / 2 - soundEffectStringSize.Y / 2 - 130;
+            Vector2 soundEffectStringPosition = new Vector2(soundEffectStringX, soundEffectStringY);
+
+            _spriteBatch.DrawString(
+                _dialogPromptFont,
+                soundEffectsStringText,
+                soundEffectStringPosition,
+                Color.White,
+                0f,
+                Vector2.Zero,
+                soundEffectsScale,
+                SpriteEffects.None,
+                0f
+            );
+
+            var effectStringX = soundEffectStringX - _soundEnabledCheckBoxToggle.Width - 10;
+            var positionY = soundEffectStringY;
+            _soundEnabledCheckBoxToggle.Position = new Vector2(effectStringX, positionY);
+        }
+
         #endregion UIDrawMethods
 
         protected override void Update(GameTime gameTime)
@@ -840,8 +879,10 @@ namespace MonoSnake
             {
                 _appleEaten = true;
                 _applePlaced = false;
-                _eatSoundEffect.Play(1f, 0f, 0f);
                 _snake.AddSegment();
+
+                if (_soundEnabledCheckBoxToggle.IsToggled)
+                    _eatSoundEffect.Play(1f, 0f, 0f);
             }
 
             GenerateGrid();
@@ -854,6 +895,7 @@ namespace MonoSnake
             if (_uiState == UIState.StartScreen)
             {
                 _startScreenUiFrame.Update(gameTime);
+                _soundEnabledCheckBoxToggle.Update(gameTime);
             }
 
             if (_uiState == UIState.HighScoresScreen || _uiState == UIState.HighScoreEntry)
@@ -867,7 +909,6 @@ namespace MonoSnake
             _startScreenHighScoresToggleButton.Update(gameTime);
             var deltaTime = (float) gameTime.ElapsedGameTime.TotalSeconds;
             _frameCounter.Update(gameTime);
-            _soundEnabledCheckBoxToggle.Update(gameTime);
             base.Update(gameTime);
         }
 
@@ -926,6 +967,8 @@ namespace MonoSnake
             if (_uiState == UIState.StartScreen)
             {
                 DrawStartScreenUiFrame(gameTime);
+                _soundEnabledCheckBoxToggle.Draw(_spriteBatch, gameTime);
+                DrawSoundSettingText();
                 DrawLogoText();
             }
 
@@ -938,11 +981,6 @@ namespace MonoSnake
             }
 
             _startScreenHighScoresToggleButton.Draw(_spriteBatch, gameTime);
-
-            //_uiCheckBoxBlueSheetBox.Draw(_spriteBatch, new Vector2(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2), 0f);
-            //_uiCheckBoxBlueSheetCheck.Draw(_spriteBatch, new Vector2(SCREEN_WIDTH / 2 + _uiCheckBoxBlueSheetBox.Width /2 -10, SCREEN_HEIGHT / 2 + _uiCheckBoxBlueSheetBox.Height /2 -12), 0f);
-
-            //_soundEnabledCheckBoxToggle.Draw(_spriteBatch, gameTime);
 
             _spriteBatch.End();
 
