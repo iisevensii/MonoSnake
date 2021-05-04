@@ -18,10 +18,10 @@ namespace MonoSnake.Infrastructure
 
         public enum ScoreBoardState
         {
+            Completed,
             Entry,
             Warning,
             Confirmation,
-            Completed
         }
 
         private const string HIGH_SCORES_FILE_NAME = "HighScores.json";
@@ -207,7 +207,8 @@ namespace MonoSnake.Infrastructure
 
         public void KeyInput(Keys key)
         {
-            _textEntry.KeyInput(key);
+            if(CurrentScoreBoardState != ScoreBoardState.Confirmation && CurrentScoreBoardState != ScoreBoardState.Warning)
+                _textEntry.KeyInput(key);
         }
 
         private void ShowConfirmationDialog()
