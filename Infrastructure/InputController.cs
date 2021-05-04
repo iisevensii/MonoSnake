@@ -87,6 +87,29 @@ namespace MonoSnake.Infrastructure
         }
 
         /// <summary>
+        /// For debugging use ONLY!!!
+        /// </summary>
+        /// <returns></returns>
+        private bool WasAnyKeyPressed()
+        {
+            bool result = false;
+
+            List<Keys> keyList = Enum.GetValues(typeof(Keys)).Cast<Keys>().ToList();
+
+            result = keyList.Any(k => _oldKeyboardState.IsKeyDown(k)) && keyList.Any(k => _newKeyboardState.IsKeyUp(k));
+
+            if (result)
+            {
+                foreach (Keys key in keyList)
+                {
+                    if(_oldKeyboardState.IsKeyDown(key) && _newKeyboardState.IsKeyUp(key))
+                        Trace.WriteLine($"KeyPressed: {key}");
+                }
+            }
+            return result;
+        }
+
+        /// <summary>
         /// Process Player Input
         /// </summary>
         public void ProcessInput()
@@ -99,7 +122,7 @@ namespace MonoSnake.Infrastructure
             // Keys A-Z
             IEnumerable<Keys> alphabetKeys = Enum.GetValues(typeof(Keys)).Cast<Keys>().Where(k => k >= Keys.A && k <= Keys.Z);
             // Keys A-Z
-            IEnumerable<Keys> numberKeys = Enum.GetValues(typeof(Keys)).Cast<Keys>().Where(k => k >= Keys.D0 && k <= Keys.D9);
+            IEnumerable<Keys> numberKeys = Enum.GetValues(typeof(Keys)).Cast<Keys>().Where(k => (k >= Keys.D0 && k <= Keys.D9) || (k >= Keys.NumPad0 && k <= Keys.NumPad9));
             
             if (keyboardState.IsKeyDown(Keys.Space))
                 Trace.WriteLine("Pause Breakpoint");

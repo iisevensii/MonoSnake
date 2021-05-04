@@ -81,24 +81,20 @@ namespace MonoSnake.Infrastructure
                     _currentChar = Keys.None;
                 }
             }
-            else if ((key >= Keys.A && key <= Keys.Z) || (key >= Keys.D0 && key <= Keys.D9))
+            else if ((key >= Keys.A && key <= Keys.Z) || (key >= Keys.D0 && key <= Keys.D9) || (key >= Keys.NumPad0 && key <= Keys.NumPad9))
             {
                 // Input Char
                 if (key >= Keys.A && key <= Keys.Z)
                 {
                     _inputString += InputKeyToCharString(key);
                 }
-                else if (key >= Keys.D0 && key <= Keys.D9)
+                else if (key >= Keys.D0 && key <= Keys.D9 || (key >= Keys.NumPad0 && key <= Keys.NumPad9))
                 {
                     _inputString += InputKeyToCharString(key);
                 }
 
                 _entryPosition++;
                 _currentChar = Keys.None;
-            }
-            else if (key >= Keys.D0 && key <= Keys.D9)
-            {
-                _inputString += InputKeyToCharString(key);
             }
         }
 
@@ -112,33 +108,43 @@ namespace MonoSnake.Infrastructure
             switch (key)
             {
                 case Keys.D0:
-                     result = "0";
+                case Keys.NumPad0:
+                    result = "0";
                     break;
                 case Keys.D1:
+                case Keys.NumPad1:
                      result = "1";
                     break;
                 case Keys.D2:
+                case Keys.NumPad2:
                      result = "2";
                     break;
                 case Keys.D3:
+                case Keys.NumPad3:
                      result = "3";
                     break;
                 case Keys.D4:
+                case Keys.NumPad4:
                      result = "4";
                     break;
                 case Keys.D5:
+                case Keys.NumPad5:
                      result = "5";
                     break;
                 case Keys.D6:
+                case Keys.NumPad6:
                      result = "6";
                     break;
                 case Keys.D7:
+                case Keys.NumPad7:
                      result = "7";
                     break;
                 case Keys.D8:
+                case Keys.NumPad8:
                      result = "8";
                     break;
                 case Keys.D9:
+                case Keys.NumPad9:
                      result = "9";
                     break;
             }
