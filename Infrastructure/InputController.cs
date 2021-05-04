@@ -43,7 +43,9 @@ namespace MonoSnake.Infrastructure
         private void _snakeGame_UIStateChangeEvent(SnakeGame snakeGame, UIState uiState)
         {
             this.UIState = uiState;
-            this._scoreBoard.HighScoreEntryState = this.UIState == UIState.HighScoreEntry;
+
+            if(this.UIState == UIState.HighScoreEntry)
+                this._scoreBoard.BeginEntry();
         }
 
         protected virtual void OnStart(EventArgs e)
@@ -138,7 +140,7 @@ namespace MonoSnake.Infrastructure
                 }
             }
 
-            if (_scoreBoard.InHighScoreEntryConfirmState)
+            if (_scoreBoard.CurrentScoreBoardState == ScoreBoard.ScoreBoardState.Confirmation)
             {
                 StoreOldInputState();
                 return;

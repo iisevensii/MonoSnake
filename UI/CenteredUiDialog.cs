@@ -29,6 +29,7 @@ namespace MonoSnake.UI
         public event EventHandler ConfirmEvent;
 
         public string Prompt { get; set; }
+        public bool HasCancelButton { get; set; }
         public bool DrawHeaderBackground { get; set; } = true;
 
         public CenteredUiDialog(GraphicsDevice graphicsDevice, CenteredUiFrame centeredUiFrame, SpriteFont dialogTitleFont, SpriteFont dialogPromptFont, string title, string prompt, UiButton confirmButton, UiButton cancelButton, Color headerBackgroundColor, Color headerForegroundColor)
@@ -47,11 +48,18 @@ namespace MonoSnake.UI
             var confirmX = _centeredUiFrame.Position.X + _centeredUiFrame.ActualWidth - _confirmButton.Width - _centeredUiFrame.BottomRightSpriteWidth - 5;
             var confirmY = _centeredUiFrame.Position.Y + _centeredUiFrame.ActualHeight - _confirmButton.Height - _centeredUiFrame.BottomRightSpriteHeight - 10;
 
-            var cancelX = confirmX - _cancelButton.Width - 10;
+            float cancelX = 0f;
+
             var cancelY = confirmY;
 
             _confirmButton.Position = new Vector2(confirmX, confirmY);
-            _cancelButton.Position = new Vector2(cancelX, cancelY);
+            if (cancelButton != null)
+            {
+                cancelX = confirmX - _cancelButton.Width - 10;
+                _cancelButton.Position = new Vector2(cancelX, cancelY);
+            }
+
+
             _headerRectangle = new Rectangle((int) _centeredUiFrame.Position.X, (int) _centeredUiFrame.Position.Y, _centeredUiFrame.ActualWidth - centeredUiFrame.TopRightSpriteWidth, 50);
             _headerRectangleTexture2D = new Texture2D(_graphicsDevice, 1, 1);
             _headerRectangleTexture2D.SetData(new[] {_headerBackgroundColor });
@@ -63,7 +71,9 @@ namespace MonoSnake.UI
             _titleTextPosition = new Vector2(_centeredUiFrame.Position.X + _centeredUiFrame.ActualWidth /2 - _titleTextSize.X /2, _centeredUiFrame.Position.Y - _titleTextSize.Y /2 + 25);
             _promptTextPosition = new Vector2(_centeredUiFrame.Position.X + _centeredUiFrame.ActualWidth /2 - _promptTextSize.X /2, y);
 
-            _cancelButton.ClickedEvent += CancelClickedEvent;
+            if (cancelButton != null)
+                _cancelButton.ClickedEvent += CancelClickedEvent;
+
             _confirmButton.ClickedEvent += ConfirmClickedEvent; 
         }
 
@@ -81,7 +91,9 @@ namespace MonoSnake.UI
 
         public void Update(GameTime gameTime)
         {
-            _cancelButton.Update(gameTime);
+            if(HasCancelButton)
+                _cancelButton.Update(gameTime);
+
             _confirmButton.Update(gameTime);
         }
 
@@ -89,7 +101,9 @@ namespace MonoSnake.UI
         {
             _centeredUiFrame.Draw(spriteBatch, gameTime);
             _confirmButton.Draw(spriteBatch, gameTime);
-            _cancelButton.Draw(spriteBatch, gameTime);
+
+            if(HasCancelButton)
+                _cancelButton.Draw(spriteBatch, gameTime);
 
             if(DrawHeaderBackground)
                 spriteBatch.Draw(_headerRectangleTexture2D, _headerRectangle, _headerBackgroundColor);

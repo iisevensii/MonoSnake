@@ -129,8 +129,9 @@ namespace MonoSnake
             private Sprite _uiWindowBottomRightSprite;
             private Sprite _uiWindowTopRowSprite;
             private Sprite _uiWindowBottomRowSprite;
-            private CenteredUiFrame _dialogCenteredUiFrame;
-            private Sprite _snakeFrameTopRowRowSprite;
+            private CenteredUiFrame _confirmHighScoreEntryDialogCenteredUiFrame;
+            private CenteredUiFrame _warningHighScoreEntryDialogCenteredUiFrame;
+        private Sprite _snakeFrameTopRowRowSprite;
             private Sprite _snakeFrameBottomRowRowSprite;
             private Sprite _snakeFrameRightColumnRowSprite;
             private Sprite _snakeFrameLeftColumnRowSprite;
@@ -146,6 +147,7 @@ namespace MonoSnake
             private ToggleUiButton _soundEnabledCheckBoxToggle;
             private Sprite _uiCheckBoxBlueSheetHoverChecked;
             private Sprite _uiCheckBoxBlueSheetHoverBox;
+            private CenteredUiDialog _scoreEntryWarningCenteredUiDialog;
 
             #endregion Rectangles
 
@@ -532,7 +534,7 @@ namespace MonoSnake
                 Color.FromNonPremultiplied(46, 51, 106, START_SCREEN_TRANSPARENCY)
             );
 
-            _dialogCenteredUiFrame = new CenteredUiFrame
+            _confirmHighScoreEntryDialogCenteredUiFrame = new CenteredUiFrame
             (
                 _graphics,
                 Vector2.Zero,
@@ -551,12 +553,41 @@ namespace MonoSnake
                 new Color(new Vector3(0.9333f, 0.9333f, 0.9333f))
             );
 
+            _warningHighScoreEntryDialogCenteredUiFrame = new CenteredUiFrame
+            (
+                _graphics,
+                Vector2.Zero,
+                55,
+                20,
+                SCREEN_WIDTH,
+                SCREEN_HEIGHT,
+                _uiWindowTopRowSprite,
+                _uiWindowBottomRowSprite,
+                _uiWindowLeftColumnSprite,
+                _uiWindowRightColumnSprite,
+                _uiWindowTopLeftSprite,
+                _uiWindowTopRightSprite,
+                _uiWindowBottomRightSprite,
+                _uiWindowBottomLeftSprite,
+                new Color(new Vector3(0.9333f, 0.9333f, 0.9333f))
+            );
+
             UiButton cancelScoreEntryButton = new UiButton(_uiButtonBlueSheetCancel, _uiButtonBlueSheetHoverCancel, Vector2.Zero, 0f);
             UiButton confirmScoreEntryButton = new UiButton(_uiButtonBlueSheetConfirm, _uiButtonBlueSheetHoverConfirm, Vector2.Zero, 0f);
+            UiButton confirmWarningButton = new UiButton(_uiButtonBlueSheetConfirm, _uiButtonBlueSheetHoverConfirm, Vector2.Zero, 0f);
 
-            _scoreEntryCenteredUiDialog = new CenteredUiDialog(_graphics.GraphicsDevice, _dialogCenteredUiFrame, _dialogTitleFont, _dialogPromptFont, "New High Score", "Save High Score Entry?", confirmScoreEntryButton, cancelScoreEntryButton, Color.CornflowerBlue, Color.Black);
+            _scoreEntryCenteredUiDialog = new CenteredUiDialog(_graphics.GraphicsDevice, _confirmHighScoreEntryDialogCenteredUiFrame,
+                _dialogTitleFont, _dialogPromptFont, "New High Score", "Save High Score Entry?",
+                confirmScoreEntryButton, cancelScoreEntryButton, Color.CornflowerBlue, Color.Black)
+            {
+                HasCancelButton = true
+            };
 
-            _scoreBoard = new ScoreBoard(Assembly.GetEntryAssembly().Location, _graphics.GraphicsDevice, _scoreBoardFont, _highScoresUiFrame, _scoreEntryCenteredUiDialog, SCREEN_WIDTH, SCREEN_HEIGHT);
+            _scoreEntryWarningCenteredUiDialog = new CenteredUiDialog(_graphics.GraphicsDevice, _warningHighScoreEntryDialogCenteredUiFrame,
+                _dialogTitleFont, _dialogPromptFont, "New High Score", "Please Enter Your Name. Don't you want recognition?",
+                confirmWarningButton, null, Color.Yellow, Color.Black);
+
+            _scoreBoard = new ScoreBoard(Assembly.GetEntryAssembly().Location, _graphics.GraphicsDevice, _scoreBoardFont, _highScoresUiFrame, _scoreEntryCenteredUiDialog, _scoreEntryWarningCenteredUiDialog, SCREEN_WIDTH, SCREEN_HEIGHT);
 
             _soundEnabledCheckBoxToggle = new ToggleUiButton(_uiCheckBoxBlueSheetBox, _uiCheckBoxBlueSheetHoverBox, _uiCheckBoxBlueSheetChecked, _uiCheckBoxBlueSheetHoverChecked, new Vector2(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2), 0f);
             _soundEnabledCheckBoxToggle.IsEnabled = true;

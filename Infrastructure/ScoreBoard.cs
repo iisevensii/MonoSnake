@@ -14,6 +14,16 @@ namespace MonoSnake.Infrastructure
 {
     public class ScoreBoard
     {
+        public ScoreBoardState CurrentScoreBoardState { get; private set; }
+
+        public enum ScoreBoardState
+        {
+            Entry,
+            Warning,
+            Confirmation,
+            Completed
+        }
+
         private const string HIGH_SCORES_FILE_NAME = "HighScores.json";
         private const int SCORES_MARGIN_TOP = 50;
         private const int SCORE_BOARD_VERTICAL_MARGIN = 20;
@@ -24,6 +34,7 @@ namespace MonoSnake.Infrastructure
         private readonly JsonSerializerOptions _jsonSerializerOptions;
         private readonly SpriteFont _scoreBoardFont;
         private readonly CenteredUiDialog _confirmationDialog;
+        private readonly CenteredUiDialog _warningDialog;
 
         private GraphicsDevice _graphicsDevice;
         private CenteredUiFrame _uiFrame;
@@ -39,21 +50,18 @@ namespace MonoSnake.Infrastructure
 
         private List<ScoreEntry> _scoreEntryBeforeList = new List<ScoreEntry>();
         private List<ScoreEntry> _scoreEntryAfterList = new List<ScoreEntry>();
-
-        public bool InHighScoreEntryConfirmState { get; set; }
         public event EventHandler HighScoreEntryCompletedEvent;
 
         private const int SCORE_BOARD_FONT_LEFT_PADDING = 10;
 
-        public bool HighScoreEntryState { get; set; }
-
-        public ScoreBoard(string applicationPath, GraphicsDevice graphicsDevice, SpriteFont scoreBoardFont, CenteredUiFrame uiFrame, CenteredUiDialog confirmationDialog, int screenWidth, int screenHeight)
+        public ScoreBoard(string applicationPath, GraphicsDevice graphicsDevice, SpriteFont scoreBoardFont, CenteredUiFrame uiFrame, CenteredUiDialog confirmationDialog, CenteredUiDialog warningDialog, int screenWidth, int screenHeight)
         {
             _highScoresStoragePath = Path.Combine(Path.GetDirectoryName(applicationPath), HIGH_SCORES_FILE_NAME);
             _graphicsDevice = graphicsDevice;
             _scoreBoardFont = scoreBoardFont;
             _uiFrame = uiFrame;
             _confirmationDialog = confirmationDialog;
+            _warningDialog = warningDialog;
             _screenWidth = screenWidth;
             _screenHeight = screenHeight;
             _jsonSerializerOptions = new JsonSerializerOptions() { WriteIndented = true };
@@ -67,6 +75,12 @@ namespace MonoSnake.Infrastructure
 
             _confirmationDialog.CancelEvent += ConfirmationDialogOnCancelEvent;
             _confirmationDialog.ConfirmEvent += ConfirmationDialogOnConfirmEvent;
+            _warningDialog.ConfirmEvent += WarningDialogOnConfirmEvent;
+        }
+
+        private void WarningDialogOnConfirmEvent(object sender, EventArgs e)
+        {
+            CurrentScoreBoardState = ScoreBoardState.Entry;
         }
 
         private void ConfirmationDialogOnCancelEvent(object sender, EventArgs e)
@@ -79,27 +93,40 @@ namespace MonoSnake.Infrastructure
             EntryConfirmed();
         }
 
+        public void BeginEntry()
+        {
+            CurrentScoreBoardState = ScoreBoardState.Entry;
+        }
+
         private void EntryCanceled()
         {
-            InHighScoreEntryConfirmState = false;
+            CurrentScoreBoardState = ScoreBoardState.Entry;
         }
 
         private void EntryConfirmed()
         {
             AddHighScore(_newHighScore);
-            InHighScoreEntryConfirmState = false;
+            CurrentScoreBoardState = ScoreBoardState.Completed;
             _textEntry.Reset();
             OnTextEntryCompleted(EventArgs.Empty);
         }
 
         public void HandleEnterKeyPress(int score = 0)
         {
-            if (HighScoreEntryState)
+            switch (CurrentScoreBoardState)
             {
-                if (InHighScoreEntryConfirmState)
+                case ScoreBoardState.Warning:
+                    CurrentScoreBoardState = ScoreBoardState.Entry;
+                    return;
+                case ScoreBoardState.Confirmation:
                     EntryConfirmed();
-                else
+                    break;
+                case ScoreBoardState.Entry when string.IsNullOrWhiteSpace(_textEntry.InputtedString):
+{                    CurrentScoreBoardState = ScoreBoardState.Warning;}
+                    break;
+                case ScoreBoardState.Entry:
                     ConfirmNewHighScoreEntry(score);
+                    break;
             }
         }
 
@@ -185,19 +212,22 @@ namespace MonoSnake.Infrastructure
 
         private void ShowConfirmationDialog()
         {
-            InHighScoreEntryConfirmState = true;
+            CurrentScoreBoardState = ScoreBoardState.Confirmation;
         }
 
         public void Update(GameTime gameTime)
         {
-            if (HighScoreEntryState)
+            if (CurrentScoreBoardState == ScoreBoardState.Warning)
+            {
+                _warningDialog.Update(gameTime);
+            }
+            else if (CurrentScoreBoardState == ScoreBoardState.Entry)
             {
                 _textEntry.Update(gameTime);
-                if (InHighScoreEntryConfirmState)
-                {
-                    //ToDo: Only update score entry dialog at the right time
-                    _confirmationDialog.Update(gameTime);
-                }
+            }
+            else if (CurrentScoreBoardState == ScoreBoardState.Confirmation)
+            {
+                _confirmationDialog.Update(gameTime);
             }
         }
 
@@ -205,30 +235,20 @@ namespace MonoSnake.Infrastructure
         {
             float frameYPosition = _uiFrame.Position.Y;
             float yStart = SCORE_BOARD_VERTICAL_MARGIN + frameYPosition + SCORES_MARGIN_TOP + SCORE_VERTICAL_SPACING;
+            
+            DrawScoreEntries(spriteBatch, gameTime, HighScores.ScoreEntries);
 
-            if (HighScoreEntryState)
+            if (CurrentScoreBoardState == ScoreBoardState.Warning)
             {
-                // insert blank named entry at correct position with new high score
-                // ToDo: Handle Entry State
-
-                //DrawScoreEntries(spriteBatch, gameTime, _scoreEntryBeforeList);
-                //// Text Entry Object
-                //DrawScoreEntries(spriteBatch, gameTime, _scoreEntryAfterList);
-                DrawScoreEntries(spriteBatch, gameTime, HighScores.ScoreEntries);
+                _warningDialog.Draw(spriteBatch, gameTime);
             }
-            else
-            {
-                DrawScoreEntries(spriteBatch, gameTime, HighScores.ScoreEntries);
-            }
-
-            if (HighScoreEntryState)
+            else if (CurrentScoreBoardState == ScoreBoardState.Entry)
             {
                 _textEntry.Draw(spriteBatch, gameTime);
-                if (InHighScoreEntryConfirmState)
-                {
-                    //ToDo: Conditionally Draw Confirmation Dialog in Text Entry after high score name is entered and when user hits Enter|Start
-                    _confirmationDialog.Draw(spriteBatch, gameTime);
-                }
+            }
+            else if (CurrentScoreBoardState == ScoreBoardState.Confirmation)
+            {
+                _confirmationDialog.Draw(spriteBatch, gameTime);
             }
         }
 
