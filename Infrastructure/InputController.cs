@@ -140,7 +140,7 @@ namespace MonoSnake.Infrastructure
                 }
             }
 
-            if (_scoreBoard.CurrentScoreBoardState == ScoreBoard.ScoreBoardState.Confirmation)
+            if (_scoreBoard.CurrentScoreBoardState == ScoreBoard.ScoreBoardState.Confirmation || _scoreBoard.CurrentScoreBoardState == ScoreBoard.ScoreBoardState.Warning)
             {
                 StoreOldInputState();
                 return;
