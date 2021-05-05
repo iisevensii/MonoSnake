@@ -11,15 +11,36 @@ namespace MonoSnake.GameObjects
         private const float MOVEMENT_PER_FRAME = 40f;
         private const float MOVEMENT_INCREMENT = 1000f;
 
+        private float _movementSpeed;
         private int _framesSinceLastMovement = 20;
-        public int MovementSpeed { get; set; } = 18;
+        private float _difficultyModifier = 1f;
+
+        public float MovementSpeed
+        {
+            get
+            {
+                return _movementSpeed;
+            }
+            set
+            {
+                _movementSpeed = 20 - _difficultyModifier;
+            }
+        }
+
         public int DrawOrder => 0;
         public ISprite Sprite { get; }
         public Vector2 Position { get; set; }
         public Vector2 NextPosition { get; set; }
         public float Rotation { get; set; }
+        public event Action<int> PointsScored;
 
         public SnakeDirection Direction { get; set; } = SnakeDirection.Right;
+
+        public float DifficultyLevel
+        {
+            get => _difficultyModifier;
+            set => _difficultyModifier = value;
+        }
 
 
         public SnakeHead(ISprite sprite, Vector2 position)
@@ -27,6 +48,8 @@ namespace MonoSnake.GameObjects
             Sprite = sprite;
             Position = position;
             Rotation = Direction.ToRadius();
+            DifficultyLevel = 1;
+            MovementSpeed = MovementSpeed;
         }
 
         public bool CanUpdate()

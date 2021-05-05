@@ -58,7 +58,7 @@ namespace MonoSnake.Infrastructure
         public void AddSegment()
         {
             if (SnakeSegments.Count > 0)
-                _score += 100;
+                _score += 100 *  (int) Math.Floor(SnakeHead.DifficultyLevel);
 
             SnakeSegments.Add(new SnakeSegment(_snakeTailSprite, _lastSegmentPosition, _lastSegmentRotation, _lastSegmentDirection));
         }
