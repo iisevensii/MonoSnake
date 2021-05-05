@@ -213,18 +213,19 @@ namespace MonoSnake.Infrastructure
 
         private void ShowConfirmationDialog()
         {
-            CurrentScoreBoardState = ScoreBoardState.Confirmation;
+            CurrentScoreBoardState = ScoreBoardState.Confirmation;  
         }
 
         public void Update(GameTime gameTime)
         {
+            if (CurrentScoreBoardState != ScoreBoardState.Completed)
+            {
+                _textEntry.Update(gameTime);
+            }
+
             if (CurrentScoreBoardState == ScoreBoardState.Warning)
             {
                 _warningDialog.Update(gameTime);
-            }
-            else if (CurrentScoreBoardState == ScoreBoardState.Entry)
-            {
-                _textEntry.Update(gameTime);
             }
             else if (CurrentScoreBoardState == ScoreBoardState.Confirmation)
             {
@@ -239,13 +240,14 @@ namespace MonoSnake.Infrastructure
             
             DrawScoreEntries(spriteBatch, gameTime, HighScores.ScoreEntries);
 
+            if (CurrentScoreBoardState != ScoreBoardState.Completed)
+            {
+                _textEntry.Draw(spriteBatch, gameTime);
+            }
+
             if (CurrentScoreBoardState == ScoreBoardState.Warning)
             {
                 _warningDialog.Draw(spriteBatch, gameTime);
-            }
-            else if (CurrentScoreBoardState == ScoreBoardState.Entry)
-            {
-                _textEntry.Draw(spriteBatch, gameTime);
             }
             else if (CurrentScoreBoardState == ScoreBoardState.Confirmation)
             {
