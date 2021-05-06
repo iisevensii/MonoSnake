@@ -54,7 +54,6 @@ namespace MonoSnake
         private readonly bool _drawDiagnosticGrid = false;
             private bool _appleEaten;
             private bool _applePlaced;
-            private bool _isGameOver;
             private readonly bool _showFpsMonitor = false;
 
             #region System
@@ -234,6 +233,7 @@ namespace MonoSnake
 
         private void InitializeGameObjects()
         {
+            //ToDo: pull out the reset code, we shouldn't be reloading assets if we don't need to
             // Create Sprite Objects
             Sprite appleSprite = new Sprite(_appleTexture, 0, 0, _appleTexture.Width, _appleTexture.Height)
             {
@@ -431,7 +431,7 @@ namespace MonoSnake
 
         protected void OnStartScreenHighScoresToggleButtonClick(object sender, EventArgs e)
         {
-            if (_uiState != UIState.GamePlay || _isGameOver)
+            if (_uiState != UIState.GamePlay || _uiState == UIState.Gameover)
             {
                 _startScreenHighScoresToggleButton.IsEnabled = true;
 
@@ -615,7 +615,6 @@ namespace MonoSnake
             _appleEaten = false;
             _applePlaced = false;
             GenerateApple();
-            _isGameOver = false;
         }
 
         private void InputController_RestartEvent(object sender, EventArgs e)
@@ -627,7 +626,6 @@ namespace MonoSnake
             _appleEaten = false;
             _applePlaced = false;
             GenerateApple();
-            _isGameOver = false;
             _startScreenHighScoresToggleButton.IsEnabled = false;
         }
 
@@ -729,7 +727,7 @@ namespace MonoSnake
 
         private void EndGameAndRecordScore()
         {
-            _isGameOver = true;
+            SetUiState(UIState.Gameover);
 
             if (_scoreBoard.IsNewHighScore(_snake.Score))
             {
@@ -855,21 +853,21 @@ namespace MonoSnake
             _inputController.ProcessInput();
 
             // Update GameObjects
-            if (_uiState == UIState.GamePlay && !_isGameOver)
+            if (_uiState == UIState.GamePlay && _uiState != UIState.Gameover)
                 _snake.Update(gameTime);
 
             _snakeHeadRectangle.X = (int)Math.Round(_snake.SnakeHead.Position.X - _snake.SnakeHead.Sprite.Width / 2f * _snake.SnakeHead.Sprite.Scale.X);
             _snakeHeadRectangle.Y = (int)Math.Round(_snake.SnakeHead.Position.Y - _snake.SnakeHead.Sprite.Height / 2f * _snake.SnakeHead.Sprite.Scale.Y);
 
             // Hit edge of play area
-            if (!_isGameOver && !_gameAreaRectangle.Contains(_snake.SnakeHead.Position))
+            if (_uiState == UIState.GamePlay && !_gameAreaRectangle.Contains(_snake.SnakeHead.Position))
             {
                 // GAME OVER!
                 EndGameAndRecordScore();
             }
 
             // Hit self
-            if (!_isGameOver && _snake.SnakeSegments.Any(s =>
+            if (_uiState == UIState.GamePlay && _snake.SnakeSegments.Any(s =>
                 s.Position.X == _snake.SnakeHead.Position.X && s.Position.Y == _snake.SnakeHead.Position.Y))
             {
                 EndGameAndRecordScore();
@@ -921,12 +919,12 @@ namespace MonoSnake
             if (_showFpsMonitor)
                 _frameCounter.Draw(gameTime, _spriteBatch);
 
-            if (_isGameOver && _uiState == UIState.GamePlay)
+            if (_uiState == UIState.Gameover)
             {
                 DrawGameOverText();
             }
 
-            if (_uiState == UIState.GamePlay && !_isGameOver)
+            if (_uiState == UIState.GamePlay)
             {
                 // Draw Game Area
                 foreach (Vector2 outlinePixel in _gameAreaRectangle.OutlinePixels())

@@ -172,7 +172,7 @@ namespace MonoSnake.Infrastructure
             if (player1GamePadState.Buttons.Back == ButtonState.Pressed || keyboardState.IsKeyDown(Keys.Escape))
                 OnExit(EventArgs.Empty);
 
-            if (UIState != UIState.HighScoreEntry && (WasKeyPressed(Keys.Enter) || WasButtonPressed(Buttons.Start))) 
+            if (UIState != UIState.HighScoreEntry && UIState != UIState.GamePlay && (WasKeyPressed(Keys.Enter) || WasButtonPressed(Buttons.Start))) 
                 OnRestart(EventArgs.Empty);
 
             if ((keyboardState.IsKeyDown(Keys.Up) || player1GamePadState.IsButtonDown(Buttons.DPadUp))

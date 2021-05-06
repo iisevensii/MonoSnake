@@ -7,6 +7,7 @@ namespace MonoSnake.Infrastructure
     public enum UIState
     {
         GamePlay,
+        Gameover,
         StartScreen,
         HighScoresScreen,
         HighScoreEntry
