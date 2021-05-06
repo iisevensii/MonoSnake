@@ -120,9 +120,9 @@ namespace MonoSnake.Infrastructure
             var player1GamePadState = GamePad.GetState(PlayerIndex.One);
 
             // Keys A-Z
-            IEnumerable<Keys> alphabetKeys = Enum.GetValues(typeof(Keys)).Cast<Keys>().Where(k => k >= Keys.A && k <= Keys.Z);
-            // Keys A-Z
-            IEnumerable<Keys> numberKeys = Enum.GetValues(typeof(Keys)).Cast<Keys>().Where(k => (k >= Keys.D0 && k <= Keys.D9) || (k >= Keys.NumPad0 && k <= Keys.NumPad9));
+            IEnumerable<Keys> alphabetKeys = Enum.GetValues(typeof(Keys)).Cast<Keys>().Where(k => k.IsAlphabetKey());
+            // Keys Top Row and NumPad Numbers
+            IEnumerable<Keys> numberKeys = Enum.GetValues(typeof(Keys)).Cast<Keys>().Where(k => k.IsTopRowNumberKey() || k.IsTopRowNumberKey());
             
             if (keyboardState.IsKeyDown(Keys.Space))
                 Trace.WriteLine("Pause Breakpoint");

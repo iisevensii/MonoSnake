@@ -83,13 +83,10 @@ namespace MonoSnake.Infrastructure
                     _currentChar = Keys.None;
                 }
             }
-            else if ((key >= Keys.A && key <= Keys.Z) || (key >= Keys.D0 && key <= Keys.D9) || (key >= Keys.NumPad0 && key <= Keys.NumPad9))
+            // Input Char
+            else if (key.IsAlphabetKey() || key.IsTopRowNumberKey() || key.IsNumPadNumberKey())
             {
-                // Input Char
-                if (key >= Keys.A && key <= Keys.Z || key >= Keys.D0 && key <= Keys.D9 || (key >= Keys.NumPad0 && key <= Keys.NumPad9))
-                {
-                    TryAddCharacterToInputString(InputKeyToCharString(key));
-                }
+                TryAddCharacterToInputString(InputKeyToCharString(key));
 
                 _entryPosition = _inputString.Length;
                 _currentChar = Keys.None;
@@ -100,7 +97,7 @@ namespace MonoSnake.Infrastructure
         {
             char result = '_';
 
-            if (key >= Keys.A && key <= Keys.Z)
+            if (key.IsAlphabetKey())
                 return char.Parse(key.ToString());
 
             switch (key)
@@ -165,13 +162,13 @@ namespace MonoSnake.Infrastructure
                 {
                     _currentChar = Keys.None;
                 }
-                else if ((_currentChar >= Keys.A && _currentChar <= Keys.Z) || (_currentChar >= Keys.D0 && _currentChar <= Keys.D9))
+                else if (_currentChar.IsAlphabetKey() || _currentChar.IsTopRowNumberKey())
                 {
                     if(_currentChar < Keys.Z)
                         _currentChar++;
                     else if (_currentChar == Keys.Z)
                         _currentChar = Keys.D0;
-                    else if (_currentChar >= Keys.D0 && _currentChar <= Keys.D9)
+                    else if (_currentChar.IsTopRowNumberKey())
                         _currentChar++;
                 }
             }
@@ -189,13 +186,13 @@ namespace MonoSnake.Infrastructure
                 {
                     _currentChar = Keys.None;
                 }
-                else if ((_currentChar >= Keys.A && _currentChar <= Keys.Z) || (_currentChar >= Keys.D0 && _currentChar <= Keys.D9))
+                else if (_currentChar.IsAlphabetKey() || _currentChar.IsTopRowNumberKey())
                 {
-                    if (_currentChar <= Keys.Z && _currentChar > Keys.A)
+                    if (_currentChar.IsAlphabetKey())
                         _currentChar--;
                     else if (_currentChar == Keys.None)
                         _currentChar = Keys.D9;
-                    else if (_currentChar >= Keys.D0 && _currentChar <= Keys.D9)
+                    else if (_currentChar.IsTopRowNumberKey())
                         _currentChar--;
                 }
             }
@@ -257,7 +254,7 @@ namespace MonoSnake.Infrastructure
             }
             else
             {
-                stringScale = _currentChar >= Keys.D0 && _currentChar <= Keys.D9
+                stringScale = _currentChar.IsTopRowNumberKey()
                     ? _font.MeasureString(InputKeyToCharString(_currentChar).ToString())
                     : _font.MeasureString(_currentChar.ToString());
 
