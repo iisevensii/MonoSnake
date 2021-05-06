@@ -15,6 +15,8 @@ namespace MonoSnake.Infrastructure
             Down
         }
 
+        private const int INPUT_STRING_MAX_LENGTH = 15;
+
         private readonly Texture2D _cursorTexture2D;
         private readonly ISprite _letterEntrySpriteFrame0;
         private Vector2 _position;
@@ -68,8 +70,8 @@ namespace MonoSnake.Infrastructure
             {
                 if (_currentChar != Keys.None)
                 {
-                    _inputString += InputKeyToCharString(_currentChar);
-                    _entryPosition++;
+                    TryAddCharacterToInputString(InputKeyToCharString(_currentChar));
+                    _entryPosition = _inputString.Length;
                     _currentChar = Keys.None;
                 }
             }
@@ -84,68 +86,64 @@ namespace MonoSnake.Infrastructure
             else if ((key >= Keys.A && key <= Keys.Z) || (key >= Keys.D0 && key <= Keys.D9) || (key >= Keys.NumPad0 && key <= Keys.NumPad9))
             {
                 // Input Char
-                if (key >= Keys.A && key <= Keys.Z)
+                if (key >= Keys.A && key <= Keys.Z || key >= Keys.D0 && key <= Keys.D9 || (key >= Keys.NumPad0 && key <= Keys.NumPad9))
                 {
-                    _inputString += InputKeyToCharString(key);
-                }
-                else if (key >= Keys.D0 && key <= Keys.D9 || (key >= Keys.NumPad0 && key <= Keys.NumPad9))
-                {
-                    _inputString += InputKeyToCharString(key);
+                    TryAddCharacterToInputString(InputKeyToCharString(key));
                 }
 
-                _entryPosition++;
+                _entryPosition = _inputString.Length;
                 _currentChar = Keys.None;
             }
         }
 
-        private string InputKeyToCharString(Keys key)
+        private char InputKeyToCharString(Keys key)
         {
-            string result = "_";
+            char result = '_';
 
             if (key >= Keys.A && key <= Keys.Z)
-                return key.ToString();
+                return char.Parse(key.ToString());
 
             switch (key)
             {
                 case Keys.D0:
                 case Keys.NumPad0:
-                    result = "0";
+                    result = '0';
                     break;
                 case Keys.D1:
                 case Keys.NumPad1:
-                     result = "1";
+                     result = '1';
                     break;
                 case Keys.D2:
                 case Keys.NumPad2:
-                     result = "2";
+                     result = '2';
                     break;
                 case Keys.D3:
                 case Keys.NumPad3:
-                     result = "3";
+                     result = '3';
                     break;
                 case Keys.D4:
                 case Keys.NumPad4:
-                     result = "4";
+                     result = '4';
                     break;
                 case Keys.D5:
                 case Keys.NumPad5:
-                     result = "5";
+                     result = '5';
                     break;
                 case Keys.D6:
                 case Keys.NumPad6:
-                     result = "6";
+                     result = '6';
                     break;
                 case Keys.D7:
                 case Keys.NumPad7:
-                     result = "7";
+                     result = '7';
                     break;
                 case Keys.D8:
                 case Keys.NumPad8:
-                     result = "8";
+                     result = '8';
                     break;
                 case Keys.D9:
                 case Keys.NumPad9:
-                     result = "9";
+                     result = '9';
                     break;
             }
 
@@ -154,6 +152,9 @@ namespace MonoSnake.Infrastructure
 
         private Keys CycleLetter(Keys key, CycleDirection cycleDirection)
         {
+            if (_inputString.Length == INPUT_STRING_MAX_LENGTH)
+                return Keys.None;
+
             if (cycleDirection == CycleDirection.Up)
             {
                 if (_currentChar == Keys.None)
@@ -239,24 +240,25 @@ namespace MonoSnake.Infrastructure
                 stringScale = _font.MeasureString("A");
                 if (_blinkOn)
                 {
-                    spriteBatch.Draw
-                    (
-                        _letterEntrySpriteFrame0.SpriteSheet,
-                        new Vector2(_position.X + stringScale.X * inputStringLength, _position.Y + stringScale.Y / 2 - 10),
-                        new Rectangle(_letterEntrySpriteFrame0.Left, _letterEntrySpriteFrame0.Top, _letterEntrySpriteFrame0.Width, _letterEntrySpriteFrame0.Height),
-                        _letterEntrySpriteFrame0.TintColor,
-                        0f,
-                        _letterEntrySpriteFrame0.Origin,
-                        _letterEntrySpriteFrame0.Scale,
-                        SpriteEffects.None,
-                        0f
-                    );
+                    if(inputStringLength < INPUT_STRING_MAX_LENGTH)
+                        spriteBatch.Draw
+                        (
+                            _letterEntrySpriteFrame0.SpriteSheet,
+                            new Vector2(_position.X + stringScale.X * inputStringLength, _position.Y + stringScale.Y / 2 - 10),
+                            new Rectangle(_letterEntrySpriteFrame0.Left, _letterEntrySpriteFrame0.Top, _letterEntrySpriteFrame0.Width, _letterEntrySpriteFrame0.Height),
+                            _letterEntrySpriteFrame0.TintColor,
+                            0f,
+                            _letterEntrySpriteFrame0.Origin,
+                            _letterEntrySpriteFrame0.Scale,
+                            SpriteEffects.None,
+                            0f
+                        );
                 }
             }
             else
             {
                 stringScale = _currentChar >= Keys.D0 && _currentChar <= Keys.D9
-                    ? _font.MeasureString(InputKeyToCharString(_currentChar))
+                    ? _font.MeasureString(InputKeyToCharString(_currentChar).ToString())
                     : _font.MeasureString(_currentChar.ToString());
 
                 if (_blinkOn)
@@ -274,6 +276,14 @@ namespace MonoSnake.Infrastructure
                         0f
                     );
                 }
+            }
+        }
+
+        private void TryAddCharacterToInputString(char character)
+        {
+            if (_inputString.Length < INPUT_STRING_MAX_LENGTH)
+            {
+                _inputString += character;
             }
         }
     }
