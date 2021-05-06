@@ -29,7 +29,7 @@ namespace MonoSnake.Infrastructure
         private string _inputString = String.Empty;
         private SpriteFont _font;
 
-        public string InputtedString => _inputString;
+        public string InputtedString => _currentChar != Keys.None ? $"{_inputString}{_currentChar}" : _inputString;
 
         public Vector2 Position
         {
@@ -53,6 +53,7 @@ namespace MonoSnake.Infrastructure
 
         public void Reset()
         {
+            _currentChar = Keys.None;
             _inputString = string.Empty;
         }
 
