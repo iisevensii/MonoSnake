@@ -147,6 +147,8 @@ namespace MonoSnake
             private Sprite _uiCheckBoxBlueSheetHoverChecked;
             private Sprite _uiCheckBoxBlueSheetHoverBox;
             private CenteredUiDialog _scoreEntryWarningCenteredUiDialog;
+            private Sprite _appleSprite;
+            private Sprite _snakeTailSprite;
 
             #endregion Rectangles
 
@@ -233,9 +235,8 @@ namespace MonoSnake
 
         private void InitializeGameObjects()
         {
-            //ToDo: pull out the reset code, we shouldn't be reloading assets if we don't need to
             // Create Sprite Objects
-            Sprite appleSprite = new Sprite(_appleTexture, 0, 0, _appleTexture.Width, _appleTexture.Height)
+            _appleSprite = new Sprite(_appleTexture, 0, 0, _appleTexture.Width, _appleTexture.Height)
             {
                 Origin = new Vector2(_appleTexture.Width / 2f, _appleTexture.Height / 2f)
             };
@@ -271,7 +272,7 @@ namespace MonoSnake
             _snakeHeadAnimatedSprite = new AnimatedSprite(animatedSnakeHeadFrames, 0, 0, DEFAULT_SPRITE_SIZE, DEFAULT_SPRITE_SIZE);
 
             PositionedTexture2D tailPositionedTexture2D = new PositionedTexture2D(_snakeSegmentsSpriteSheet, 1, 0, 2);
-            Sprite snakeTailSprite = new Sprite(tailPositionedTexture2D, DEFAULT_SPRITE_SIZE, DEFAULT_SPRITE_SIZE)
+            _snakeTailSprite = new Sprite(tailPositionedTexture2D, DEFAULT_SPRITE_SIZE, DEFAULT_SPRITE_SIZE)
             {
                 Origin = halfSizeOrigin
             };
@@ -398,20 +399,24 @@ namespace MonoSnake
                 Scale = new Vector2(0.85f, 0.85f)
             };
 
-
-
             #endregion PositionedTextureSprites
 
-            // Create GameObjects
-            _snakeHeadGameObject = new SnakeHead(_snakeHeadAnimatedSprite, 
-                new Vector2(GAME_AREA_MARGIN_LEFT + GAME_AREA_PADDING + DEFAULT_SPRITE_HALF_SIZE,
-                GAME_AREA_MARGIN_TOP + GAME_AREA_PADDING + DEFAULT_SPRITE_HALF_SIZE));
-
-            _appleGameObject = new Apple(appleSprite,
-                new Vector2(_graphics.PreferredBackBufferWidth / 2f + GAME_AREA_PADDING + DEFAULT_SPRITE_HALF_SIZE,
-                    _graphics.PreferredBackBufferHeight / 2f + GAME_AREA_PADDING + DEFAULT_SPRITE_HALF_SIZE));
+            ResetGameObjects();
 
             _appleGameObject.Sprite.Scale = new Vector2(0.72f, 0.72f);
+        }
+
+        private void ResetGameObjects()
+        {
+
+            // Create GameObjects
+            _snakeHeadGameObject = new SnakeHead(_snakeHeadAnimatedSprite,
+                new Vector2(GAME_AREA_MARGIN_LEFT + GAME_AREA_PADDING + DEFAULT_SPRITE_HALF_SIZE,
+                    GAME_AREA_MARGIN_TOP + GAME_AREA_PADDING + DEFAULT_SPRITE_HALF_SIZE));
+
+            _appleGameObject = new Apple(_appleSprite,
+                new Vector2(_graphics.PreferredBackBufferWidth / 2f + GAME_AREA_PADDING + DEFAULT_SPRITE_HALF_SIZE,
+                    _graphics.PreferredBackBufferHeight / 2f + GAME_AREA_PADDING + DEFAULT_SPRITE_HALF_SIZE));
 
             // Initialize Snake
             _snake = new Snake
@@ -420,7 +425,7 @@ namespace MonoSnake
                 _graphics.PreferredBackBufferWidth,
                 _graphics.PreferredBackBufferHeight,
                 _scoreBoardFont,
-                snakeTailSprite,
+                _snakeTailSprite,
                 _snakeStraightBodySprite,
                 _snakeCwUpToRightCcwLeftToDownSprite,
                 _snakeCwRightToDownCcwUpToLeftSprite,
@@ -608,7 +613,7 @@ namespace MonoSnake
 
         private void InputController_StartEvent(object sender, EventArgs e)
         {
-            InitializeGameObjects();
+            ResetGameObjects();
             InitializeInputController();
             SetUiState(UIState.StartScreen);
             GenerateGrid();
@@ -619,7 +624,7 @@ namespace MonoSnake
 
         private void InputController_RestartEvent(object sender, EventArgs e)
         {
-            InitializeGameObjects();
+            ResetGameObjects();
             InitializeInputController();
             SetUiState(UIState.GamePlay);
             GenerateGrid();
