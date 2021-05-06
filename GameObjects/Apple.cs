@@ -19,7 +19,6 @@ namespace MonoSnake.GameObjects
 
         public void Update(GameTime gameTime)
         {
-            // ToDo:
         }
 
         public void Draw(SpriteBatch spriteBatch, GameTime gameTime)

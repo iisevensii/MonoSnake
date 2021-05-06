@@ -65,7 +65,6 @@ namespace MonoSnake.Infrastructure
             _screenWidth = screenWidth;
             _screenHeight = screenHeight;
             _jsonSerializerOptions = new JsonSerializerOptions() { WriteIndented = true };
-            // ToDo: Temporary position set on TextEntry
             _textEntry = new TextEntry(graphicsDevice, new Vector2(screenWidth /2, screenHeight /2), scoreBoardFont);
             _margin = (_screenWidth - _uiFrame.ActualWidth) / 2;
             _leftInsideEdgeOfFrame = SCORE_BOARD_HORIZONTAL_MARGIN + _margin + SCORE_BOARD_FONT_LEFT_PADDING + 40 / 2;

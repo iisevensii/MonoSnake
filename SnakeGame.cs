@@ -970,7 +970,6 @@ namespace MonoSnake
                 DrawLogoText();
             }
 
-            //ToDo: Remove HighScoreEntry condition
             if (_uiState == UIState.HighScoresScreen || _uiState == UIState.HighScoreEntry)
             {
                 DrawHighScoresUiFrame(gameTime);
